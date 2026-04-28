@@ -221,8 +221,8 @@ def run_pipeline(grid: int, seed: int, cytokine: str):
     out_dir   = Path("./models/unet")
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # X_unet: (99, G, G, 22) - 2 frames * (6 cytokines + 5 masks) collapsed
-    # Y_target: (99, G, G, 6) - single cytokine -> (99, G, G, 1)
+    # X_unet: (99,G,G,22) - 2 frames * (6 cytokines + 5 masks) collapsed
+    # Y_target: (99,G,G,6) - single cytokine -> (99,G,G,1)
     X = np.load(data_path / "X_unet.npy").astype(np.float32)
     Y = np.load(data_path / "Y_target.npy").astype(np.float32)[..., idx:idx+1]
     M = np.load(data_path / "Y_masks_spatial.npy").astype(np.float32)
@@ -231,7 +231,7 @@ def run_pipeline(grid: int, seed: int, cytokine: str):
         meta = json.load(f)
     clip_max = float(meta["scaling"]["max"][idx])
 
-    in_channels = X.shape[-1]  # 22
+    in_channels = X.shape[-1] #22
 
     X_train, Y_train = X[:70],   Y[:70]
     X_val,   Y_val   = X[70:80], Y[70:80]

@@ -19,15 +19,13 @@ BASE="/gpfs/home3/rbumbuc1/codes/students/surrogates/data/ICCS2026_v2"
 ITER0_DIR="${BASE}/scan_iteration_0/preprocessed/500x500"
 ITER1_DIR="${BASE}/scan_iteration_1/preprocessed/500x500"
 
-echo "============================================"
 echo "Job:      $SLURM_JOB_ID (array $SLURM_ARRAY_TASK_ID)"
 echo "Model:    sta_lstm cross-iteration 500x500"
 echo "Cytokine: $CYT  |  Seed: $SEED"
 echo "iter_0:   $ITER0_DIR"
 echo "iter_1:   $ITER1_DIR"
-echo "Split:    139 train / 20 val / ~39 test (all from iter_1 tail)"
+echo "Split:    139 train / 20 val / 39 test (all from iter_1 tail)"
 echo "Node:     $(hostname)"
-echo "============================================"
 
 module purge
 module load 2023

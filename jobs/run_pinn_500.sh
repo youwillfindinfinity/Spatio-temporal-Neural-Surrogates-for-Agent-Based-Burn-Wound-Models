@@ -19,14 +19,12 @@ SEED=${SEEDS[$SLURM_ARRAY_TASK_ID]}
 SCAN_ITER=${SCAN_ITER:-0}
 DATA_DIR="/gpfs/home3/rbumbuc1/codes/students/surrogates/data/ICCS2026_v2/scan_iteration_${SCAN_ITER}/preprocessed/500x500"
 
-echo "============================================"
 echo "Job:      $SLURM_JOB_ID (array $SLURM_ARRAY_TASK_ID)"
 echo "Model:    pinn 500x500"
 echo "Cytokine: $CYT  |  Seed: $SEED"
 echo "Scan:     iteration $SCAN_ITER"
 echo "Data:     $DATA_DIR"
 echo "Node:     $(hostname)"
-echo "============================================"
 
 module purge
 module load 2023

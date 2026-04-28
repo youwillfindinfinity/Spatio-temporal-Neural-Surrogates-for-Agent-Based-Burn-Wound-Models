@@ -1,36 +1,24 @@
-"""
-PINN – 500×500 Snellius run
-Adaptations vs all.py (DeepXDE-based):
-  - float32 forced (dde.config.set_default_float)
-  - N_DOMAIN=3000, N_BOUNDARY=500  (halved from standard)
-  - Source/uptake tensors loaded from preprocessed data
-  - set_memory_growth enabled
-  - --data-dir argument to point at scan-iteration preprocessed folder
-"""
 import argparse, json, gc, os, sys, time, warnings
 warnings.filterwarnings("ignore")
-
 import numpy as np
 import tensorflow as tf
 import deepxde as dde
 import optuna
 
-# ── CRITICAL: force float32 before any dde imports ─────────────────────────
 dde.config.set_default_float("float32")
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
-# ── constants ─────────────────────────────────────────────────────────────
 GRID         = 500
 G2           = GRID * GRID
-DATA_DIR     = "preprocessed/500x500"   # overridden by --data-dir
+DATA_DIR     = "preprocessed/500x500" # overridden by --data-dir
 RESULTS_DIR  = "models/pinn"
 CYT_MAP      = {"il8": 0, "il10": 3}
-CYT_DIFFUSE  = {0: 2.09e-6, 3: 1.45e-8}   # m²/s, scaled to normalised domain
+CYT_DIFFUSE  = {0: 2.09e-6, 3: 1.45e-8} # m²/s, scaled to normalised domain
 CYT_DECAY    = {0: 0.200,   3: 0.500}
 
 TRAIN_SL     = slice(0, 140)
-N_DOMAIN     = 3000      # reduced from 5000 for VRAM safety
-N_BOUNDARY   = 500       # reduced from 1000
+N_DOMAIN     = 3000 # reduced from 5000 for VRAM safety
+N_BOUNDARY   = 500 # reduced from 1000
 N_OBS_PER_T  = 100
 WARMUP       = 5000
 PHYSICS_ITER = 10000
@@ -38,28 +26,26 @@ LBFGS_ITER   = 5000
 N_OPTUNA     = 20
 TUNE_ITERS   = 2000
 
-# ── GPU setup ─────────────────────────────────────────────────────────────
 tf.config.set_visible_devices([], "GPU")  # CPU-only (rome partition)
 
-# ── helpers ────────────────────────────────────────────────────────────────
 def load_pinn_data(cyt_idx):
     md    = json.load(open(f"{DATA_DIR}/metadata.json"))
     clip  = float(md["clip_max"][cyt_idx])
-    Yt    = np.load(f"{DATA_DIR}/Y_target.npy")[..., cyt_idx]       # (99,G,G)
+    Yt    = np.load(f"{DATA_DIR}/Y_target.npy")[..., cyt_idx] # (99,G,G)
     Yraw  = np.load(f"{DATA_DIR}/Y_raw_phys.npy")[1:, ..., cyt_idx] # (99,G,G)
-    Xc    = np.load(f"{DATA_DIR}/X_colloc.npy")                     # (99,G²,3)
-    masks = np.load(f"{DATA_DIR}/Y_masks_spatial.npy")              # (99,G,G,5)
-    Ym    = np.load(f"{DATA_DIR}/Y_masks_pinn.npy")                 # (99,G²,5)
-    bc_m  = np.load(f"{DATA_DIR}/Y_bc_mask.npy")                    # (G,G)
+    Xc    = np.load(f"{DATA_DIR}/X_colloc.npy") # (99,G²,3)
+    masks = np.load(f"{DATA_DIR}/Y_masks_spatial.npy") # (99,G,G,5)
+    Ym    = np.load(f"{DATA_DIR}/Y_masks_pinn.npy") # (99,G²,5)
+    bc_m  = np.load(f"{DATA_DIR}/Y_bc_mask.npy") # (G,G)
 
     print("Building source term tensors...")
-    Xb = np.load(f"{DATA_DIR}/X_branch.npy", mmap_mode="r")  # (99,2,G,G,11)
+    Xb = np.load(f"{DATA_DIR}/X_branch.npy", mmap_mode="r") # (99,2,G,G,11)
     # channels 6-10 in last dim are the 5 cell-type masks (EC,NN,NA,M1,M2)
     ec_rate  = {0: 234e-5, 3: 0.0}
     ndn_rate = {0: 1.46e-5, 3: 0.0}
     na_rate  = {0: 0.0, 3: 0.0}
     m1_rate  = {0: 0.0, 3: 45e-5}
-    uptake   = {0: 3.024e-5, 3: 0.0}   # NA uptake for IL-8
+    uptake   = {0: 3.024e-5, 3: 0.0} # NA uptake for IL-8
 
     n_train = 140
     s1 = np.zeros((n_train, G2, 1), dtype=np.float32)
@@ -202,7 +188,7 @@ def run(cyt_name, seed):
     model.train()
     train_elapsed = time.time() - t_train_start
 
-    # Evaluate on test set
+    # Eval on test set
     test_idx  = np.arange(160, 199)
     preds     = []
     t_pred_start = time.time()

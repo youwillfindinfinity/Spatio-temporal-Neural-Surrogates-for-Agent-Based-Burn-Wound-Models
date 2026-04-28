@@ -131,7 +131,7 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         else:
             per_t_r2.append(np.nan)
 
-    # Dice with fixed threshold + empty-field handling 
+    # dice with fixed threshold + empty-field handling 
     dice_thr = 0.05 * clip_max if clip_max > 0 else 1e-9
     dices, n_empty = [], 0
     # spatial correlation with Fisher z 
@@ -299,12 +299,12 @@ def run_pipeline(grid: int, seed: int, cytokine: str):
     print(f"  Training + prediction time: {train_elapsed:.1f}s")
     
     results = {
-        "grid":                 grid,
-        "seed":                 seed,
-        "cytokine":             cytokine,
-        "best_params":          best,
+        "grid": grid,
+        "seed": seed,
+        "cytokine": cytokine,
+        "best_params": best,
         "optuna_best_val_loss": optuna_val,
-        "train_time_seconds":   round(train_elapsed, 2),
+        "train_time_seconds": round(train_elapsed, 2),
         "results": {
             "Near_Horizon_t82_t91": calculate_metrics(
                 Y_a_phys[80:90], Y_p_phys[80:90], M[80:90], clip_max

@@ -43,7 +43,7 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
             per_t_r2.append(np.nan)
 
     # fixed Dice 
-    # use 5% of clip_max as a fixed physical threshold across all timesteps
+    # 5% of clip_max as a fixed physical threshold across all timesteps
     dice_threshold = 0.05 * clip_max if clip_max > 0 else 1e-9
     dices = []
     n_empty_skipped = 0
@@ -84,7 +84,6 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     for t in range(T):
         gt = yt[t, :, :, 0]
         pr = yp[t, :, :, 0]
-        # only skip if data_range is effectively zero (constant field)
         dr = float(np.max(gt) - np.min(gt))
         if dr < 1e-12:
             n_ssim_skipped += 1
@@ -103,7 +102,6 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         "SSIM_Skipped_Frames":  n_ssim_skipped,
     }
 
-
 def denormalize(scaled: np.ndarray, clip_max: float) -> np.ndarray:
-    """Convert from [-1, 1] scaled domain back to physical units."""
+    """convert from [-1, 1] scaled domain back to physical units."""
     return (np.asarray(scaled, dtype=np.float64) + 1.0) / 2.0 * clip_max

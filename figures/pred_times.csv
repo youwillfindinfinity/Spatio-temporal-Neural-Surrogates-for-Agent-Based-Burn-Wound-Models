@@ -1,0 +1,13 @@
+model,cytokine,grid,seed,pred_time_s
+DeepONet,il10,100,42,0.4609
+DeepONet,il10,250,42,2.4485
+DeepONet,il8,100,42,0.4831
+DeepONet,il8,250,42,2.4466
+STA-LSTM,il10,100,42,0.0877
+STA-LSTM,il10,250,42,0.1522
+STA-LSTM,il8,100,42,0.2523
+STA-LSTM,il8,250,42,0.3234
+U-Net,il10,100,42,0.1018
+U-Net,il10,250,42,1.2648
+U-Net,il8,100,42,0.5658
+U-Net,il8,250,42,0.7229

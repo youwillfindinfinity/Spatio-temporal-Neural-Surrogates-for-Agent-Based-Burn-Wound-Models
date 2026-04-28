@@ -11,26 +11,23 @@
 #SBATCH --output=jobs/logs/deeponet_500_%a.out
 #SBATCH --error=jobs/logs/deeponet_500_%a.err
 
-# ── Cytokine/seed mapping ─────────────────────────────────────────────────
+# cytokine/seed mapping
 CYTOKINES=(il8 il8 il8 il10 il10 il10)
 SEEDS=(1 42 100 1 42 100)
 CYT=${CYTOKINES[$SLURM_ARRAY_TASK_ID]}
 SEED=${SEEDS[$SLURM_ARRAY_TASK_ID]}
 
-# ── Scan iteration (0 or 1) — set via: sbatch --export=SCAN_ITER=0 ... ───
+# scan iteration (0 or 1)
 SCAN_ITER=${SCAN_ITER:-0}
 DATA_DIR="/gpfs/home3/rbumbuc1/codes/students/surrogates/data/ICCS2026_v2/scan_iteration_${SCAN_ITER}/preprocessed/500x500"
 
-echo "============================================"
 echo "Job:      $SLURM_JOB_ID (array $SLURM_ARRAY_TASK_ID)"
 echo "Model:    deeponet 500x500"
 echo "Cytokine: $CYT  |  Seed: $SEED"
 echo "Scan:     iteration $SCAN_ITER"
 echo "Data:     $DATA_DIR"
 echo "Node:     $(hostname)"
-echo "============================================"
 
-# ── Environment ───────────────────────────────────────────────────────────
 module purge
 module load 2023
 module load Python/3.11.3-GCCcore-12.3.0
@@ -38,18 +35,16 @@ module load CUDA/12.1.1
 
 source /gpfs/home3/rbumbuc1/codes/students/surrogates/.venv/bin/activate
 
-# ── Change to project directory ───────────────────────────────────────────
 cd /gpfs/home3/rbumbuc1/codes/students/surrogates
 mkdir -p models/deeponet_h jobs/logs
 
-# ── Validate data ──────────────────────────────────────────────────────────
 if [ ! -f "$DATA_DIR/metadata.json" ]; then
     echo "ERROR: preprocessed data not found at $DATA_DIR"
     echo "       Run: python3 scripts/run_preprocessing.py data/ICCS2026_v2/scan_iteration_${SCAN_ITER}"
     exit 1
 fi
 
-# ── Run model ─────────────────────────────────────────────────────────────
+# run model
 RESULT_FILE="models/deeponet_h/res_${CYT}_500_${SEED}.json"
 if [ -f "$RESULT_FILE" ]; then
     echo "Result already exists at $RESULT_FILE — skipping."

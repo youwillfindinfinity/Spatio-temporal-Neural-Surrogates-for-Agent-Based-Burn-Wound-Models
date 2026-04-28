@@ -1,13 +1,3 @@
-"""
-PI-DeepONet – 500×500 Snellius run
-Adaptations vs all.py:
-  - X_branch memory-mapped; branch stats pre-computed as (99,15)
-  - N_COLLOC=1500, N_BC=150 (reduced for VRAM safety)
-  - physics_every=2 (halved physics frequency)
-  - EVAL_CHUNK=2048
-  - set_memory_growth enabled
-  - --data-dir argument to point at scan-iteration preprocessed folder
-"""
 import argparse, json, gc, os, random, time, warnings
 warnings.filterwarnings("ignore")
 import numpy as np
@@ -22,7 +12,7 @@ optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 GRID        = 500
 G2          = GRID * GRID
-DATA_DIR    = "preprocessed/500x500"   # overridden by --data-dir
+DATA_DIR    = "preprocessed/500x500" # overridden by --data-dir
 RESULTS_DIR = "models/pi_deeponet"
 CYT_MAP     = {"il8": 0, "il10": 3}
 
@@ -32,22 +22,20 @@ H_MCS       = 1.0 / S_MCS
 CYTOKINE_NAMES = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 MASK_E, MASK_NDN, MASK_NA, MASK_M1, MASK_M2 = 0, 1, 2, 3, 4
 
-N_COLLOC         = 1500   # reduced from 2000 for VRAM safety at 500×500
-N_BC             = 150    # reduced from 200
+N_COLLOC         = 1500   
+N_BC             = 150   
 N_PHYSICS_SAMPLES = 3
-EVAL_CHUNK       = 2048   # reduced from 4096
-
+EVAL_CHUNK       = 2048   
 N_TRIALS    = 20
 TUNE_EPOCHS = 30
 FULL_EPOCHS = 400
 
-tf.config.set_visible_devices([], "GPU")  # CPU-only (rome partition)
+tf.config.set_visible_devices([], "GPU") 
 
 
 def set_seed(seed):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
-
 
 def compute_pde_params(G, cyt_idx):
     areaconv   = TRUE_SIZE**2 / G**2
@@ -57,7 +45,6 @@ def compute_pde_params(G, cyt_idx):
     sec   = np.array([234e-5, 1.46e-5, 3.024e-5, 225e-5, 250e-5,
                       45e-5, 250e-5, 70e-5, 280e-5]) * volumeconv * H_MCS
     return float(D_all[cyt_idx]), float(k_all[cyt_idx]), sec
-
 
 def build_source_arrays(masks_dynamic, sec, cyt_idx, G, clip_max):
     T   = masks_dynamic.shape[0]
@@ -79,10 +66,8 @@ def build_source_arrays(masks_dynamic, sec, cyt_idx, G, clip_max):
             tf.constant(s2, tf.float32),
             tf.constant(e,  tf.float32))
 
-
 def corner_thresh(G):
     return 2.0 * (G / 10.0) / G - 1.0
-
 
 class Branch(tf.keras.layers.Layer):
     def __init__(self, hidden, p, input_dim=15, **kw):
@@ -93,7 +78,6 @@ class Branch(tf.keras.layers.Layer):
 
     def call(self, x, training=False):
         return self.fc3(self.fc2(self.fc1(x)))
-
 
 class Trunk(tf.keras.layers.Layer):
     def __init__(self, hidden, p, **kw):
@@ -137,7 +121,6 @@ class PIDeepONet(tf.keras.Model):
 
 
 def build_branch_stats(Xb_mmap, Xt, cyt_idx):
-    """Compress mmap'd X_branch → (N,15) summary stats. Avoids loading 5.24 GB."""
     N = Xb_mmap.shape[0]
     out = np.zeros((N, 15), dtype=np.float32)
     xs = np.linspace(0, 1, GRID, dtype=np.float32)

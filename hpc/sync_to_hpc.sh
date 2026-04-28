@@ -1,13 +1,3 @@
-#!/bin/bash
-# sync_to_hpc.sh — Push local source code to Snellius.
-#
-# Syncs: src/, hpc/, config/, tests/, top-level docs and config files.
-# Does NOT sync: results/ (pulled via sync_from_hpc.sh), .env, .venv, data/
-#
-# Usage:
-#   ./hpc/sync_to_hpc.sh           # full code sync
-#   ./hpc/sync_to_hpc.sh --dry-run # preview without transferring
-
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -42,53 +32,50 @@ else
     RSYNC_CMD="rsync ${RSYNC_OPTS} ${DRY_RUN}"
 fi
 
-echo "============================================================"
-echo "SYNC LOCAL → SNELLIUS"
-echo "============================================================"
+echo "SYNC LOCAL -> SNELLIUS"
 echo "  Local  : $PROJECT_DIR"
 echo "  Remote : $REMOTE"
-echo "============================================================"
 
-# ── Source code ───────────────────────────────────────────────────────────────
+# scr code 
 echo ""
-echo "--- Syncing src/ ---"
+echo "Syncing src/"
 ${RSYNC_CMD} "$PROJECT_DIR/src/" "${REMOTE}/src/"
 
-# ── HPC scripts ───────────────────────────────────────────────────────────────
+# HPC scripts
 echo ""
-echo "--- Syncing hpc/ ---"
+echo "Syncing hpc/"
 ${RSYNC_CMD} \
     --exclude='logs/' \
     "$PROJECT_DIR/hpc/" "${REMOTE}/hpc/"
 
-# ── Configuration ─────────────────────────────────────────────────────────────
+# config 
 echo ""
-echo "--- Syncing config/ ---"
+echo "Syncing config/"
 ${RSYNC_CMD} "$PROJECT_DIR/config/" "${REMOTE}/config/"
 
-# ── Tests ─────────────────────────────────────────────────────────────────────
+# tests
 echo ""
-echo "--- Syncing tests/ ---"
+echo "Syncing tests/"
 ${RSYNC_CMD} "$PROJECT_DIR/tests/" "${REMOTE}/tests/"
 
-# ── Experiments (Python scripts only; exclude compiled model + results) ────────
+# experiments 
 echo ""
-echo "--- Syncing experiments/ ---"
+echo "Syncing experiments/"
 ${RSYNC_CMD} \
     --exclude='amici_model/' \
     --exclude='results/' \
     --exclude='petab/' \
     "$PROJECT_DIR/experiments/" "${REMOTE}/experiments/"
 
-# ── Warm-start pkl files (needed by HPC jobs) ─────────────────────────────────
+# warm-start pkl files 
 echo ""
-echo "--- Syncing results/fits/*.pkl (warm-starts) ---"
+echo "Syncing results/fits/*.pkl (warm-starts)"
 ${RSYNC_CMD} \
     --include='*.pkl' \
     --exclude='*' \
     "$PROJECT_DIR/results/fits/" "${REMOTE}/results/fits/"
 if [ -d "$PROJECT_DIR/splitwise" ]; then
-    echo "--- Syncing splitwise/*.pkl (splitwise warm-starts) ---"
+    echo "Syncing splitwise/*.pkl (splitwise warm-starts)"
     ${RSYNC_CMD} \
         --include='*.pkl' \
         --include='*.json' \
@@ -96,9 +83,9 @@ if [ -d "$PROJECT_DIR/splitwise" ]; then
         "$PROJECT_DIR/splitwise/" "${REMOTE}/splitwise/"
 fi
 
-# ── Top-level files (docs, setup) ─────────────────────────────────────────────
+# top-level files 
 echo ""
-echo "--- Syncing top-level files ---"
+echo "Syncing top-level files"
 for f in CLAUDE.md PROJECT_PLANNING.md FITTING_PLAN.md ODE_EQUATIONS.md \
           pyproject.toml setup.py requirements.txt setup.cfg; do
     if [ -f "$PROJECT_DIR/$f" ]; then
@@ -106,9 +93,9 @@ for f in CLAUDE.md PROJECT_PLANNING.md FITTING_PLAN.md ODE_EQUATIONS.md \
     fi
 done
 
-# ── Ensure required directories exist on Snellius ────────────────────────────
+# directories (create if missing)
 echo ""
-echo "--- Creating remote directories ---"
+echo "Creating remote directories"
 sshpass -p "${SNELLIUS_PASSWORD}" ssh "${SNELLIUS_USER}@${SNELLIUS_HOST}" \
     "mkdir -p \
         ${SNELLIUS_DIR}/logs \
@@ -120,9 +107,9 @@ sshpass -p "${SNELLIUS_PASSWORD}" ssh "${SNELLIUS_USER}@${SNELLIUS_HOST}" \
     chmod +x ${SNELLIUS_DIR}/hpc/*.sh 2>/dev/null || true && \
     echo 'Remote directories ready.'"
 
-# ── Create / update .venv on Snellius ────────────────────────────────────────
+# .venv on Snellius
 echo ""
-echo "--- Setting up .venv on Snellius ---"
+echo "Setting up .venv on Snellius"
 sshpass -p "${SNELLIUS_PASSWORD}" ssh "${SNELLIUS_USER}@${SNELLIUS_HOST}" "
     set -e
     module purge
@@ -140,6 +127,4 @@ sshpass -p "${SNELLIUS_PASSWORD}" ssh "${SNELLIUS_USER}@${SNELLIUS_HOST}" "
 "
 
 echo ""
-echo "============================================================"
 echo "Sync complete: $(date)"
-echo "============================================================"

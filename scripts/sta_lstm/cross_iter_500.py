@@ -1,38 +1,3 @@
-"""
-STA-LSTM – Cross-Iteration Generalization Experiment (500×500)
-==============================================================
-Combines scan_iteration_0 (99 samples) + scan_iteration_1 (99 samples)
-into a single ~198-sample dataset, then applies a 70/10/19 split:
-
-  Train : indices   0–138  (139 samples) — mostly iter_0 + first ~40 of iter_1
-  Val   : indices 139–158  ( 20 samples) — iter_1
-  Test  : indices 159–197  ( 39 samples) — iter_1  ← cross-iter held-out
-
-This naturally tests cross-iteration generalisation: training is dominated by
-iter_0, while validation and test are drawn entirely from iter_1.
-
-Scaling contract
-----------------
-iter_0 and iter_1 were preprocessed with their own adaptive clip_max.
-To keep a consistent feature space we rescale iter_1's cytokine channels
-(0–5) on-the-fly to iter_0's scale:
-
-  raw_phys       = (scaled_iter1 + 1) / 2 * clip_max_iter1[j]
-  scaled_iter0_j = clip(raw_phys / clip_max_iter0[j] * 2 - 1, -1, 1)
-
-Mask channels (6–10) are binary {0,1} — no rescaling needed.
-
-All ground truth and predictions are denormalised with iter_0's clip_max so
-metrics are in the same physical unit space.
-
-Distribution shift (from eda/preprocessed_summary.csv):
-  IL-8  clip_max: iter_0 = 6.9e-9, iter_1 = 1.9e-8 (2.7×)
-  IL-10 clip_max: iter_0 ≈ iter_1  (~same)
-  EC coverage:    iter_0 ≈ 0.4%,  iter_1 ≈ 2.0%  (5×)
-
-Results saved to:
-  models/sta_lstm/res_cross_iter_{cyt}_{seed}_500.json
-"""
 import argparse, json, gc, os, random, time
 import numpy as np
 import tensorflow as tf
@@ -55,20 +20,18 @@ FULL_EPOCHS = 200
 PATIENCE    = 20
 
 # 70/10/19 split boundaries over ~198 combined samples
-N_TRAIN = 139   # 0 : N_TRAIN
-N_VAL   = 159   # N_TRAIN : N_VAL
-# test    = N_VAL : end  (~39 samples, all from iter_1)
+N_TRAIN = 139   # 0: N_TRAIN
+N_VAL   = 159   # N_TRAIN: N_VAL
+# test    = N_VAL : end (39 samples, all from iter_1)
 
 tf.config.set_visible_devices([], "GPU")  # CPU-only (rome partition)
-
 
 def set_seed(seed):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
 
-# ── Model ─────────────────────────────────────────────────────────────────────
-
+# model 
 class SpatialAttention(tf.keras.layers.Layer):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -78,7 +41,6 @@ class SpatialAttention(tf.keras.layers.Layer):
 
     def call(self, x):
         return x * self.attn_conv(x)
-
 
 class STALSTM(tf.keras.Model):
     def __init__(self, grid_size, filters=64, lstm_units=128):
@@ -119,12 +81,10 @@ class STALSTM(tf.keras.Model):
         return self.out_resize(h)
 
 
-# ── Metrics ───────────────────────────────────────────────────────────────────
-
+# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
-
 
 def calculate_metrics(y_true, y_pred, masks, clip_max):
     """All inputs in physical units. clip_max from iter_0 (train iteration)."""
@@ -174,13 +134,12 @@ def denormalize(scaled, clip_max):
     return (np.asarray(scaled, dtype=np.float64) + 1.0) / 2.0 * clip_max
 
 
-# ── Data loading ──────────────────────────────────────────────────────────────
-
+# data loading 
 def rescale_x1_cytokines(X1, clip_max_1, clip_max_0):
     """
-    Rescale iter_1 cytokine channels (0–5) to iter_0's scale.
+    Rescale iter_1 cytokine channels (0-5) to iter_0's scale.
     X1: (N, 2, G, G, 11) float32 (mmap slice → copy to float64 first).
-    Returns float32 array with channels 0–5 rescaled.
+    Returns float32 array with channels 0-5 rescaled.
     """
     X = X1.astype(np.float64)
     for j in range(6):
@@ -196,18 +155,17 @@ def build_combined(iter0_dir, iter1_dir, cyt_idx, clip_max_0, clip_max_1):
     """
     Load and concatenate iter_0 + iter_1 into a single combined dataset.
 
-    Returns
-    -------
+        Returns:
     X_combined : (N_total, 2, G, G, 11)  float32, all in iter_0 scale
     Y_phys     : (N_total, G, G, 1)      float64, physical units (iter_0 scale)
     M_combined : (N_total, G, G, 5)      float32, cell masks
     """
-    # iter_0 — already in iter_0 scale
+    # iter_0 - already in iter_0 scale
     X0 = np.load(f"{iter0_dir}/X_lstm.npy")                               # (99,2,G,G,11)
     Yraw0 = np.load(f"{iter0_dir}/Y_raw_phys.npy")[WINDOW:, :, :, cyt_idx]  # (99,G,G)
     M0    = np.load(f"{iter0_dir}/Y_masks_spatial.npy")                   # (99,G,G,5)
 
-    # iter_1 — rescale cytokine channels to iter_0 scale
+    # iter_1 - rescale cytokine channels to iter_0 scale
     X1_raw = np.load(f"{iter1_dir}/X_lstm.npy")                           # (99,2,G,G,11)
     X1     = rescale_x1_cytokines(X1_raw, clip_max_1, clip_max_0)
     Yraw1  = np.load(f"{iter1_dir}/Y_raw_phys.npy")[WINDOW:, :, :, cyt_idx]  # (99,G,G)
@@ -222,11 +180,10 @@ def build_combined(iter0_dir, iter1_dir, cyt_idx, clip_max_0, clip_max_1):
     return X_combined, Y_phys, M_combined
 
 
-# ── Training loop ─────────────────────────────────────────────────────────────
-
+# training  
 def get_batch(X_arr, Y_phys_arr, clip_max, indices):
     """
-    X_arr    : (N, 2, G, G, 11) float32, already in iter_0 scale
+    X_arr: (N, 2, G, G, 11) float32, already in iter_0 scale
     Y_phys_arr: (N, G, G, 1) float64, physical units
     Returns x (float32) and y_scaled (float32 in iter_0 scale, for MSE loss).
     """
@@ -267,8 +224,7 @@ def train_loop(model, X_arr, Y_phys_arr, clip_max, lr, bs, epochs, patience, vl_
     return best_val
 
 
-# ── Main run ──────────────────────────────────────────────────────────────────
-
+# main run 
 def run(cyt_name, seed, iter0_dir, iter1_dir):
     print(f"\n{'='*60}")
     print(f"STA-LSTM Cross-Iter | cytokine={cyt_name} | seed={seed}")
@@ -302,7 +258,7 @@ def run(cyt_name, seed, iter0_dir, iter1_dir):
           f"train={N_TRAIN} | val={N_VAL-N_TRAIN} | test={N_total-N_VAL}")
     print(f"  Test samples come from iter_1 (indices {N_VAL-99}–{N_total-99} of iter_1)")
 
-    # ── Hyperparameter search ─────────────────────────────────────────────────
+    # hyperparameter search 
     def objective(trial):
         set_seed(seed)
         tf.keras.backend.clear_session()
@@ -324,7 +280,7 @@ def run(cyt_name, seed, iter0_dir, iter1_dir):
     best = study.best_params
     print(f"Best params: {best}")
 
-    # ── Final training run ────────────────────────────────────────────────────
+    # final training run 
     set_seed(seed); tf.keras.backend.clear_session()
     model = STALSTM(grid_size=GRID, filters=best["filters"], lstm_units=best["lstm_units"])
 
@@ -333,20 +289,20 @@ def run(cyt_name, seed, iter0_dir, iter1_dir):
                FULL_EPOCHS, PATIENCE, vl_idx)
     train_elapsed = time.time() - t_start
 
-    # ── Inference on test set (iter_1 tail) ───────────────────────────────────
+    # inference on test set (iter_1 tail) 
     all_preds = []
     for s in range(0, len(te_idx), 4):
         idx   = te_idx[s:s+4]
         x_b   = X_all[idx].astype(np.float32)
         all_preds.append(model(x_b, training=False).numpy())
-    Yp_scaled = np.concatenate(all_preds, axis=0)          # (N_test, G, G, 1)
+    Yp_scaled = np.concatenate(all_preds, axis=0) # (N_test, G, G, 1)
 
     # Denormalise predictions → physical units (iter_0 scale)
     Yp_phys = denormalize(Yp_scaled, clip_train)
 
-    # Ground truth physical (already loaded)
-    Ya_phys = Y_phys_all[te_idx]                           # (N_test, G, G, 1)
-    M_test  = M_all[te_idx]                                # (N_test, G, G, 5)
+    # Ground truth physical (alr loaded)
+    Ya_phys = Y_phys_all[te_idx]  # (N_test, G, G, 1)
+    M_test  = M_all[te_idx]  # (N_test, G, G, 5)
 
     n_test = len(te_idx)
     mid    = n_test // 2

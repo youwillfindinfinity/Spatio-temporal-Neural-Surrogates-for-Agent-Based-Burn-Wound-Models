@@ -1,6 +1,5 @@
 import os, json, argparse, random, warnings, gc, time
 from pathlib import Path
-
 import numpy as np
 import tensorflow as tf
 import optuna
@@ -25,14 +24,14 @@ MASK_E, MASK_NDN, MASK_NA, MASK_M1, MASK_M2 = 0, 1, 2, 3, 4
 
 N_COLLOC         = 2000
 N_BC             = 200
-N_IC             = 500    # IC points sampled per physics step
+N_IC             = 500 # IC points sampled per physics step
 N_PHYSICS_SAMPLES = 3
 
 def set_seed(seed):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
-# PDE parameters (same as PINN) 
+# PDE params 
 def compute_pde_params(G, cyt_idx):
     areaconv   = TRUE_SIZE**2 / G**2
     volumeconv = TRUE_SIZE**2 / G**2
@@ -50,11 +49,6 @@ def compute_pde_params(G, cyt_idx):
 
 
 def build_source_arrays(masks_flat, sec, cyt_idx, G, clip_max):
-    """
-    Static source terms from time-averaged masks (same as PINN).
-    masks_flat: (G*G, 5) - averaged over training timesteps.
-    Returns tf.constant tensors of shape (G*G, 1).
-    """
     n   = G * G
     me  = masks_flat[:, MASK_E]
     mnn = masks_flat[:, MASK_NDN]
@@ -63,7 +57,6 @@ def build_source_arrays(masks_flat, sec, cyt_idx, G, clip_max):
     mm2 = masks_flat[:, MASK_M2]
     z   = np.zeros(n, np.float64)
 
-    # IL-10 (idx=3): use mm2 (biologically correct, matches PINN)
     s1_map = [sec[0]*me, sec[3]*mna, sec[4]*mm1, sec[5]*mm2, sec[6]*mna, sec[8]*mm2]
     s2_map = [sec[1]*mnn, z, z, z, sec[7]*mm1, z]
     e_map  = [sec[2]*mna, z, z, z, z, z]
@@ -77,7 +70,6 @@ def build_source_arrays(masks_flat, sec, cyt_idx, G, clip_max):
             tf.constant(e,  tf.float32))
 
 
-# DeepONet architecture (identical to data-only DeepONet) 
 class Branch(tf.keras.layers.Layer):
     def __init__(self, hidden, p, **kw):
         super().__init__(**kw)
@@ -116,7 +108,7 @@ class PIDeepONet(tf.keras.Model):
         self._p = p
 
     def call_data(self, xb, xt, training=False):
-        """Data forward: xb (batch, 7), xt (batch, n_pts, D_trunk) → (batch, n_pts, 1)"""
+        """data forward: xb (batch, 7), xt (batch, n_pts, D_trunk) -> (batch, n_pts, 1)"""
         b = self.branch(xb, training=training)
         t = self.trunk(xt)
         r = tf.einsum("bp,bnp->bn", b, t) + self.bias
@@ -125,17 +117,11 @@ class PIDeepONet(tf.keras.Model):
     def call_physics_single(self, xb_single, xyt):
         """
         Physics forward for single branch input.
-        xb: (1, 7), xyt: (N_c, 3) — only (x,y,t) for autodiff.
+        xb: (1, 7), xyt: (N_c, 3) - only (x,y,t) for autodiff.
         Trunk expects 24D input (xy + 22 field values), so we pad with zeros.
         Gradients flow only through the first 3 columns (x, y, t).
         """
         b = self.branch(xb_single, training=True)
-        # Pad xyt from 3D to 24D: zeros for the 22 field-value channels (cols 2:24 → 21 zeros after xy, but we need to keep t)
-        # Trunk input layout: [x, y, field_0, ..., field_21] = 24D
-        # Physics xyt layout: [x, y, t] = 3D
-        # We insert 21 zero columns between y and t... but actually trunk doesn't use t at position 2.
-        # Trunk input is [xy(2) + fields(22)] = 24D. Physics needs (x,y,t).
-        # Solution: pad to 24D with zeros, autodiff only uses first 3 cols of xyt.
         n = tf.shape(xyt)[0]
         padding = tf.zeros([n, 21], dtype=xyt.dtype)  # 3 + 21 = 24
         xyt_padded = tf.concat([xyt, padding], axis=1)  # (N_c, 24)
@@ -147,7 +133,7 @@ class PIDeepONet(tf.keras.Model):
         return self.call_data(inputs[0], inputs[1], training=training)
 
 
-# Data preparation (identical to DeepONet) 
+# data prep
 def build_branch_inputs(Xb, Xt, cyt_idx):
     N, _, G, _, _ = Xb.shape
     f0   = Xb[:, 0, :, :, cyt_idx]
@@ -207,12 +193,12 @@ def build_dataset(Xbranch, Xtrunk, Yf, batch_size, chunk_size, shuffle=True):
             .batch(batch_size).prefetch(tf.data.AUTOTUNE))
 
 
-# Physics loss 
+# physics loss 
 def compute_pde_residual(model, xb_single, xyt, D, k, s1_tf, s2_tf, e_tf, G):
     """
-    PDE residual: ∂u/∂t = D·Δu − k·u + s1 + s2 − e·u
+    PDE residual: ∂u/∂t = D·Δu - k·u + s1 + s2 - e·u
     Same simplified form as PINN (no +1 offset).
-    xyt: (N_c, 3) collocation points in [-1,1]² × [t_min, t_max]
+    xyt: (N_c, 3) collocation points in [-1,1]² * [t_min, t_max]
     """
     G_f = tf.constant(float(G), dtype=tf.float32)
 
@@ -230,7 +216,6 @@ def compute_pde_residual(model, xb_single, xyt, D, k, s1_tf, s2_tf, e_tf, G):
     u_yy = du_y_grad[:, 1:2]
     del tape1, tape2
 
-    # Spatial index: flat_idx = ix*G + iy (matches preprocessing)
     ix = tf.cast(tf.clip_by_value(
         tf.floor((xyt[:, 0:1] + 1.0) / 2.0 * G_f), 0.0, G_f - 1.0), tf.int32)
     iy = tf.cast(tf.clip_by_value(
@@ -263,8 +248,8 @@ def compute_bc_residual(model, xb_single, xyt_bc):
 def compute_ic_residual(model, xb_single, xy_ic, y_ic_true, t_min):
     """
     IC loss: u(x, y, t_min) = u_0(x, y) at sampled spatial points.
-    xy_ic:      (N_ic, 2) spatial coordinates
-    y_ic_true:  (N_ic, 1) target IC values (scaled)
+    xy_ic:(N_ic, 2) spatial coordinates
+    y_ic_true:(N_ic, 1) target IC values (scaled)
     """
     t_col = np.full((xy_ic.shape[0], 1), t_min, dtype=np.float32)
     xyt_ic = tf.constant(np.hstack([xy_ic, t_col]))
@@ -290,7 +275,7 @@ def sample_boundary(N_bc, t_min, t_max):
     return np.array(pts, dtype=np.float32)[:N_bc]
 
 
-# Training steps 
+# training steps 
 def masked_mse(pred, y, sz):
     idx  = tf.range(tf.shape(pred)[1])[tf.newaxis, :, tf.newaxis]
     mask = tf.cast(idx < tf.cast(sz[:, tf.newaxis, :], tf.int32), tf.float32)
@@ -351,7 +336,7 @@ def train_model(model, opt, ds_tr, ds_vl,
     G2 = G * G
 
     for ep in range(1, epochs + 1):
-        # Data loss
+        # data loss
         data_losses = []
         for batch in ds_tr:
             (xb, xt, sz), y = batch
@@ -359,13 +344,13 @@ def train_model(model, opt, ds_tr, ds_vl,
             data_losses.append(dl)
         tr_data = float(np.mean(data_losses))
 
-        # Physics loss (PDE + BC + IC)
+        # physics loss (PDE + BC + IC)
         tr_pde = tr_bc = tr_ic = 0.0
         if lambda_pde > 0 and ep % physics_every == 0:
             xyt_c  = sample_collocation(N_COLLOC, t_min, t_max)
             xyt_bc = sample_boundary(N_BC, t_min, t_max)
 
-            # Sample IC points: random subset of spatial grid at t_min
+            # sample IC points: random subset of spatial grid at t_min
             ic_idx = np.random.choice(G2, size=min(N_IC, G2), replace=False)
             xy_ic  = xy_grid[ic_idx].astype(np.float32)
             y_ic   = Y_ic_flat[ic_idx].astype(np.float32)
@@ -413,7 +398,7 @@ def train_model(model, opt, ds_tr, ds_vl,
     return best_val
 
 
-# Evaluation 
+# eval 
 def predict_full(model, Xbranch, Xtrunk, chunk=EVAL_CHUNK):
     N, n_pts, _ = Xtrunk.shape
     out = np.zeros((N, n_pts, 1), np.float32)
@@ -426,7 +411,7 @@ def predict_full(model, Xbranch, Xtrunk, chunk=EVAL_CHUNK):
     return out
 
 
-# Metrics (identical to all models) 
+# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -483,7 +468,7 @@ def calculate_metrics(y_true, y_pred, masks, clip_max):
 def denormalize(x, clip_max):
     return (np.asarray(x, np.float64)+1.0)/2.0*clip_max
 
-# Optuna 
+# optuna 
 def make_objective(Xbr_tr, Xtr_tr, Yf_tr, Xbr_vl, Xtr_vl, Yf_vl,
                    t_min, t_max, G, D, k, s1_tf, s2_tf, e_tf,
                    xy_grid, Y_ic_flat, cyt_idx, seed):
@@ -517,7 +502,7 @@ def make_objective(Xbr_tr, Xtr_tr, Yf_tr, Xbr_vl, Xtr_vl, Yf_vl,
     return objective
 
 
-# Main pipeline 
+# main pipeline 
 def run_pipeline(grid, seed, cytokine):
     set_seed(seed)
     idx = CYTOKINE_NAMES.index(cytokine.lower())
@@ -545,21 +530,21 @@ def run_pipeline(grid, seed, cytokine):
 
     print(f"  Branch: (N, 7)  |  Trunk: (N, {G2}, {Xtrunk.shape[2]})  |  clip_max: {clip_max:.6f}")
 
-    # PDE (same as PINN: static masks, mm2 for IL-10)
+    # PDE 
     D, k, sec = compute_pde_params(grid, idx)
-    masks_mean = M_pinn[:70].mean(axis=0)  # (G*G, 5)
+    masks_mean = M_pinn[:70].mean(axis=0)  #(G*G, 5)
     s1_tf, s2_tf, e_tf = build_source_arrays(masks_mean, sec, idx, grid, clip_max)
 
     t_norm_all = np.linspace(-1.0, 1.0, 101, dtype=np.float32)
     t_min = float(t_norm_all[2])
     t_max = float(t_norm_all[-1])
 
-    # IC data: spatial grid + target values at t=0 for IC loss
+    # IC data
     xs = np.linspace(-1.0, 1.0, G, dtype=np.float32)
     ys = np.linspace(-1.0, 1.0, G, dtype=np.float32)
     xx, yy = np.meshgrid(xs, ys, indexing="ij")
-    xy_grid_ic = np.stack([xx.ravel(), yy.ravel()], axis=1)  # (G*G, 2)
-    Y_ic_flat  = Y_ic_full[:, :, idx].reshape(G2, 1)          # (G*G, 1) scaled
+    xy_grid_ic = np.stack([xx.ravel(), yy.ravel()], axis=1)# (G*G, 2)
+    Y_ic_flat  = Y_ic_full[:, :, idx].reshape(G2, 1) #(G*G, 1) scaled
 
     # 70/10/20
     Xbr_tr, Xtr_tr, Yf_tr = Xbranch[:70],   Xtrunk[:70],   Yf[:70]
@@ -590,7 +575,7 @@ def run_pipeline(grid, seed, cytokine):
         best = ref["best_params"]
         optuna_val = ref["optuna_best_val_loss"]
 
-    # Final training
+    # final training
     tf.keras.backend.clear_session(); set_seed(seed)
     ds_tr = build_dataset(Xbr_tr, Xtr_tr, Yf_tr,
                           best["batch_size"], best["chunk_size"], shuffle=True)

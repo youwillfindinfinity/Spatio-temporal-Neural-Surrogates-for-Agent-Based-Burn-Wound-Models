@@ -75,17 +75,6 @@ def compute_pde_params(G, cyt_idx):
 
 
 def build_source_terms_1cyt(masks_flat, sec, cyt_idx, G, clip_max):
-    """
-    Build spatially-varying source/uptake tensors from time-averaged cell masks.
-
-    Design choice: masks are averaged over the 70 training timesteps rather than
-    kept per-timestep. This is a first-order approximation that:
-      - Reduces source term tensor from (70, G*G, 1) to (G*G, 1) - less memory
-      - Smooths out stochastic agent-level noise in cell positions
-      - Empirically yields higher R² on 100h data than per-timestep masks
-    The approximation is valid when cell populations change slowly relative to
-    cytokine diffusion timescales, which holds for the 100h burn wound ABM.
-    """
     n   = G * G
     me  = masks_flat[:, MASK_E]
     mnn = masks_flat[:, MASK_NDN]
@@ -94,7 +83,6 @@ def build_source_terms_1cyt(masks_flat, sec, cyt_idx, G, clip_max):
     mm2 = masks_flat[:, MASK_M2]
     z   = np.zeros(n, np.float64)
 
-    # IL-10 (index 3): use mm2 (M2 macrophages) - biologically correct.
     # NOTE: The ABM tester() source code uses cellpresentm1 for IL-10 secretion,
     # which is a known implementation error (IL-10 is an anti-inflammatory cytokine
     # primarily secreted by M2 macrophages, not M1). We use mm2 here because:
@@ -102,6 +90,7 @@ def build_source_terms_1cyt(masks_flat, sec, cyt_idx, G, clip_max):
     #   2. It yields better PINN performance (R²≈0.16 vs 0.02 for IL-10)
     #   3. The spatial overlap between M1 and M2 in circular wounds means
     #      the practical impact on IL-8/TNF-α/other cytokines is negligible
+    
     s1_map = [sec[0]*me, sec[3]*mna, sec[4]*mm1, sec[5]*mm2, sec[6]*mna, sec[8]*mm2]
     s2_map = [sec[1]*mnn, z, z, z, sec[7]*mm1, z]
     e_map  = [sec[2]*mna, z, z, z, z, z]
@@ -160,8 +149,7 @@ def make_pde_1cyt(D, k, s1_tf, s2_tf, e_tf, G):
 
     return pde
 
-
-# Metrics 
+# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -223,7 +211,7 @@ def denormalize(x, clip_max):
     return (np.asarray(x, np.float64) + 1.0) / 2.0 * clip_max
 
 
-# Model construction 
+# model construction 
 def build_dde_model(G, hidden, n_layers, lr,
                     pde_fn, geomtime,
                     X_ic, Y_ic_obs,
@@ -232,9 +220,7 @@ def build_dde_model(G, hidden, n_layers, lr,
                     lambda_pde=0.01, lambda_ic=1.0, lambda_bc=0.1,
                     num_domain=N_DOMAIN, num_boundary=N_BOUNDARY):
     """
-    Build DeepXDE PINN model with uniform Neumann BC.
-
-    Design choice: pure Neumann ∂u/∂n=0 on all boundaries rather than
+    pure Neumann ∂u/∂n=0 on all boundaries rather than
     the ABM's mixed Dirichlet/Neumann. The ABM applies u=0 Dirichlet
     on corner sub-regions (boundaryat = nx/10), but for the circular
     wound geometry the wound never reaches the corners, so the Dirichlet
@@ -280,7 +266,7 @@ def t_to_norm(t_idx, n_total=101):
     return float(t_norm_all[t_idx])
 
 
-# Optuna objective 
+# optuna objective 
 def make_objective(G, cyt_idx, pde_fn, geomtime,
                    X_ic, Y_ic_obs, X_obs_tr, Y_obs_tr,
                    Y_tgt_scaled, val_indices, bc_fn, seed):
@@ -342,7 +328,7 @@ def run_pipeline(grid, seed, cytokine):
     data_path = Path(f"./preprocessed/{grid}x{grid}")
     out_dir   = Path("./models/pinn"); out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n[{cytokine.upper()}] {grid}x{grid} — loading data...")
+    print(f"\n[{cytokine.upper()}] {grid}x{grid} - loading data...")
 
     Y_tgt  = np.load(data_path / "Y_target.npy").astype(np.float64)
     M_spat = np.load(data_path / "Y_masks_spatial.npy").astype(np.float64)
@@ -358,7 +344,7 @@ def run_pipeline(grid, seed, cytokine):
 
     D, k, sec = compute_pde_params(grid, cyt_idx)
 
-    # Time-averaged masks over training window (first-order approximation)
+    # time-averaged masks over training window (first-order approx)
     masks_mean = M_pinn[:70].mean(axis=0)  # (G*G, 5)
     s1_tf, s2_tf, e_tf = build_source_terms_1cyt(masks_mean, sec, cyt_idx, grid, clip_max)
     pde_fn = make_pde_1cyt(D, k, s1_tf, s2_tf, e_tf, grid)

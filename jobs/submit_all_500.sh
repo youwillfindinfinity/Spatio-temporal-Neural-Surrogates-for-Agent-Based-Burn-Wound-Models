@@ -4,7 +4,7 @@
 #   bash jobs/submit_all_500.sh [SCAN_ITER]
 #   SCAN_ITER defaults to 0 (scan_iteration_0)
 #
-# Example — submit iteration 1:
+# Example - submit iteration 1:
 #   bash jobs/submit_all_500.sh 1
 
 set -e
@@ -13,7 +13,7 @@ cd $HOME/codes/students/surrogates
 SCAN_ITER=${1:-0}
 export SCAN_ITER
 
-echo "=== Submitting 500x500 jobs (scan_iteration_${SCAN_ITER}) ==="
+echo "Submitting 500x500 jobs (scan_iteration_${SCAN_ITER})"
 
 JID_UNET=$(sbatch --parsable --export=ALL,SCAN_ITER=$SCAN_ITER jobs/run_unet_500.sh)
 echo "UNet:        $JID_UNET"
@@ -27,7 +27,6 @@ echo "STA-LSTM:    $JID_LSTM"
 JID_PIDON=$(sbatch --parsable --export=ALL,SCAN_ITER=$SCAN_ITER jobs/run_pi_deeponet_500.sh)
 echo "PI-DeepONet: $JID_PIDON"
 
-# PINN last — most memory, most likely to need tuning
 JID_PINN=$(sbatch --parsable --export=ALL,SCAN_ITER=$SCAN_ITER jobs/run_pinn_500.sh)
 echo "PINN:        $JID_PINN"
 
