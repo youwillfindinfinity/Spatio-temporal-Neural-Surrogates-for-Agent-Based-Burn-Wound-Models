@@ -1,3 +1,9 @@
-* 'eda' - exploratory data analysis
-* 'scripts' - code for each of the employed models (deeponet, pi-deeponet, pinn, sta-lstm, unet)
-* 'models' - outputs of the codes (json with metrics and weights per grid, seed, and cytokine)
+# surrogates_2D
+
+## Repository Structure
+* **`scripts/`** - implementation of models (DeepONet, PI-DeepONet, PINN, STA-LSTM, U-Net) and preprocessing
+* **`jobs/`** - shell scripts for 200h runs on Snellius
+* **`hpc/`** - cluster-specific configurations and environment setups
+* **`models/`** - output JSONs (metrics) and weights, organized by `grid`, `cytokine`, and `seed`
+* **`figures/`** - metrics plots and initial visualizations
+* **`eda/`** - Exploratory Data Analysis and data inspection.
