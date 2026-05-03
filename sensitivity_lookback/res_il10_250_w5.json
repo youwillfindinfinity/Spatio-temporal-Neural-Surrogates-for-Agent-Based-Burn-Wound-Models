@@ -1,0 +1,31 @@
+{
+    "cytokine": "il10",
+    "grid": 250,
+    "window": 5,
+    "seed": 42,
+    "in_channels": 55,
+    "n_params": 31085249,
+    "train_time_seconds": 188.89,
+    "best_params": {
+        "base_filters": 64,
+        "depth": 4,
+        "dropout": 0.20036334939760936,
+        "learning_rate": 0.00016652843552972382,
+        "batch_size": 4
+    },
+    "optuna_best_val_loss": 0.23046264052391052,
+    "near": {
+        "Global_R2": 0.9825978569490704,
+        "Masked_RMSE": 2.2823832099822497e-12,
+        "Avg_Dice": 0.8205317541676648,
+        "Spatial_Correlation": 0.9921799457586052,
+        "SSIM": 0.8257066918806618
+    },
+    "far": {
+        "Global_R2": 0.9701686283874684,
+        "Masked_RMSE": 3.073304454027326e-12,
+        "Avg_Dice": 0.771474627899728,
+        "Spatial_Correlation": 0.9866269445556971,
+        "SSIM": 0.8134818685592896
+    }
+}
