@@ -79,6 +79,17 @@ def gtt_mean(wd, c, g, seeds=SEEDS):
     if not vals: return None, 0
     return float(np.mean(vals)), len(vals)
 
+def gtt_mean_std(wd, c, g, seeds=SEEDS):
+    """Return (mean, std, n) of train time across seeds."""
+    vals = []
+    for s in seeds:
+        r = lj(wd, c, g, s)
+        v = gtt(r)
+        if v is not None and v > 0: vals.append(v)
+    if not vals: return None, None, 0
+    if len(vals) == 1: return float(vals[0]), 0.0, 1
+    return float(np.mean(vals)), float(np.std(vals, ddof=0)), len(vals)
+
 def gpt_mean(model, c, g, wdirs, seeds=SEEDS):
     vals = []
     for s in seeds:
@@ -86,6 +97,73 @@ def gpt_mean(model, c, g, wdirs, seeds=SEEDS):
         if pt is not None and pt > 0: vals.append(pt)
     if not vals: return None, 0
     return float(np.mean(vals)), len(vals)
+
+def gpt_mean_std(model, c, g, wdirs, seeds=SEEDS):
+    """Return (mean, std, n) of pred time across seeds."""
+    vals = []
+    for s in seeds:
+        pt = _get_pred_time(model, c, g, s, wdirs)
+        if pt is not None and pt > 0: vals.append(pt)
+    if not vals: return None, None, 0
+    if len(vals) == 1: return float(vals[0]), 0.0, 1
+    return float(np.mean(vals)), float(np.std(vals, ddof=0)), len(vals)
+
+# Seed-aggregated metric helpers (for error bars on result plots)
+def metric_across_seeds(wd, cyt, grid, metric_key, horizon="near", seeds=SEEDS):
+    """Collect a single metric across seeds for a (wd, cyt, grid, horizon).
+    Returns list of valid float values."""
+    getter = get_near if horizon == "near" else get_far
+    vals = []
+    for s in seeds:
+        r = lj(wd, cyt, grid, s)
+        if not r: continue
+        h = getter(r)
+        if not h: continue
+        v = h.get(metric_key)
+        if v is None: continue
+        if isinstance(v, float) and v != v: continue  # NaN
+        vals.append(float(v))
+    return vals
+
+def metric_mean_std(wd, cyt, grid, metric_key, horizon="near", seeds=SEEDS):
+    """Return (mean, std, n) for a metric across seeds. std=0 if only 1 seed."""
+    vals = metric_across_seeds(wd, cyt, grid, metric_key, horizon, seeds)
+    if not vals: return None, None, 0
+    if len(vals) == 1: return vals[0], 0.0, 1
+    return float(np.mean(vals)), float(np.std(vals, ddof=0)), len(vals)
+
+def per_timestep_r2_mean_std(wd, cyt, grid, seeds=SEEDS):
+    """For temporal panel: collect per-time-step R^2 arrays across seeds and
+    return (times, mean_r2, std_r2) on the union of available time points.
+    Returns lists with NaN for missing entries."""
+    per_seed = {}
+    for s in seeds:
+        r = lj(wd, cyt, grid, s)
+        if not r: continue
+        rr = r.get("results", {})
+        for k in rr:
+            kl = k.lower()
+            ts = None
+            if "near" in kl: ts = 82  # first eval step in near window (t=82..91)
+            elif "far" in kl: ts = 92  # first eval step in far window (t=92..100)
+            else: continue
+            ptr = rr[k].get("Per_Timestep_R2", [])
+            for i, v in enumerate(ptr):
+                if v is None: continue
+                try:
+                    fv = float(v)
+                    if fv != fv: continue
+                except Exception:
+                    continue
+                t = ts + i
+                per_seed.setdefault(t, []).append(fv)
+    if not per_seed:
+        return np.array([]), np.array([]), np.array([])
+    ts_sorted = sorted(per_seed.keys())
+    means = np.array([np.mean(per_seed[t]) for t in ts_sorted])
+    # std=0 if only 1 seed contributed at that time-step
+    stds = np.array([np.std(per_seed[t], ddof=0) if len(per_seed[t]) > 1 else 0.0 for t in ts_sorted])
+    return np.array(ts_sorted), means, stds
 
 
 def abm_time(grid):
@@ -97,6 +175,8 @@ def abm_time(grid):
 # FIG 1: Concentrations + sparsity
 # 1a: 100h with 2 lines (100^2 + 250^2) per cytokine panel
 # 1b: Sparsity heatmaps (IL-8, IL-10 at 250, t=80)
+# NOTE: Fig 1 panels are ground-truth ABM trajectories (one simulation per grid)
+# and sparsity heatmaps. They are not seed-dependent, so no error bars are added.
 
 def fig1():
     sp_100h = {"Train":(0,72),"Val":(72,82),"Near":(82,91),"Far":(91,101)}
@@ -117,7 +197,7 @@ def fig1():
             ax.set_title(CL[i],fontsize=10)
             if i>=3: ax.set_xlabel("Time (h)")
             if i%3==0: ax.set_ylabel("Mean conc.")
-            ax.set_xlim(0,112)  
+            ax.set_xlim(0,112)
             ax.ticklabel_format(axis='y',style='scientific',scilimits=(-2,2))
         split_h=[Patch(fc=SC[s],alpha=0.3,label=s) for s in sp_100h]
         fig.legend(handles=split_h,loc="lower center",ncol=4,
@@ -140,28 +220,40 @@ def fig1():
         fig.tight_layout(); sf(fig,"Fig1_sparsity_100h")
 
 
-# FIG 2a: R2 bars (RQ1)
+# FIG 2a: R2 bars (RQ1) -- now with error bars (mean +/- std across seeds)
 def fig2():
     fig,axes=plt.subplots(2,2,figsize=(4.8,5.5),sharey=True)
     av=[]
     for row,cyt,cl in [(0,"il8","IL-8"),(1,"il10","IL-10")]:
         for col,g in [(0,100),(1,250)]:
             ax=axes[row,col]
-            vals=[gnr(lj(W100[m],cyt,g,42)) for m in MO_100]
-            av.extend([v for v in vals if v is not None])
-            x=np.arange(len(MO_100)); bv=[v if v is not None else 0 for v in vals]
-            bars=ax.bar(x,bv,color=[P[m] for m in MO_100],ec="black",lw=.4,alpha=.9)
+            means=[]; stds=[]; ns=[]
+            for m in MO_100:
+                mu, sd, n = metric_mean_std(W100[m], cyt, g, "Global_R2", "near")
+                means.append(mu); stds.append(sd); ns.append(n)
+            av.extend([v for v in means if v is not None])
+            x=np.arange(len(MO_100))
+            bv=[v if v is not None else 0 for v in means]
+            ev=[s if s is not None else 0 for s in stds]
+            bars=ax.bar(x,bv,color=[P[m] for m in MO_100],ec="black",lw=.4,alpha=.9,
+                        yerr=ev, capsize=3,
+                        error_kw=dict(ecolor='black', elinewidth=0.8, capthick=0.8))
             ax.set_xticks(x); ax.set_xticklabels(MO_100,rotation=30,ha="right",fontsize=8)
             if col==0: ax.set_ylabel(r"$R^2$")
             ax.set_title(f"{cl}, ${g}^2$")
             ax.axhline(1,color="gray",ls=":",alpha=.3)
-            for b,v in zip(bars,vals):
+            for b,v,s,n in zip(bars,means,stds,ns):
                 if v is not None:
-                    y=max(v,0)+0.015 if v>=0 else v-0.03
-                    ax.text(b.get_x()+b.get_width()/2,y,f"{v:.3f}",ha="center",fontsize=6,fontweight="bold")
+                    y=max(v,0)+(s if s else 0)+0.02 if v>=0 else v-0.03
+                    lbl = f"{v:.3f}\n$\\pm${(s or 0):.3f}"
+                    ax.text(b.get_x()+b.get_width()/2,y,lbl,
+                            ha="center",fontsize=5.5,fontweight="bold")
     vm=min(av) if av else 0
     for r in axes:
-        for ax in r: ax.set_ylim(min(vm-0.05,-0.02),1.08); ax.axhline(0,color="black",ls="-",lw=0.6,alpha=.3)
+        for ax in r: ax.set_ylim(min(vm-0.10,-0.05),1.15); ax.axhline(0,color="black",ls="-",lw=0.6,alpha=.3)
+    # caption note about error bars
+    fig.text(0.5, -0.02, f"Error bars: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
+             ha="center", fontsize=7, style="italic", color="#444")
     fig.tight_layout(); sf(fig,"Fig2a_R2_100h")
 
 
@@ -201,84 +293,110 @@ def fig2b():
     fig, axes = plt.subplots(2, 3, figsize=(7.2, 5.5))
 
     for row, (cyt, cl) in enumerate([("il8","IL-8"),("il10","IL-10")]):
-        # (a) Pareto: R2 vs total time (mean train + mean pred across seeds)
+        # (a) Pareto: R2 vs total time (mean +/- std across seeds for BOTH axes)
         ax = axes[row, 0]
         ar = []
         for model in MO_100:
-            pts = []
+            pts = []  # (grid, t_mean, t_std, r2_mean, r2_std)
             for grid in [100, 250]:
-                r = lj(W100[model], cyt, grid, 42)
-                if not r: continue
-                v = gnr(r)  # accuracy: seed 42 (matches table)
-                tt_m, _ = gtt_mean(W100[model], cyt, grid)
-                pt_m, _ = gpt_mean(model, cyt, grid, W100)
-                tt = (tt_m or 0) + (pt_m or 0)
-                if v is not None and tt > 0: pts.append((grid, tt, v)); ar.append(v)
+                # accuracy across seeds
+                r2_mu, r2_sd, n_r2 = metric_mean_std(W100[model], cyt, grid, "Global_R2", "near")
+                tt_mu, tt_sd, n_tt = gtt_mean_std(W100[model], cyt, grid)
+                pt_mu, pt_sd, n_pt = gpt_mean_std(model, cyt, grid, W100)
+                if r2_mu is None or tt_mu is None or pt_mu is None: continue
+                t_mu = tt_mu + pt_mu
+                # combine independent std's in quadrature
+                t_sd = np.sqrt((tt_sd or 0)**2 + (pt_sd or 0)**2)
+                pts.append((grid, t_mu, t_sd, r2_mu, r2_sd or 0))
+                ar.append(r2_mu)
             if not pts: continue
-            for g, t, r2 in pts:
-                ax.scatter(t, r2, c=P[model], s=40 if g==100 else 100,
+            ts_arr = [p[1] for p in pts]
+            r2_arr = [p[3] for p in pts]
+            for g, t_mu, t_sd, r2_mu, r2_sd in pts:
+                ax.scatter(t_mu, r2_mu, c=P[model], s=40 if g==100 else 100,
                           marker=MK[model], ec="black", lw=.5, zorder=5, clip_on=False)
             if len(pts) > 1:
-                ax.plot([p[1] for p in pts], [p[2] for p in pts],
-                       c=P[model], lw=1.2, alpha=.4, ls=LS[model], zorder=4)
+                ax.plot(ts_arr, r2_arr, c=P[model], lw=1.2, alpha=.4,
+                        ls=LS[model], zorder=4)
         ax.set_xscale("log"); ax.set_xlabel("Total time (s, mean over seeds)")
         ax.set_ylabel(r"$R^2$"); ax.grid(True, alpha=0.12)
         ax.set_title(f"{cl} - Accuracy vs time", fontsize=9)
         vm = min(ar) if ar else 0
-        ax.set_ylim(min(vm-0.05, -0.05), 1.05)
+        ax.set_ylim(min(vm-0.08, -0.08), 1.05)
         ax.axhline(0, color="black", ls="-", lw=0.6, alpha=.3)
 
-        # (b) Prediction time (mean across seeds)
+        # (b) Prediction time (mean +/- std across seeds)
         ax = axes[row, 1]
-        models_with_time = []; pred_vals = []
+        models_with_time = []; pred_vals = []; pred_errs = []
         for m in MO_100:
-            pt_m, _ = gpt_mean(m, cyt, 250, W100)
-            if pt_m and pt_m > 0:
-                models_with_time.append(m); pred_vals.append(pt_m)
+            pt_mu, pt_sd, n_pt = gpt_mean_std(m, cyt, 250, W100)
+            if pt_mu and pt_mu > 0:
+                models_with_time.append(m); pred_vals.append(pt_mu)
+                pred_errs.append(pt_sd if pt_sd is not None else 0)
         if models_with_time:
             x = np.arange(len(models_with_time))
-            bars = ax.bar(x, pred_vals, color=[P[m] for m in models_with_time], ec="black", lw=.4)
+            bars = ax.bar(x, pred_vals, color=[P[m] for m in models_with_time], ec="black", lw=.4,
+                          yerr=pred_errs, capsize=3,
+                          error_kw=dict(ecolor='black', elinewidth=0.8, capthick=0.8))
             ax.set_xticks(x); ax.set_xticklabels(models_with_time, rotation=35, ha="right", fontsize=7)
             ax.set_ylabel("Pred time (s, mean)"); ax.set_yscale("log")
-            ax.set_ylim(top=max(pred_vals)*10)
-            for b, pt_ in zip(bars, pred_vals):
-                ax.text(b.get_x()+b.get_width()/2, pt_*1.8, f"{pt_:.1f}s",
-                       ha="center", fontsize=6, fontweight="bold")
+            ax.set_ylim(top=max(pred_vals)*15)
+            for b, pt_, pe_ in zip(bars, pred_vals, pred_errs):
+                y_top = pt_ + (pe_ if pe_ else 0)
+                y_lab = y_top * 1.2
+                lbl = f"{pt_:.1f}s\n$\\pm${(pe_ or 0):.1f}s"
+                ax.text(b.get_x()+b.get_width()/2, y_lab, lbl,
+                       ha="center", va="bottom", fontsize=5.5, fontweight="bold")
         ax.set_title(f"{cl} - Prediction ($250^2$)", fontsize=9)
 
-        # (c) Inference speedup vs ABM at 250^2 (MEAN PRED TIME - matches table)
+        # (c) Inference speedup vs ABM at 250^2 (with error bars derived from pred-time std)
         ax = axes[row, 2]
         abm_t_250 = abm_time(250)
-        su_data = {}
+        ms = []; su = []; su_err = []
         for m in MO_100:
-            pt_m, _ = gpt_mean(m, cyt, 250, W100)
-            if pt_m and pt_m > 0 and abm_t_250 is not None:
-                su_data[m] = abm_t_250 / pt_m
-        if su_data:
-            ms = list(su_data.keys()); su = [su_data[m] for m in ms]; x = np.arange(len(ms))
-            bars = ax.bar(x, su, color=[P[m] for m in ms], ec="black", lw=.4)
+            pt_mu, pt_sd, n_pt = gpt_mean_std(m, cyt, 250, W100)
+            if pt_mu and pt_mu > 0 and abm_t_250 is not None:
+                speedup = abm_t_250 / pt_mu
+                # error propagation: d(speedup) = abm_t * pt_sd / pt_mu^2
+                if pt_sd is not None and pt_sd > 0:
+                    sp_err = abm_t_250 * pt_sd / (pt_mu ** 2)
+                else:
+                    sp_err = 0.0
+                ms.append(m); su.append(speedup); su_err.append(sp_err)
+        if ms:
+            x = np.arange(len(ms))
+            bars = ax.bar(x, su, color=[P[m] for m in ms], ec="black", lw=.4,
+                          yerr=su_err, capsize=3,
+                          error_kw=dict(ecolor='black', elinewidth=0.8, capthick=0.8))
             ax.set_xticks(x); ax.set_xticklabels(ms, rotation=35, ha="right", fontsize=7)
             ax.set_ylabel(r"Inference speedup ($\times$)")
-            ax.set_yscale("log"); ax.set_ylim(top=max(su)*10)
-            for b, s_ in zip(bars, su):
-                if s_ >= 1e4: lab = f"{s_/1000:.1f}k$\\times$"
-                else: lab = f"{s_:.0f}$\\times$"
-                ax.text(b.get_x()+b.get_width()/2, s_*1.8, lab,
-                       ha="center", fontsize=6, fontweight="bold")
+            ax.set_yscale("log"); ax.set_ylim(top=max(su)*15)
+            def _fmt_su(v):
+                if v >= 1e4: return f"{v/1000:.1f}k$\\times$"
+                return f"{v:.0f}$\\times$"
+            for b, s_, se_ in zip(bars, su, su_err):
+                y_top = s_ + (se_ if se_ else 0)
+                y_lab = y_top * 1.2
+                lbl = f"{_fmt_su(s_)}\n$\\pm${_fmt_su(se_ or 0)}"
+                ax.text(b.get_x()+b.get_width()/2, y_lab, lbl,
+                       ha="center", va="bottom", fontsize=5.5, fontweight="bold")
         ax.set_title(f"{cl} - Inference speedup vs ABM ($250^2$)", fontsize=9)
 
-    # Legend 
+    # Legend
     handles = [Line2D([0],[0], marker=MK[m], color=P[m], ls=LS[m], lw=1.2,
                markersize=6, mec="black", mew=.5, label=m) for m in MO_100]
     handles += [Line2D([0],[0], marker="o", color="gray", ls="", markersize=s, mec="black",
                 label=lb) for s, lb in [(4,r"$100^2$"),(7,r"$250^2$")]]
     fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5,-0.04),
               fontsize=6, framealpha=0.9, edgecolor="gray", ncol=4)
-    fig.tight_layout(); fig.subplots_adjust(bottom=0.15)
+    fig.text(0.5, -0.07, f"Error bars: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
+             ha="center", fontsize=7, style="italic", color="#444")
+    fig.tight_layout(); fig.subplots_adjust(bottom=0.17)
     sf(fig, "Fig2b_pareto_speedup_100h")
 
 
 # FIG 3: RQ3 composite - multi-metric + scalability + temporal
+# All three panels now use mean +/- std across seeds.
 def fig3():
     mets=[("Global_R2",r"$R^2$"),("Spatial_Correlation","Corr"),("SSIM","SSIM"),("Avg_Dice","Dice")]
     hatches=["","//","..","xx"]
@@ -286,26 +404,26 @@ def fig3():
     models = MO_100
     wdirs = W100
     grid = 250
-    nr_range = (80, 90)
-    fr_range = (90, 99)
 
     fig,axes=plt.subplots(2,3,figsize=(7.2,5.5))
     panel_data = {(r,c): [] for r in range(2) for c in range(3)}
     for row,(cyt,cl) in enumerate([("il8","IL-8"),("il10","IL-10")]):
-        # (a) Multi-metric bars
+        # (a) Multi-metric bars with error bars (mean +/- std across seeds)
         ax=axes[row,0]; nm=len(models); w=0.18; x=np.arange(nm)
         for j,(met,ml) in enumerate(mets):
-            vals=[]
+            means=[]; stds=[]
             for m in models:
-                d=get_near(lj(wdirs[m],cyt,grid,42)); v=d.get(met)
-                if v is None or (isinstance(v,float) and v!=v): vals.append(None)
-                else: vals.append(float(v))
-            panel_data[(row,0)].extend([v for v in vals if v is not None])
-            bv=[v if v is not None else 0 for v in vals]
+                mu, sd, n = metric_mean_std(wdirs[m], cyt, grid, met, "near")
+                means.append(mu); stds.append(sd)
+            panel_data[(row,0)].extend([v for v in means if v is not None])
+            bv=[v if v is not None else 0 for v in means]
+            ev=[s if s is not None else 0 for s in stds]
             offset=(j-len(mets)/2+0.5)*w
             bars=ax.bar(x+offset,bv,w,color=[P[m] for m in models],
-                       ec="black",lw=.3,alpha=0.65+j*0.08,hatch=hatches[j])
-            for b,v in zip(bars,vals):
+                       ec="black",lw=.3,alpha=0.65+j*0.08,hatch=hatches[j],
+                       yerr=ev, capsize=1.5,
+                       error_kw=dict(ecolor='black', elinewidth=0.5, capthick=0.5))
+            for b,v in zip(bars,means):
                 if v is None:
                     cx=b.get_x()+b.get_width()/2
                     ax.text(cx,0.01,"N/A",ha="center",fontsize=4,color="black",rotation=90,va="bottom")
@@ -314,48 +432,47 @@ def fig3():
         ax.axhline(1,color="gray",ls=":",alpha=.3)
         ax.set_title(f"{cl} - Metrics",fontsize=9)
 
-        # (b) Scalability across grid resolutions
+        # (b) Scalability across grid resolutions - now with errorbars
         ax=axes[row,1]
         for model in models:
-            gs=[]; r2s=[]
+            gs=[]; mus=[]; sds=[]
             for g in [100,250]:
-                v=gnr(lj(wdirs[model],cyt,g,42))
-                if v is not None: gs.append(g); r2s.append(v); panel_data[(row,1)].append(v)
-            if gs: ax.plot(gs,r2s,color=P[model],lw=1.5,marker=MK[model],ms=7,
-                          mec="black",mew=.6,ls=LS[model],clip_on=False)
+                mu, sd, n = metric_mean_std(wdirs[model], cyt, g, "Global_R2", "near")
+                if mu is not None:
+                    gs.append(g); mus.append(mu); sds.append(sd if sd is not None else 0)
+                    panel_data[(row,1)].append(mu)
+            if gs:
+                ax.errorbar(gs, mus, yerr=sds, color=P[model], lw=1.5,
+                            marker=MK[model], ms=7, mec="black", mew=.6,
+                            ls=LS[model], capsize=3, elinewidth=0.8, capthick=0.8,
+                            clip_on=False)
         ax.set_xlabel("Grid resolution"); ax.set_xticks([100,250])
         ax.set_ylabel(r"$R^2$"); ax.grid(True,alpha=0.12)
         ax.set_title(f"{cl} - Scalability",fontsize=9)
 
-        # (c) Temporal
+        # (c) Temporal - per-timestep R^2 with shaded std band across seeds
         ax=axes[row,2]
+        nr_range = (82, 91)
         for model in models:
-            r=lj(wdirs[model],cyt,grid,42)
-            if not r: continue
-            rr=r.get("results",{})
-            all_t=[]; all_r2=[]
-            for k in rr:
-                ptr=rr[k].get("Per_Timestep_R2",[])
-                if not ptr: continue
-                kl=k.lower()
-                ts=nr_range[0] if "near" in kl else (fr_range[0] if "far" in kl else None)
-                if ts is None: continue
-                for i,v in enumerate(ptr):
-                    if v is not None and v==v: all_t.append(ts+i+2); all_r2.append(v); panel_data[(row,2)].append(v)
-            if all_t:
-                o=np.argsort(all_t); t_arr,r2_arr=np.array(all_t)[o],np.array(all_r2)[o]
-                if model=="PINN" and len(r2_arr)>5 and np.std(np.diff(r2_arr))>0.03:
-                    k5=np.ones(5)/5; r2_s=np.convolve(r2_arr,k5,mode="same")
-                    r2_s[:2]=r2_arr[:2]; r2_s[-2:]=r2_arr[-2:]
-                    ax.plot(t_arr,r2_s,color=P[model],lw=1.2,ls=LS[model],label=model)
-                else:
-                    ax.plot(t_arr,r2_arr,color=P[model],lw=1.2,ls=LS[model],label=model)
-        bnd=nr_range[1]+2
-        ax.axvline(bnd,color="#999",ls="--",alpha=0.5,lw=1)
-        ax.text(bnd-1,0.97,"Near",ha="right",fontsize=6,color="#555",
-               fontweight="bold",transform=ax.get_xaxis_transform())
-        ax.text(bnd+1,0.97,"Far",ha="left",fontsize=6,color="#555",
-               fontweight="bold",transform=ax.get_xaxis_transform())
+            ts, mu, sd = per_timestep_r2_mean_std(wdirs[model], cyt, grid)
+            if len(ts) == 0: continue
+            # for PINN, gentle smoothing if very noisy (preserves original behaviour)
+            mu_plot = mu.copy()
+            if model=="PINN" and len(mu)>5 and np.std(np.diff(mu))>0.03:
+                k5=np.ones(5)/5; mu_plot=np.convolve(mu,k5,mode="same")
+                mu_plot[:2]=mu[:2]; mu_plot[-2:]=mu[-2:]
+            ax.plot(ts, mu_plot, color=P[model], lw=1.2, ls=LS[model], label=model)
+            # shaded band only where we actually have >1 seed worth of variability
+            if np.any(sd > 0):
+                ax.fill_between(ts, mu_plot - sd, mu_plot + sd,
+                                color=P[model], alpha=0.18, lw=0)
+            panel_data[(row,2)].extend(mu.tolist())
+        bnd = nr_range[1] + 1  # boundary between near (..91) and far (92..)
+        ax.axvline(bnd-0.5, color="#999", ls="--", alpha=0.5, lw=1)
+        ax.text(bnd-1, 0.97, "Near", ha="right", fontsize=6, color="#555",
+                fontweight="bold", transform=ax.get_xaxis_transform())
+        ax.text(bnd, 0.97, "Far", ha="left", fontsize=6, color="#555",
+                fontweight="bold", transform=ax.get_xaxis_transform())
         ax.set_xlabel("Time (h)"); ax.set_ylabel(r"$R^2$")
         ax.set_title(f"{cl} - Temporal",fontsize=9); ax.grid(True,alpha=0.12)
 
@@ -364,7 +481,7 @@ def fig3():
             data = panel_data[(r,c)]
             has_neg = any(v < -0.001 for v in data) if data else False
             if has_neg:
-                ymin = min(min(data) - 0.05, -0.15)
+                ymin = min(min(data) - 0.10, -0.20)
                 ymax = 1.15
                 axes[r, c].axhline(0, color="black", ls="-", lw=0.5, alpha=.4)
             else:
@@ -379,12 +496,18 @@ def fig3():
     all_handles=met_handles+model_handles
     fig.legend(handles=all_handles,loc="lower center",bbox_to_anchor=(0.5,-0.06),
               fontsize=6,framealpha=0.9,edgecolor="gray",ncol=len(all_handles))
-    fig.tight_layout(); fig.subplots_adjust(bottom=0.12)
+    fig.text(0.5, -0.09,
+             f"Error bars / shaded bands: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
+             ha="center", fontsize=7, style="italic", color="#444")
+    fig.tight_layout(); fig.subplots_adjust(bottom=0.15)
     sf(fig,"Fig3_rq3_composite_100h")
 
 # FIG 6: Spatial maps (RQ2) - needs TensorFlow
 # 6a: GT | Pred | |Diff| for DeepONet, 250, both cytokines
 # 6b: |Diff| only, all models, both grids, both cytokines
+# NOTE: These are spatial error maps from a single seed by construction
+# (a single trained checkpoint produces one prediction field). Error bars
+# would not apply here; per-seed numerical metrics are in Fig 2/3 and the tables.
 
 def fig6(hour=88):
     import tensorflow as tf; import matplotlib.colors as mcolors
@@ -400,7 +523,7 @@ def fig6(hour=88):
                 "U-Net":"unet","STA-LSTM":"sta_lstm","PINN":"pinn"}
     CYTS=[("il8","IL-8",0),("il10","IL-10",3)]; t_idx=hour-2
 
-    # Architectures 
+    # Architectures
     def _cb(x,f):
         x=tf.keras.layers.Conv2D(f,3,padding="same",activation="relu")(x)
         x=tf.keras.layers.BatchNormalization()(x)
@@ -526,10 +649,10 @@ def fig6(hour=88):
                 else: print("SKIP")
 
     # GLOBAL scales per cytokine
-    gt_norms = {}  
-    diff_vmax = {}  
+    gt_norms = {}
+    diff_vmax = {}
     for cyt, cl, ci in CYTS:
-        # GT vmax: from raw physical data 
+        # GT vmax: from raw physical data
         all_gt_vals = []
         for G in GRIDS_100:
             g = gts[cyt][G]
@@ -617,7 +740,7 @@ def fig6(hour=88):
     fig.tight_layout(rect=[0,0,0.92,1]); sf(fig,f"Fig6b_diff_all_t{hour}")
 
 
-# measuring pred times 
+# measuring pred times
 def measure_pred_times():
     """measures prediction times for all models/cytokines/grids where JSON lacks pred_time."""
     import tensorflow as tf; import time
@@ -781,7 +904,7 @@ def measure_pred_times():
         _save_pred_time_cache()
     print(f"    Measured {n_measured} new pred times")
 
-#  vis 
+#  vis
 def clean_vis():
     import tensorflow as tf; import matplotlib.colors as mcolors
     os.environ["TF_CPP_MIN_LOG_LEVEL"]="3";warnings.filterwarnings("ignore")
@@ -1069,14 +1192,14 @@ if __name__=="__main__":
         print("\n=== CSV export ==="); export_csv()
         print("\n=== LaTeX tables ==="); gen_tables()
 
-        # figures
+        # Figures
         if args.fig:
             figs=[]
             for f in args.fig:
                 try: figs.append(int(f))
                 except ValueError: figs.append(f)
         else:
-            figs=[1,2,"2b",3,6]  
+            figs=[1,2,"2b",3,6]
         print(f"\n=== Generating {len(figs)} figure(s) ===\n")
         for n in figs:
             if n not in FIGS: print(f"  Unknown: {n}"); continue
