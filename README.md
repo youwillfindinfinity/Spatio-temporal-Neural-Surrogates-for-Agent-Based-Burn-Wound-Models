@@ -2,7 +2,6 @@
 
 ## Repository Structure
 * **`scripts/`** - implementation of models (DeepONet, PI-DeepONet, PINN, STA-LSTM, U-Net) and preprocessing
-* **`jobs/`** - shell scripts for 200h runs on Snellius
 * **`hpc/`** - cluster-specific configurations and environment setups
 * **`models/`** - output JSONs (metrics) and weights, organized by `grid`, `cytokine`, and `seed`
 * **`figures/`** - metrics plots and initial visualizations
