@@ -2,7 +2,6 @@
 *.weights.h5
 .env
 .venv
-.claude
 __pycache__
 scripts/500x500models/**/*.h5 
 models/**/*.weights.h5 
