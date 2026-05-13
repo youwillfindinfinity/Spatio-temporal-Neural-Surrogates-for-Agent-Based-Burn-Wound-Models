@@ -35,7 +35,6 @@ def _fmt(v):
     except (TypeError, ValueError):
         return ""
 
-
 def main():
     rows = []
     missing = []
