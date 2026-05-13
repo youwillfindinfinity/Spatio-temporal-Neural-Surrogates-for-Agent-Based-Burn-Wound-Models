@@ -1,0 +1,2 @@
+cytokine,grid,window,n_params,train_time_s,near_R2,near_SSIM,near_Dice,near_Corr,near_RMSE,far_R2,far_SSIM,far_Dice,far_Corr,far_RMSE
+il10,250,10,31116929,177.47,0.9926,0.9111,0.9260,0.9966,1.531854e-12,0.9847,0.8840,0.8576,0.9929,2.360952e-12
