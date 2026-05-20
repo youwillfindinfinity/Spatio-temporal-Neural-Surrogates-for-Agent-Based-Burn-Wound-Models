@@ -67,7 +67,7 @@ def gnr(r): return get_near(r).get("Global_R2")
 def gtt(r): return r.get("train_time_seconds") if r else None
 def gpt(r): return r.get("pred_time_seconds") if r else None
 
-# Seeds used across runs - mean times computed over these
+
 SEEDS = [1, 42, 100]
 
 def gtt_mean(wd, c, g, seeds=SEEDS):
@@ -80,7 +80,6 @@ def gtt_mean(wd, c, g, seeds=SEEDS):
     return float(np.mean(vals)), len(vals)
 
 def gtt_mean_std(wd, c, g, seeds=SEEDS):
-    """Return (mean, std, n) of train time across seeds."""
     vals = []
     for s in seeds:
         r = lj(wd, c, g, s)
@@ -108,10 +107,8 @@ def gpt_mean_std(model, c, g, wdirs, seeds=SEEDS):
     if len(vals) == 1: return float(vals[0]), 0.0, 1
     return float(np.mean(vals)), float(np.std(vals, ddof=0)), len(vals)
 
-# Seed-aggregated metric helpers (for error bars on result plots)
+# seed-aggregated metric helpers (for error bars on result plots)
 def metric_across_seeds(wd, cyt, grid, metric_key, horizon="near", seeds=SEEDS):
-    """Collect a single metric across seeds for a (wd, cyt, grid, horizon).
-    Returns list of valid float values."""
     getter = get_near if horizon == "near" else get_far
     vals = []
     for s in seeds:
@@ -126,16 +123,12 @@ def metric_across_seeds(wd, cyt, grid, metric_key, horizon="near", seeds=SEEDS):
     return vals
 
 def metric_mean_std(wd, cyt, grid, metric_key, horizon="near", seeds=SEEDS):
-    """Return (mean, std, n) for a metric across seeds. std=0 if only 1 seed."""
     vals = metric_across_seeds(wd, cyt, grid, metric_key, horizon, seeds)
     if not vals: return None, None, 0
     if len(vals) == 1: return vals[0], 0.0, 1
     return float(np.mean(vals)), float(np.std(vals, ddof=0)), len(vals)
 
 def per_timestep_r2_mean_std(wd, cyt, grid, seeds=SEEDS):
-    """For temporal panel: collect per-time-step R^2 arrays across seeds and
-    return (times, mean_r2, std_r2) on the union of available time points.
-    Returns lists with NaN for missing entries."""
     per_seed = {}
     for s in seeds:
         r = lj(wd, cyt, grid, s)
@@ -144,8 +137,8 @@ def per_timestep_r2_mean_std(wd, cyt, grid, seeds=SEEDS):
         for k in rr:
             kl = k.lower()
             ts = None
-            if "near" in kl: ts = 82  # first eval step in near window (t=82..91)
-            elif "far" in kl: ts = 92  # first eval step in far window (t=92..100)
+            if "near" in kl: ts = 82 # first eval step in near window (t=82..91)
+            elif "far" in kl: ts = 92 # first eval step in far window (t=92..100)
             else: continue
             ptr = rr[k].get("Per_Timestep_R2", [])
             for i, v in enumerate(ptr):
@@ -167,20 +160,18 @@ def per_timestep_r2_mean_std(wd, cyt, grid, seeds=SEEDS):
 
 
 def abm_time(grid):
-    """Reference ABM wall-clock for one 100h simulation at the given grid resolution.
     Returns None if no measured value is available for that grid."""
     return ABM_RUNTIME_S.get(grid)
 
 
 # FIG 1: Concentrations + sparsity
-# 1a: 100h with 2 lines (100^2 + 250^2) per cytokine panel
-# 1b: Sparsity heatmaps (IL-8, IL-10 at 250, t=80)
-# NOTE: Fig 1 panels are ground-truth ABM trajectories (one simulation per grid)
-# and sparsity heatmaps. They are not seed-dependent, so no error bars are added.
+#   Fig 1a: 100h trajectories (100^2 + 250^2) per cytokine panel
+#   Fig 1b: Sparsity heatmaps (IL-8, IL-10 at 250^2, t=80)
 
 def fig1():
     sp_100h = {"Train":(0,72),"Val":(72,82),"Near":(82,91),"Far":(91,101)}
 
+    # 1a
     r100 = lr(100); r250 = lr(250)
     if r100 is not None or r250 is not None:
         fig,axes=plt.subplots(2,3,figsize=(7.2,4.2))
@@ -203,9 +194,9 @@ def fig1():
         fig.legend(handles=split_h,loc="lower center",ncol=4,
                   fontsize=7,bbox_to_anchor=(0.5,-0.04),framealpha=0.9,edgecolor="gray")
         fig.tight_layout(rect=[0,0.05,1,1])
-        sf(fig,"Fig1_concentrations_100h")
+        sf(fig,"Fig1a_concentrations_100h")
 
-    # sparsity heatmaps (250, 100h, t=80)
+    # 1b
     r250 = lr(250)
     if r250 is not None:
         fig,axes=plt.subplots(1,2,figsize=(7.2,3.0))
@@ -217,47 +208,118 @@ def fig1():
             ax.text(0.03,0.97,f"Sparsity: {spar:.1f}%",transform=ax.transAxes,fontsize=9,va="top",color="white",
                     bbox=dict(boxstyle="round,pad=0.2",fc="black",alpha=0.7))
             fig.colorbar(im,ax=ax,fraction=0.046,format="%.1e")
-        fig.tight_layout(); sf(fig,"Fig1_sparsity_100h")
+        fig.tight_layout(); sf(fig,"Fig1b_sparsity_100h")
 
+# FIG 3
+def _fig3_panel(cyt, cl, out_name):
+    mets=[("Global_R2",r"$R^2$"),("Spatial_Correlation","Corr"),("SSIM","SSIM"),("Avg_Dice","Dice")]
+    hatches=["","//","..","xx"]
 
-# FIG 2a: R2 bars (RQ1) -- now with error bars (mean +/- std across seeds)
-def fig2():
-    fig,axes=plt.subplots(2,2,figsize=(4.8,5.5),sharey=True)
-    av=[]
-    for row,cyt,cl in [(0,"il8","IL-8"),(1,"il10","IL-10")]:
-        for col,g in [(0,100),(1,250)]:
-            ax=axes[row,col]
-            means=[]; stds=[]; ns=[]
-            for m in MO_100:
-                mu, sd, n = metric_mean_std(W100[m], cyt, g, "Global_R2", "near")
-                means.append(mu); stds.append(sd); ns.append(n)
-            av.extend([v for v in means if v is not None])
-            x=np.arange(len(MO_100))
-            bv=[v if v is not None else 0 for v in means]
-            ev=[s if s is not None else 0 for s in stds]
-            bars=ax.bar(x,bv,color=[P[m] for m in MO_100],ec="black",lw=.4,alpha=.9,
-                        yerr=ev, capsize=3,
-                        error_kw=dict(ecolor='black', elinewidth=0.8, capthick=0.8))
-            ax.set_xticks(x); ax.set_xticklabels(MO_100,rotation=30,ha="right",fontsize=8)
-            if col==0: ax.set_ylabel(r"$R^2$")
-            ax.set_title(f"{cl}, ${g}^2$")
-            ax.axhline(1,color="gray",ls=":",alpha=.3)
-            for b,v,s,n in zip(bars,means,stds,ns):
-                if v is not None:
-                    y=max(v,0)+(s if s else 0)+0.02 if v>=0 else v-0.03
-                    lbl = f"{v:.3f}\n$\\pm${(s or 0):.3f}"
-                    ax.text(b.get_x()+b.get_width()/2,y,lbl,
-                            ha="center",fontsize=5.5,fontweight="bold")
-    vm=min(av) if av else 0
-    for r in axes:
-        for ax in r: ax.set_ylim(min(vm-0.10,-0.05),1.15); ax.axhline(0,color="black",ls="-",lw=0.6,alpha=.3)
-    # caption note about error bars
-    fig.text(0.5, -0.02, f"Error bars: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
+    models = MO_100
+    wdirs = W100
+    grid = 250
+
+    fig,axes=plt.subplots(1,3,figsize=(7.2,2.9))
+    panel_data = {c: [] for c in range(3)}
+
+    # (a) multi-metric bars with error bars (mean +/- std across seeds)
+    ax=axes[0]; nm=len(models); w=0.18; x=np.arange(nm)
+    for j,(met,ml) in enumerate(mets):
+        means=[]; stds=[]
+        for m in models:
+            mu, sd, n = metric_mean_std(wdirs[m], cyt, grid, met, "near")
+            means.append(mu); stds.append(sd)
+        panel_data[0].extend([v for v in means if v is not None])
+        bv=[v if v is not None else 0 for v in means]
+        ev=[s if s is not None else 0 for s in stds]
+        offset=(j-len(mets)/2+0.5)*w
+        bars=ax.bar(x+offset,bv,w,color=[P[m] for m in models],
+                   ec="black",lw=.3,alpha=0.65+j*0.08,hatch=hatches[j],
+                   yerr=ev, capsize=1.5,
+                   error_kw=dict(ecolor='black', elinewidth=0.5, capthick=0.5))
+        for b,v in zip(bars,means):
+            if v is None:
+                cx=b.get_x()+b.get_width()/2
+                ax.text(cx,0.01,"N/A",ha="center",fontsize=4,color="black",rotation=90,va="bottom")
+    ax.set_xticks(x); ax.set_xticklabels(models,rotation=35,ha="right",fontsize=7)
+    ax.set_ylabel("Score")
+    ax.axhline(1,color="gray",ls=":",alpha=.3)
+    ax.set_title(f"{cl} - Metrics",fontsize=9)
+
+    # (b) scalability across grid resolutions - now with errorbars
+    ax=axes[1]
+    for model in models:
+        gs=[]; mus=[]; sds=[]
+        for g in [100,250]:
+            mu, sd, n = metric_mean_std(wdirs[model], cyt, g, "Global_R2", "near")
+            if mu is not None:
+                gs.append(g); mus.append(mu); sds.append(sd if sd is not None else 0)
+                panel_data[1].append(mu)
+        if gs:
+            ax.errorbar(gs, mus, yerr=sds, color=P[model], lw=1.5,
+                        marker=MK[model], ms=7, mec="black", mew=.6,
+                        ls=LS[model], capsize=3, elinewidth=0.8, capthick=0.8,
+                        clip_on=False)
+    ax.set_xlabel("Grid resolution"); ax.set_xticks([100,250])
+    ax.set_ylabel(r"$R^2$"); ax.grid(True,alpha=0.12)
+    ax.set_title(f"{cl} - Scalability",fontsize=9)
+
+    # (c) temporal - per-timestep R^2 with shaded std band across seeds
+    ax=axes[2]
+    nr_range = (82, 91)
+    for model in models:
+        ts, mu, sd = per_timestep_r2_mean_std(wdirs[model], cyt, grid)
+        if len(ts) == 0: continue
+        mu_plot = mu.copy()
+        if model=="PINN" and len(mu)>5 and np.std(np.diff(mu))>0.03:
+            k5=np.ones(5)/5; mu_plot=np.convolve(mu,k5,mode="same")
+            mu_plot[:2]=mu[:2]; mu_plot[-2:]=mu[-2:]
+        ax.plot(ts, mu_plot, color=P[model], lw=1.2, ls=LS[model], label=model)
+        if np.any(sd > 0):
+            ax.fill_between(ts, mu_plot - sd, mu_plot + sd,
+                            color=P[model], alpha=0.18, lw=0)
+        panel_data[2].extend(mu.tolist())
+    bnd = nr_range[1] + 1  
+    ax.axvline(bnd-0.5, color="#999", ls="--", alpha=0.5, lw=1)
+    ax.text(bnd-1, 0.97, "Near", ha="right", fontsize=6, color="#555",
+            fontweight="bold", transform=ax.get_xaxis_transform())
+    ax.text(bnd, 0.97, "Far", ha="left", fontsize=6, color="#555",
+            fontweight="bold", transform=ax.get_xaxis_transform())
+    ax.set_xlabel("Time (h)"); ax.set_ylabel(r"$R^2$")
+    ax.set_title(f"{cl} - Temporal",fontsize=9); ax.grid(True,alpha=0.12)
+
+    # Y-limits per panel
+    for c in range(3):
+        data = panel_data[c]
+        has_neg = any(v < -0.001 for v in data) if data else False
+        if has_neg:
+            ymin = min(min(data) - 0.10, -0.20)
+            ymax = 1.15
+            axes[c].axhline(0, color="black", ls="-", lw=0.5, alpha=.4)
+        else:
+            ymin = 0
+            ymax = 1.15
+        axes[c].set_ylim(ymin, ymax)
+
+    # legend
+    met_handles=[Patch(fc="lightgray",ec="black",hatch=hatches[j],label=mets[j][1]) for j in range(len(mets))]
+    model_handles=[Line2D([0],[0],color=P[m],lw=1.5,ls=LS.get(m,"-"),
+                   marker=MK.get(m,"o"),ms=5,mec="black",mew=.5,label=m) for m in models]
+    all_handles=met_handles+model_handles
+    fig.legend(handles=all_handles,loc="lower center",bbox_to_anchor=(0.5,-0.10),
+              fontsize=6,framealpha=0.9,edgecolor="gray",ncol=len(all_handles))
+    fig.text(0.5, -0.16,
+             f"Error bars / shaded bands: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
              ha="center", fontsize=7, style="italic", color="#444")
-    fig.tight_layout(); sf(fig,"Fig2a_R2_100h")
+    fig.tight_layout(); fig.subplots_adjust(bottom=0.25)
+    sf(fig, out_name)
 
 
-# FIG 2b: Pareto + Speedup combined (RQ1)
+def fig3a(): _fig3_panel("il8",  "IL-8",  "Fig3a_rq3_il8_100h")
+def fig3b(): _fig3_panel("il10", "IL-10", "Fig3b_rq3_il10_100h")
+
+
+# FIG 4: Pareto + Speedup combined 
 _PRED_TIME_CACHE = {}
 _PRED_TIMES_CSV = Path("./figures/pred_times.csv")
 
@@ -289,11 +351,11 @@ def _get_pred_time(model, cyt, grid, seed, wdirs):
     if key in _PRED_TIME_CACHE: return _PRED_TIME_CACHE[key]
     return None
 
-def fig2b():
+def fig4():
     fig, axes = plt.subplots(2, 3, figsize=(7.2, 5.5))
 
     for row, (cyt, cl) in enumerate([("il8","IL-8"),("il10","IL-10")]):
-        # (a) Pareto: R2 vs total time (mean +/- std across seeds for BOTH axes)
+        # (a) pareto: R2 vs total time (mean +/- std across seeds for BOTH axes)
         ax = axes[row, 0]
         ar = []
         for model in MO_100:
@@ -325,7 +387,7 @@ def fig2b():
         ax.set_ylim(min(vm-0.08, -0.08), 1.05)
         ax.axhline(0, color="black", ls="-", lw=0.6, alpha=.3)
 
-        # (b) Prediction time (mean +/- std across seeds)
+        # (b) prediction time (mean +/- std across seeds)
         ax = axes[row, 1]
         models_with_time = []; pred_vals = []; pred_errs = []
         for m in MO_100:
@@ -349,7 +411,7 @@ def fig2b():
                        ha="center", va="bottom", fontsize=5.5, fontweight="bold")
         ax.set_title(f"{cl} - Prediction ($250^2$)", fontsize=9)
 
-        # (c) Inference speedup vs ABM at 250^2 (with error bars derived from pred-time std)
+        # (c) inference speedup vs ABM at 250^2 (with error bars derived from pred-time std)
         ax = axes[row, 2]
         abm_t_250 = abm_time(250)
         ms = []; su = []; su_err = []
@@ -357,7 +419,7 @@ def fig2b():
             pt_mu, pt_sd, n_pt = gpt_mean_std(m, cyt, 250, W100)
             if pt_mu and pt_mu > 0 and abm_t_250 is not None:
                 speedup = abm_t_250 / pt_mu
-                # error propagation: d(speedup) = abm_t * pt_sd / pt_mu^2
+                # error propagation: d(speedup) = abm_t*pt_sd/pt_mu^2
                 if pt_sd is not None and pt_sd > 0:
                     sp_err = abm_t_250 * pt_sd / (pt_mu ** 2)
                 else:
@@ -382,7 +444,7 @@ def fig2b():
                        ha="center", va="bottom", fontsize=5.5, fontweight="bold")
         ax.set_title(f"{cl} - Inference speedup vs ABM ($250^2$)", fontsize=9)
 
-    # Legend
+    # legend
     handles = [Line2D([0],[0], marker=MK[m], color=P[m], ls=LS[m], lw=1.2,
                markersize=6, mec="black", mew=.5, label=m) for m in MO_100]
     handles += [Line2D([0],[0], marker="o", color="gray", ls="", markersize=s, mec="black",
@@ -392,124 +454,11 @@ def fig2b():
     fig.text(0.5, -0.07, f"Error bars: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
              ha="center", fontsize=7, style="italic", color="#444")
     fig.tight_layout(); fig.subplots_adjust(bottom=0.17)
-    sf(fig, "Fig2b_pareto_speedup_100h")
+    sf(fig, "Fig4_pareto_speedup_100h")
 
 
-# FIG 3: RQ3 composite - multi-metric + scalability + temporal
-# All three panels now use mean +/- std across seeds.
-def fig3():
-    mets=[("Global_R2",r"$R^2$"),("Spatial_Correlation","Corr"),("SSIM","SSIM"),("Avg_Dice","Dice")]
-    hatches=["","//","..","xx"]
-
-    models = MO_100
-    wdirs = W100
-    grid = 250
-
-    fig,axes=plt.subplots(2,3,figsize=(7.2,5.5))
-    panel_data = {(r,c): [] for r in range(2) for c in range(3)}
-    for row,(cyt,cl) in enumerate([("il8","IL-8"),("il10","IL-10")]):
-        # (a) Multi-metric bars with error bars (mean +/- std across seeds)
-        ax=axes[row,0]; nm=len(models); w=0.18; x=np.arange(nm)
-        for j,(met,ml) in enumerate(mets):
-            means=[]; stds=[]
-            for m in models:
-                mu, sd, n = metric_mean_std(wdirs[m], cyt, grid, met, "near")
-                means.append(mu); stds.append(sd)
-            panel_data[(row,0)].extend([v for v in means if v is not None])
-            bv=[v if v is not None else 0 for v in means]
-            ev=[s if s is not None else 0 for s in stds]
-            offset=(j-len(mets)/2+0.5)*w
-            bars=ax.bar(x+offset,bv,w,color=[P[m] for m in models],
-                       ec="black",lw=.3,alpha=0.65+j*0.08,hatch=hatches[j],
-                       yerr=ev, capsize=1.5,
-                       error_kw=dict(ecolor='black', elinewidth=0.5, capthick=0.5))
-            for b,v in zip(bars,means):
-                if v is None:
-                    cx=b.get_x()+b.get_width()/2
-                    ax.text(cx,0.01,"N/A",ha="center",fontsize=4,color="black",rotation=90,va="bottom")
-        ax.set_xticks(x); ax.set_xticklabels(models,rotation=35,ha="right",fontsize=7)
-        ax.set_ylabel("Score")
-        ax.axhline(1,color="gray",ls=":",alpha=.3)
-        ax.set_title(f"{cl} - Metrics",fontsize=9)
-
-        # (b) Scalability across grid resolutions - now with errorbars
-        ax=axes[row,1]
-        for model in models:
-            gs=[]; mus=[]; sds=[]
-            for g in [100,250]:
-                mu, sd, n = metric_mean_std(wdirs[model], cyt, g, "Global_R2", "near")
-                if mu is not None:
-                    gs.append(g); mus.append(mu); sds.append(sd if sd is not None else 0)
-                    panel_data[(row,1)].append(mu)
-            if gs:
-                ax.errorbar(gs, mus, yerr=sds, color=P[model], lw=1.5,
-                            marker=MK[model], ms=7, mec="black", mew=.6,
-                            ls=LS[model], capsize=3, elinewidth=0.8, capthick=0.8,
-                            clip_on=False)
-        ax.set_xlabel("Grid resolution"); ax.set_xticks([100,250])
-        ax.set_ylabel(r"$R^2$"); ax.grid(True,alpha=0.12)
-        ax.set_title(f"{cl} - Scalability",fontsize=9)
-
-        # (c) Temporal - per-timestep R^2 with shaded std band across seeds
-        ax=axes[row,2]
-        nr_range = (82, 91)
-        for model in models:
-            ts, mu, sd = per_timestep_r2_mean_std(wdirs[model], cyt, grid)
-            if len(ts) == 0: continue
-            # for PINN, gentle smoothing if very noisy (preserves original behaviour)
-            mu_plot = mu.copy()
-            if model=="PINN" and len(mu)>5 and np.std(np.diff(mu))>0.03:
-                k5=np.ones(5)/5; mu_plot=np.convolve(mu,k5,mode="same")
-                mu_plot[:2]=mu[:2]; mu_plot[-2:]=mu[-2:]
-            ax.plot(ts, mu_plot, color=P[model], lw=1.2, ls=LS[model], label=model)
-            # shaded band only where we actually have >1 seed worth of variability
-            if np.any(sd > 0):
-                ax.fill_between(ts, mu_plot - sd, mu_plot + sd,
-                                color=P[model], alpha=0.18, lw=0)
-            panel_data[(row,2)].extend(mu.tolist())
-        bnd = nr_range[1] + 1  # boundary between near (..91) and far (92..)
-        ax.axvline(bnd-0.5, color="#999", ls="--", alpha=0.5, lw=1)
-        ax.text(bnd-1, 0.97, "Near", ha="right", fontsize=6, color="#555",
-                fontweight="bold", transform=ax.get_xaxis_transform())
-        ax.text(bnd, 0.97, "Far", ha="left", fontsize=6, color="#555",
-                fontweight="bold", transform=ax.get_xaxis_transform())
-        ax.set_xlabel("Time (h)"); ax.set_ylabel(r"$R^2$")
-        ax.set_title(f"{cl} - Temporal",fontsize=9); ax.grid(True,alpha=0.12)
-
-    for r in range(2):
-        for c in range(3):
-            data = panel_data[(r,c)]
-            has_neg = any(v < -0.001 for v in data) if data else False
-            if has_neg:
-                ymin = min(min(data) - 0.10, -0.20)
-                ymax = 1.15
-                axes[r, c].axhline(0, color="black", ls="-", lw=0.5, alpha=.4)
-            else:
-                ymin = 0
-                ymax = 1.15
-            axes[r, c].set_ylim(ymin, ymax)
-
-    # legend
-    met_handles=[Patch(fc="lightgray",ec="black",hatch=hatches[j],label=mets[j][1]) for j in range(len(mets))]
-    model_handles=[Line2D([0],[0],color=P[m],lw=1.5,ls=LS.get(m,"-"),
-                   marker=MK.get(m,"o"),ms=5,mec="black",mew=.5,label=m) for m in models]
-    all_handles=met_handles+model_handles
-    fig.legend(handles=all_handles,loc="lower center",bbox_to_anchor=(0.5,-0.06),
-              fontsize=6,framealpha=0.9,edgecolor="gray",ncol=len(all_handles))
-    fig.text(0.5, -0.09,
-             f"Error bars / shaded bands: $\\pm$1 s.d. across {len(SEEDS)} seeds ({', '.join(map(str,SEEDS))}).",
-             ha="center", fontsize=7, style="italic", color="#444")
-    fig.tight_layout(); fig.subplots_adjust(bottom=0.15)
-    sf(fig,"Fig3_rq3_composite_100h")
-
-# FIG 6: Spatial maps (RQ2) - needs TensorFlow
-# 6a: GT | Pred | |Diff| for DeepONet, 250, both cytokines
-# 6b: |Diff| only, all models, both grids, both cytokines
-# NOTE: These are spatial error maps from a single seed by construction
-# (a single trained checkpoint produces one prediction field). Error bars
-# would not apply here; per-seed numerical metrics are in Fig 2/3 and the tables.
-
-def fig6(hour=88):
+# FIG 5: Spatial maps
+def fig5(hour=88):
     import tensorflow as tf; import matplotlib.colors as mcolors
     os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"; warnings.filterwarnings("ignore")
     tf.config.optimizer.set_jit(False)
@@ -523,7 +472,7 @@ def fig6(hour=88):
                 "U-Net":"unet","STA-LSTM":"sta_lstm","PINN":"pinn"}
     CYTS=[("il8","IL-8",0),("il10","IL-10",3)]; t_idx=hour-2
 
-    # Architectures
+    # architectures
     def _cb(x,f):
         x=tf.keras.layers.Conv2D(f,3,padding="same",activation="relu")(x)
         x=tf.keras.layers.BatchNormalization()(x)
@@ -634,7 +583,7 @@ def fig6(hour=88):
             return np.maximum(denorm(net(tf.constant(np.hstack([xy,tt]))).numpy().reshape(G,G),cm),0)
         return None
 
-    print(f"  Loading predictions for t={hour}h...")
+    print(f"Loading predictions for t={hour}h...")
     gts={};all_preds={}
     for cyt,cl,ci in CYTS:
         gts[cyt]={}
@@ -660,7 +609,7 @@ def fig6(hour=88):
         vmax_gt = max(all_gt_vals) if all_gt_vals else 1e-15
         gt_norms[cyt] = mcolors.PowerNorm(gamma=0.5, vmin=0, vmax=vmax_gt)
 
-        # Diff vmax: Y_target (clipped, same as model) for fair comparison
+        # diff vmax: Y_target (clipped, same as model) for fair comparison
         all_diff_vals = []
         for mn in MODEL_ORDER:
             for G in GRIDS_100:
@@ -679,7 +628,7 @@ def fig6(hour=88):
             diff_vmax[cyt] = 1e-15
         if diff_vmax[cyt] <= 0: diff_vmax[cyt] = 1e-15
 
-    # 6a: GT | Pred | |Diff| for DeepONet, 250
+    # Fig 5a: GT|Pred|Diff| for DeepONet, 250 
     G=250; fig,axes=plt.subplots(2,3,figsize=(7.2,5.0))
     col_titles=["Ground Truth","Prediction",r"$\vert$Pred - GT$\vert$"]
     for row,(cyt,cl,ci) in enumerate(CYTS):
@@ -707,9 +656,9 @@ def fig6(hour=88):
                 r2=1-ssr/sst if sst>0 else 0
                 ax.text(0.95,0.05,f"$R^2={r2:.4f}$",transform=ax.transAxes,fontsize=16,ha="right",va="bottom",
                        bbox=dict(boxstyle="round,pad=0.3",fc="white",alpha=0.85,ec="gray",lw=0.5))
-    fig.tight_layout(); sf(fig,f"Fig6a_GT_Pred_Diff_t{hour}")
+    fig.tight_layout(); sf(fig,f"Fig5a_GT_Pred_Diff_t{hour}")
 
-    # 6b: Absolute diff all models
+    # Fig 5b: Absolute diff all models
     rows_def=[(cyt,cl,G) for cyt,cl,_ in CYTS for G in GRIDS_100]
     nr=len(rows_def);nc=len(MODEL_ORDER)
     fig,axes=plt.subplots(nr,nc,figsize=(3.0*nc,3.0*nr))
@@ -737,7 +686,7 @@ def fig6(hour=88):
             if col==0: ax.set_ylabel(f"{cl}, ${G}^2$",fontsize=9)
     cbar_ax=fig.add_axes([0.93,0.15,0.012,0.7])
     fig.colorbar(im,cax=cbar_ax,label=r"$\vert$Pred - GT$\vert$")
-    fig.tight_layout(rect=[0,0,0.92,1]); sf(fig,f"Fig6b_diff_all_t{hour}")
+    fig.tight_layout(rect=[0,0,0.92,1]); sf(fig,f"Fig5b_diff_all_t{hour}")
 
 
 # measuring pred times
@@ -829,7 +778,7 @@ def measure_pred_times():
                     dp = PREPRO / f"{grid}x{grid}"
 
                     bp = r["best_params"]
-                    print(f"    Measuring {mname} {cyt} {grid} seed {seed}...", end=" ", flush=True)
+                    print(f"Measuring {mname} {cyt} {grid} seed {seed}...", end=" ", flush=True)
 
                     try:
                         tf.keras.backend.clear_session()
@@ -841,7 +790,7 @@ def measure_pred_times():
                             w = d/f"weights_{cyt}_{grid}_{seed}.weights.h5"
                             if not w.exists(): print("NO WEIGHTS"); continue
                             m.load_weights(str(w))
-                            _ = m.predict(X[:1], verbose=0)  # warmup
+                            _ = m.predict(X[:1], verbose=0) # warmup
                             t0 = time.time(); _ = m.predict(X[80:99], batch_size=2, verbose=0)
                             elapsed = time.time() - t0
 
@@ -902,7 +851,7 @@ def measure_pred_times():
 
     if n_measured > 0:
         _save_pred_time_cache()
-    print(f"    Measured {n_measured} new pred times")
+    print(f"Measured {n_measured} new pred times")
 
 #  vis
 def clean_vis():
@@ -971,7 +920,7 @@ def export_csv():
     _load_pred_time_cache()
     mks=["Global_R2","SSIM","Avg_Dice","Spatial_Correlation","Masked_RMSE","Unmasked_RMSE"]
 
-    # Per-seed metrics (long form)
+    # per-seed metrics 
     rows=[]
     for cyt in ["il8","il10"]:
         for model in MO_100:
@@ -994,7 +943,7 @@ def export_csv():
             w=csv.DictWriter(f,fieldnames=list(rows[0].keys()));w.writeheader();w.writerows(rows)
         print(f"    -> {outpath} ({len(rows)} rows)")
 
-    # Mean across seeds (one row per (cyt, model, grid, horizon))
+    # mean across seeds (one row per (cyt, model, grid, horizon))
     agg_rows = []
     for cyt in ["il8","il10"]:
         for model in MO_100:
@@ -1019,9 +968,8 @@ def export_csv():
         outpath=FIGDIR/"metrics_100h_means.csv"
         with open(outpath,"w",newline="") as f:
             w=csv.DictWriter(f,fieldnames=list(agg_rows[0].keys()));w.writeheader();w.writerows(agg_rows)
-        print(f"    -> {outpath} ({len(agg_rows)} rows)")
+        print(f"-> {outpath} ({len(agg_rows)} rows)")
 
-    # Standalone budgets CSV: one row per (model, cytokine, grid) with all costs side-by-side
     budget_rows = []
     for cyt in ["il8","il10"]:
         for model in MO_100:
@@ -1042,10 +990,10 @@ def export_csv():
         with open(outpath, "w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=list(budget_rows[0].keys()))
             w.writeheader(); w.writerows(budget_rows)
-        print(f"    -> {outpath} ({len(budget_rows)} rows)")
+        print(f"-> {outpath} ({len(budget_rows)} rows)")
 
 
-# LATEX TABLE GENERATION
+# LATEX 
 def _fv(v):
     if v is None or (isinstance(v,float) and v!=v): return "--"
     if v<0: return f"${v:.4f}$"
@@ -1167,44 +1115,43 @@ def gen_tables():
     with open(outpath,"w") as f: f.write("\n".join(out))
     print(f"    -> {outpath}")
 
-
 FIGS = {
-    1:("Concentrations + sparsity (EDA)",fig1),
-    2:("R2 bars (RQ1)",fig2),
-    "2b":("Pareto + Speedup (RQ1)",fig2b),
-    3:("Multi-metric + Scalability + Temporal (RQ3)",fig3),
-    6:("Spatial maps GT/Pred/|Diff| (RQ2, needs TF)",fig6),
+    1   : ("Concentrations + sparsity (EDA, Fig 1a/1b)", fig1),
+    "3a": ("RQ3 composite IL-8 (Fig 3a)", fig3a),
+    "3b": ("RQ3 composite IL-10 (Fig 3b)", fig3b),
+    4   : ("Pareto + Speedup (RQ1, Fig 4)", fig4),
+    5   : ("Spatial maps GT/Pred/|Diff| (RQ2, Fig 5a/5b, needs TF)", fig5),
 }
 
 if __name__=="__main__":
     ap=argparse.ArgumentParser()
-    ap.add_argument("--fig",nargs="*",default=None,help="Figure numbers: 1 2 2b 3 6. Default: all.")
+    ap.add_argument("--fig",nargs="*",default=None,help="Figure numbers: 1 3a 3b 4 5. Default: all.")
     ap.add_argument("--clean",action="store_true",help="Clean DeepONet GT/Pred for graphical abstract (needs TF)")
     args=ap.parse_args()
     FIGDIR.mkdir(parents=True,exist_ok=True); setup()
 
     if args.clean:
-        print("Clean DeepONet vis (graphical abstract)...\n"); clean_vis()
+        print("Clean vis\n"); clean_vis()
     else:
-        print("=== Measuring prediction times ===")
+        print("Measuring prediction times")
         measure_pred_times()
 
-        print("\n=== CSV export ==="); export_csv()
-        print("\n=== LaTeX tables ==="); gen_tables()
+        print("\nCSV export"); export_csv()
+        print("\nLaTeX tables"); gen_tables()
 
-        # Figures
+        # figs
         if args.fig:
             figs=[]
             for f in args.fig:
                 try: figs.append(int(f))
                 except ValueError: figs.append(f)
         else:
-            figs=[1,2,"2b",3,6]
-        print(f"\n=== Generating {len(figs)} figure(s) ===\n")
+            figs=[1, "3a", "3b", 4, 5]
+        print(f"\nGenerating {len(figs)} figure(s)\n")
         for n in figs:
-            if n not in FIGS: print(f"  Unknown: {n}"); continue
+            if n not in FIGS: print(f"Unknown: {n}"); continue
             nm,fn=FIGS[n]; print(f"  Fig {n}: {nm}")
             try: fn()
             except Exception as e:
-                import traceback;print(f"    FAILED: {e}");traceback.print_exc()
-        print(f"\nDone -> {FIGDIR}/")
+                import traceback;print(f"FAILED: {e}");traceback.print_exc()
+        print(f"\nDone. Saved in {FIGDIR}/")
