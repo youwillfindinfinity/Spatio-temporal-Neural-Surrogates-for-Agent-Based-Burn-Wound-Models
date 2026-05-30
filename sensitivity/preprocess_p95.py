@@ -1,14 +1,16 @@
+import sys
 import os
 import re
 import json
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import LATTICE_DATA, PREPROCESSED_P95
 
 import numpy as np
 import pyvista as pv
 
-BASE_LATTICE_DIR = Path("./LatticeData")
-BASE_OUT_DIR     = Path("./preprocessed_p95")
-BASE_OUT_DIR.mkdir(parents=True, exist_ok=True)
+BASE_LATTICE_DIR = LATTICE_DATA
+BASE_OUT_DIR     = PREPROCESSED_P95
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]

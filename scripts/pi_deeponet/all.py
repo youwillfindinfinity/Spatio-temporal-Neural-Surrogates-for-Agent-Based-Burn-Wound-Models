@@ -1,5 +1,8 @@
+import sys
 import os, json, argparse, random, warnings, gc, time
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import PREPROCESSED, RESULTS_MODELS
 import numpy as np
 import tensorflow as tf
 import optuna
@@ -507,8 +510,8 @@ def run_pipeline(grid, seed, cytokine):
     set_seed(seed)
     idx = CYTOKINE_NAMES.index(cytokine.lower())
 
-    data_path = Path(f"./preprocessed/{grid}x{grid}")
-    out_dir   = Path("./models/pi_deeponet"); out_dir.mkdir(parents=True, exist_ok=True)
+    data_path = PREPROCESSED / f"{grid}x{grid}"
+    out_dir   = RESULTS_MODELS / "pi_deeponet"; out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"\n[{cytokine.upper()}] {grid}x{grid} — PI-DeepONet — loading data...")
     Xb = np.load(data_path/"X_branch.npy").astype(np.float32)
@@ -644,6 +647,6 @@ if __name__ == "__main__":
     if args.grid:
         run_pipeline(args.grid, args.seed, args.cytokine)
     else:
-        for d in sorted(Path("./preprocessed").iterdir()):
+        for d in sorted(PREPROCESSED.iterdir()):
             if d.is_dir():
                 run_pipeline(int(d.name.split("x")[0]), args.seed, args.cytokine)

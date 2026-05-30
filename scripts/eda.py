@@ -1,13 +1,15 @@
+import sys
 import os
 import re
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import LATTICE_DATA, EDA
 
 import numpy as np
 import pyvista as pv
 
-DATA_DIR = Path("./LatticeData")
-OUTPUT_DIR = Path("./eda")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR = LATTICE_DATA
+OUTPUT_DIR = EDA
 
 CYTOKINES = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 TARGET_GRIDS = [50, 100, 250, 500]

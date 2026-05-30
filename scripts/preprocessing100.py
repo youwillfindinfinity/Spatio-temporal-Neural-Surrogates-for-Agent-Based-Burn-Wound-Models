@@ -1,14 +1,16 @@
+import sys
 import os
 import re
 import json
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import LATTICE_DATA, PREPROCESSED
 
 import numpy as np
 import pyvista as pv
 
-BASE_LATTICE_DIR = Path("./LatticeData")
-BASE_OUT_DIR     = Path("./preprocessed")
-BASE_OUT_DIR.mkdir(parents=True, exist_ok=True)
+BASE_LATTICE_DIR = LATTICE_DATA
+BASE_OUT_DIR     = PREPROCESSED
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
@@ -134,6 +136,10 @@ def process_grid(folder_name: str):
     np.save(out_path / "X_lstm.npy",   X_combined) # STA-LSTM
     np.save(out_path / "X_branch.npy", X_combined) # DeepONet / PI-DeepONet
 
+    # U-Net input: (99, G, G, 22) - 2 frames x 11 channels flattened into channel dim
+    X_unet = X_combined.transpose(0, 2, 3, 1, 4).reshape(n, G, G, WINDOW * 11)
+    np.save(out_path / "X_unet.npy", X_unet.astype(np.float32))
+
     # Trunk/collocation coordinates: (x, y, t) in [-1, 1] 
     xs = np.linspace(-1.0, 1.0, G, dtype=np.float32)
     ys = np.linspace(-1.0, 1.0, G, dtype=np.float32)
@@ -197,6 +203,7 @@ def process_grid(folder_name: str):
             "Y_masks_pinn":    "(99,G*G,5)  masks flattened - PINN/PI-DeepONet",
             "X_lstm":          "(99,2,G,G,11) cytokine+mask seq - STA-LSTM",
             "X_branch":        "(99,2,G,G,11) cytokine+mask seq - DeepONet/PI-DeepONet branch",
+            "X_unet":          "(99,G,G,22)   2-frame flat channels - U-Net",
             "X_trunk":         "(99,G*G,3)  (x,y,t) coords - DeepONet/PI-DeepONet trunk",
             "X_colloc":        "(99,G*G,3)  collocation pts - PINN/PI-DeepONet",
             "Y_ic":            "(G,G,6)     initial condition - PINN",

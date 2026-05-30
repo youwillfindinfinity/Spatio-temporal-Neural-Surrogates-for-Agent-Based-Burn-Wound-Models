@@ -1,5 +1,8 @@
+import sys
 import argparse, json, gc, os, random, time
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import RESULTS_ADDITIONAL, PREPROCESSED_200H
 
 import numpy as np
 import tensorflow as tf
@@ -200,7 +203,7 @@ def calculate_metrics(y_true, y_pred, masks, clip_max):
 def run(data_dir, cytokine, seed):
     set_seed(seed)
     cyt_idx = CYT_NAMES.index(cytokine.lower())
-    out_dir = Path("./models/200hrs/deeponet_h")
+    out_dir = RESULTS_ADDITIONAL / "200hrs" / "deeponet_h"
     out_dir.mkdir(parents=True, exist_ok=True)
     Xb_mmap, Xt, Yt, masks, clip, G, G2, N = load_data(data_dir, cyt_idx)
     Xbranch = build_branch_stats(Xb_mmap, Xt, cyt_idx, G, G2, N)
@@ -233,7 +236,7 @@ def run(data_dir, cytokine, seed):
     model.save_weights(str(out_dir / f"weights_{cytokine}_{G}_{seed}.weights.h5"))
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--cytokine", required=True); ap.add_argument("--seed", type=int, default=42); ap.add_argument("--data-dir", default=None)
+    ap = argparse.ArgumentParser(); ap.add_argument("--cytokine", required=True); ap.add_argument("--seed", type=int, default=42); ap.add_argument("--data-dir", default=str(PREPROCESSED_200H / "500x500"))
     args = ap.parse_args()
-    data_dir = args.data_dir if args.data_dir else str(next(Path("./preprocessed_200h").iterdir()))
+    data_dir = args.data_dir
     run(data_dir, args.cytokine, args.seed)

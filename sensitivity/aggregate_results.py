@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
+import sys
 import json, csv
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import RESULTS_SENS, METRICS
 
-ROOT      = Path("./sensitivity_results")
-OUT_CSV   = ROOT / "all_metrics.csv"
+ROOT      = RESULTS_SENS
+OUT_CSV   = METRICS / "sensitivity_all_metrics.csv"
 
 VARIANTS  = ["no_clip", "p95", "adaptive"]
 ARCHS = [

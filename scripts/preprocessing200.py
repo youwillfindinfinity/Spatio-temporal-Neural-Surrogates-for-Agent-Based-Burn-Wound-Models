@@ -1,13 +1,13 @@
 import os
+import sys
 import json
+import argparse
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import DATA_RAW_200H, PREPROCESSED_200H
 
 import numpy as np
 import pyvista as pv
-
-BASE_LATTICE_DIR = Path("./ICCS2026_v2/scan_iteration_0/combi_clean/LatticeData")
-BASE_OUT_DIR     = Path("./preprocessed_200h")
-BASE_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
@@ -193,6 +193,27 @@ def process():
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(
+        description="Preprocess 200h VTK simulation data for surrogate training."
+    )
+    ap.add_argument(
+        "--data-dir",
+        type=Path,
+        default=DATA_RAW_200H,
+        help="Path to the directory containing .vtk files (default: data_raw/200h)",
+    )
+    ap.add_argument(
+        "--out-dir",
+        type=Path,
+        default=PREPROCESSED_200H,
+        help="Output directory for preprocessed .npy files (default: preprocessed_200h)",
+    )
+    args = ap.parse_args()
+
+    BASE_LATTICE_DIR = args.data_dir
+    BASE_OUT_DIR = args.out_dir
+    BASE_OUT_DIR.mkdir(parents=True, exist_ok=True)
+
     print("Preprocessing 200h VTK data...\n")
     process()
     print("\nDone.")

@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 
+import sys
 import os, json, argparse, csv, glob, warnings
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import PREPROCESSED, RESULTS_MODELS, FIGURES, METRICS
 import numpy as np
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 
-FIGDIR = Path("./figures")
+FIGDIR = FIGURES
 CN = ["il8","il1","il6","il10","tnf","tgf"]
 CL = ["IL-8",r"IL-1$\beta$","IL-6","IL-10",r"TNF-$\alpha$",r"TGF-$\beta$"]
 P = {"DeepONet":"#ffd700","PI-DeepONet":"#ffb14e","U-Net":"#fa8775",
      "STA-LSTM":"#ea5f94","PINN":"#cd34b5"}
 MO_100 = ["DeepONet","PI-DeepONet","U-Net","STA-LSTM","PINN"]
-W100 = {"DeepONet":"models/deeponet_h","PI-DeepONet":"models/pi_deeponet",
-        "U-Net":"models/unet","STA-LSTM":"models/sta_lstm","PINN":"models/pinn"}
+W100 = {"DeepONet": str(RESULTS_MODELS/"deeponet_h"), "PI-DeepONet": str(RESULTS_MODELS/"pi_deeponet"),
+        "U-Net": str(RESULTS_MODELS/"unet"), "STA-LSTM": str(RESULTS_MODELS/"sta_lstm"), "PINN": str(RESULTS_MODELS/"pinn")}
 MK = {"DeepONet":"o","PI-DeepONet":"P","U-Net":"s","STA-LSTM":"^","PINN":"D"}
 LS = {"DeepONet":"-","PI-DeepONet":"--","U-Net":"-","STA-LSTM":"-.","PINN":":"}
 CC = ["#e6194b","#f58231","#3cb44b","#4363d8","#911eb4","#42d4f4"]
@@ -46,7 +49,7 @@ def setup():
 
 def sf(fig,n): fig.savefig(FIGDIR/f"{n}.png"); plt.close(fig); print(f"    -> {n}.png")
 def lr(g):
-    p=Path(f"./preprocessed/{g}x{g}/Y_raw_phys.npy")
+    p=PREPROCESSED / f"{g}x{g}" / "Y_raw_phys.npy"
     return np.load(p) if p.exists() else None
 def lj(wd,c,g,s):
     p=Path(wd)/f"res_{c}_{g}_{s}.json"
@@ -160,7 +163,7 @@ def per_timestep_r2_mean_std(wd, cyt, grid, seeds=SEEDS):
 
 
 def abm_time(grid):
-    Returns None if no measured value is available for that grid."""
+    """Returns None if no measured value is available for that grid."""
     return ABM_RUNTIME_S.get(grid)
 
 
@@ -321,7 +324,7 @@ def fig3b(): _fig3_panel("il10", "IL-10", "Fig3b_rq3_il10_100h")
 
 # FIG 4: Pareto + Speedup combined 
 _PRED_TIME_CACHE = {}
-_PRED_TIMES_CSV = Path("./figures/pred_times.csv")
+_PRED_TIMES_CSV = FIGURES / "pred_times.csv"
 
 def _load_pred_time_cache():
     if _PRED_TIMES_CSV.exists():

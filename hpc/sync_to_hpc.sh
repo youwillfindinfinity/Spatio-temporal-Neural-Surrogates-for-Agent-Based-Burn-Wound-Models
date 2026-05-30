@@ -1,12 +1,29 @@
+#!/bin/bash
+# Sync code and preprocessed data from local to Snellius HPC.
+# Usage: bash hpc/sync_to_hpc.sh [--dry-run]
+#
+# Requires .env at the project root with:
+#   SNELLIUS_USER, SNELLIUS_HOST, SNELLIUS_PASS, SNELLIUS_PROJECT_DIR
+
 set -euo pipefail
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-if [ ! -f "$PROJECT_DIR/.env" ]; then
-    echo "ERROR: .env not found at $PROJECT_DIR/.env"
+ENV_FILE="$PROJECT_DIR/.env"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "ERROR: .env not found at $ENV_FILE"
+    echo "       Copy .env.example to .env and fill in your credentials."
     exit 1
 fi
-set -a; source "$PROJECT_DIR/.env"; set +a
+set -a; source "$ENV_FILE"; set +a
+
+for VAR in SNELLIUS_USER SNELLIUS_HOST SNELLIUS_PASS SNELLIUS_PROJECT_DIR; do
+    if [ -z "${!VAR:-}" ]; then
+        echo "ERROR: $VAR is not set in .env"
+        exit 1
+    fi
+done
 
 DRY_RUN=""
 if [[ "${1:-}" == "--dry-run" ]]; then
@@ -14,116 +31,85 @@ if [[ "${1:-}" == "--dry-run" ]]; then
     echo "[DRY RUN] No files will be transferred."
 fi
 
-REMOTE="${SNELLIUS_USER}@${SNELLIUS_HOST}:${SNELLIUS_DIR}"
+# rsync remote path — escape spaces so the remote shell sees a single path token
+REMOTE_PATH="${SNELLIUS_PROJECT_DIR// /\\ }"
+REMOTE="${SNELLIUS_USER}@${SNELLIUS_HOST}"
 
-RSYNC_OPTS="-avz --progress --human-readable --delete"
-RSYNC_OPTS="$RSYNC_OPTS --exclude='__pycache__/'"
-RSYNC_OPTS="$RSYNC_OPTS --exclude='*.pyc'"
-RSYNC_OPTS="$RSYNC_OPTS --exclude=*:Zone.Identifier"
-RSYNC_OPTS="$RSYNC_OPTS --exclude=*.Zone.Identifier"
-RSYNC_OPTS="$RSYNC_OPTS --exclude='.venv/'"
-RSYNC_OPTS="$RSYNC_OPTS --exclude='*.egg-info/'"
-RSYNC_OPTS="$RSYNC_OPTS --exclude='.pytest_cache/'"
-RSYNC_OPTS="$RSYNC_OPTS --exclude='logs/'"
-
-if command -v sshpass &>/dev/null && [[ -n "${SNELLIUS_PASSWORD:-}" ]]; then
-    RSYNC_CMD="sshpass -p ${SNELLIUS_PASSWORD} rsync ${RSYNC_OPTS} ${DRY_RUN}"
+# Build rsync command prefix (with or without sshpass)
+if command -v sshpass &>/dev/null; then
+    RSYNC=(sshpass -p "${SNELLIUS_PASS}" rsync)
+    SSH=(sshpass -p "${SNELLIUS_PASS}" ssh -o StrictHostKeyChecking=no)
 else
-    RSYNC_CMD="rsync ${RSYNC_OPTS} ${DRY_RUN}"
+    echo "WARNING: sshpass not found; falling back to key-based auth."
+    RSYNC=(rsync)
+    SSH=(ssh)
 fi
+
+BASE_OPTS=(-avz --progress --human-readable
+    --exclude='__pycache__/'
+    --exclude='*.pyc'
+    --exclude='.venv/'
+    --exclude='.env'
+    --exclude='models/**/*.h5'
+    --exclude='models/**/*.weights.h5'
+    --exclude='*.npy'
+)
 
 echo "SYNC LOCAL -> SNELLIUS"
 echo "  Local  : $PROJECT_DIR"
-echo "  Remote : $REMOTE"
+echo "  Remote : $REMOTE:$SNELLIUS_PROJECT_DIR"
 
-# scr code 
-echo ""
-echo "Syncing src/"
-${RSYNC_CMD} "$PROJECT_DIR/src/" "${REMOTE}/src/"
+sync_dir() {
+    local src="$1" dest_subdir="$2"
+    if [ -d "$PROJECT_DIR/$src" ]; then
+        echo ""
+        echo "Syncing $src/"
+        "${RSYNC[@]}" "${BASE_OPTS[@]}" ${DRY_RUN:+"$DRY_RUN"} \
+            "$PROJECT_DIR/$src/" \
+            "${REMOTE}:${REMOTE_PATH}/${dest_subdir}/"
+    fi
+}
 
-# HPC scripts
-echo ""
-echo "Syncing hpc/"
-${RSYNC_CMD} \
-    --exclude='logs/' \
-    "$PROJECT_DIR/hpc/" "${REMOTE}/hpc/"
+sync_dir "scripts"     "scripts"
+sync_dir "sensitivity" "sensitivity"
+sync_dir "hpc"         "hpc"
 
-# config 
 echo ""
-echo "Syncing config/"
-${RSYNC_CMD} "$PROJECT_DIR/config/" "${REMOTE}/config/"
+echo "Syncing requirements.txt"
+"${RSYNC[@]}" "${BASE_OPTS[@]}" ${DRY_RUN:+"$DRY_RUN"} \
+    "$PROJECT_DIR/requirements.txt" \
+    "${REMOTE}:${REMOTE_PATH}/requirements.txt"
 
-# tests
-echo ""
-echo "Syncing tests/"
-${RSYNC_CMD} "$PROJECT_DIR/tests/" "${REMOTE}/tests/"
-
-# experiments 
-echo ""
-echo "Syncing experiments/"
-${RSYNC_CMD} \
-    --exclude='amici_model/' \
-    --exclude='results/' \
-    --exclude='petab/' \
-    "$PROJECT_DIR/experiments/" "${REMOTE}/experiments/"
-
-# warm-start pkl files 
-echo ""
-echo "Syncing results/fits/*.pkl (warm-starts)"
-${RSYNC_CMD} \
-    --include='*.pkl' \
-    --exclude='*' \
-    "$PROJECT_DIR/results/fits/" "${REMOTE}/results/fits/"
-if [ -d "$PROJECT_DIR/splitwise" ]; then
-    echo "Syncing splitwise/*.pkl (splitwise warm-starts)"
-    ${RSYNC_CMD} \
-        --include='*.pkl' \
-        --include='*.json' \
-        --exclude='*' \
-        "$PROJECT_DIR/splitwise/" "${REMOTE}/splitwise/"
-fi
-
-# top-level files 
-echo ""
-echo "Syncing top-level files"
-for f in CLAUDE.md PROJECT_PLANNING.md FITTING_PLAN.md ODE_EQUATIONS.md \
-          pyproject.toml setup.py requirements.txt setup.cfg; do
-    if [ -f "$PROJECT_DIR/$f" ]; then
-        ${RSYNC_CMD} "$PROJECT_DIR/$f" "${REMOTE}/$f"
+# Preprocessed data directories (large; sync only what exists locally)
+for PREP_DIR in preprocessed preprocessed_200h preprocessed_p95 preprocessed_noclip; do
+    if [ -d "$PROJECT_DIR/$PREP_DIR" ]; then
+        echo ""
+        echo "Syncing $PREP_DIR/"
+        "${RSYNC[@]}" -avz --progress ${DRY_RUN:+"$DRY_RUN"} \
+            "$PROJECT_DIR/$PREP_DIR/" \
+            "${REMOTE}:${REMOTE_PATH}/${PREP_DIR//' '/'\\ '}/"
     fi
 done
 
-# directories (create if missing)
+# Create output directories on Snellius
 echo ""
-echo "Creating remote directories"
-sshpass -p "${SNELLIUS_PASSWORD}" ssh "${SNELLIUS_USER}@${SNELLIUS_HOST}" \
-    "mkdir -p \
-        ${SNELLIUS_DIR}/logs \
-        ${SNELLIUS_DIR}/results/fits \
-        ${SNELLIUS_DIR}/results/sensitivity \
-        ${SNELLIUS_DIR}/results/figures/supplementary \
-        ${SNELLIUS_DIR}/results/tables \
-        ${SNELLIUS_DIR}/experiments/petab_estimation/results && \
-    chmod +x ${SNELLIUS_DIR}/hpc/*.sh 2>/dev/null || true && \
-    echo 'Remote directories ready.'"
-
-# .venv on Snellius
-echo ""
-echo "Setting up .venv on Snellius"
-sshpass -p "${SNELLIUS_PASSWORD}" ssh "${SNELLIUS_USER}@${SNELLIUS_HOST}" "
-    set -e
-    module purge
-    module load 2023
-    module --ignore_cache load Python/3.11.3-GCCcore-12.3.0
-    VENV_DIR='${SNELLIUS_DIR}/.venv'
-    if [ ! -f \"\$VENV_DIR/bin/activate\" ]; then
-        echo 'Creating .venv on Snellius...'
-        python3 -m venv \"\$VENV_DIR\"
-    fi
-    source \"\$VENV_DIR/bin/activate\"
-    pip install --upgrade pip --quiet
-    pip install -r '${SNELLIUS_DIR}/requirements.txt' --quiet
-    echo '.venv ready: '\$(python3 --version)
+echo "Creating remote output directories"
+"${SSH[@]}" "$REMOTE" "
+    mkdir -p \
+        '${SNELLIUS_PROJECT_DIR}/results/models/deeponet_h' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/pi_deeponet' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/pinn' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/sta_lstm' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/unet' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/200hrs/deeponet_h' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/200hrs/unet' \
+        '${SNELLIUS_PROJECT_DIR}/results/models/200hrs/sta_lstm' \
+        '${SNELLIUS_PROJECT_DIR}/results/sensitivity' \
+        '${SNELLIUS_PROJECT_DIR}/results/sensitivity_lookback' \
+        '${SNELLIUS_PROJECT_DIR}/outputs/figures' \
+        '${SNELLIUS_PROJECT_DIR}/outputs/metrics' && \
+    chmod +x '${SNELLIUS_PROJECT_DIR}/hpc/'*.sh 2>/dev/null || true && \
+    echo 'Remote directories ready.'
 "
 
 echo ""

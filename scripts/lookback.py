@@ -2,8 +2,11 @@
 U-Net look-back window sensitivity sweep.
 """
 
+import sys
 import os, json, argparse, random, time, re
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paths import LATTICE_DATA, RESULTS_LOOKBACK, PREPROCESSED_LOOKBACK
 
 import numpy as np
 import pyvista as pv
@@ -25,9 +28,8 @@ CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
 CELL_TYPE_IDS   = {"EC": 1, "NN": 2, "NA": 3, "M1": 4, "M2": 5}
 
-BASE_LATTICE_DIR = Path("./LatticeData")
-OUT_DIR = Path("./sensitivity_lookback")
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+BASE_LATTICE_DIR = LATTICE_DATA
+OUT_DIR = RESULTS_LOOKBACK
 
 
 def set_seed(seed: int):
@@ -82,7 +84,7 @@ def find_lattice_folder(grid: int) -> Path:
 
 
 def preprocess_for_window(grid: int, window: int) -> Path:
-    out_path = Path(f"./preprocessed_w{window}/{grid}x{grid}")
+    out_path = PREPROCESSED_LOOKBACK / f"w{window}" / f"{grid}x{grid}"
     out_path.mkdir(parents=True, exist_ok=True)
 
     # Skip if already preprocessed

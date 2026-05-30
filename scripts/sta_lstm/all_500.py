@@ -1,5 +1,8 @@
+import sys
 import argparse, json, gc, os, random, time
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import RESULTS_ADDITIONAL, PREPROCESSED_200H
 import numpy as np
 import tensorflow as tf
 import optuna
@@ -20,7 +23,7 @@ if gpus:
         except RuntimeError: pass
 
 GRID         = 500
-RESULTS_DIR  = "models/200hrs/sta_lstm"
+RESULTS_DIR  = str(RESULTS_ADDITIONAL / "200hrs" / "sta_lstm")
 CYT_MAP      = {"il8": 0, "il10": 3}
 N_OPTUNA     = 20
 TUNE_EPOCHS  = 20
@@ -198,5 +201,5 @@ def run(cyt_name, seed, data_dir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--cytokine", required=True); ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--data-dir", default="preprocessed_200h/500x500")
+    ap.add_argument("--data-dir", default=str(PREPROCESSED_200H / "500x500"))
     args = ap.parse_args(); run(args.cytokine, args.seed, args.data_dir)

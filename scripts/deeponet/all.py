@@ -1,5 +1,8 @@
+import sys
 import os, json, argparse, random, time
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import PREPROCESSED, RESULTS_MODELS
 
 import numpy as np
 import tensorflow as tf
@@ -270,8 +273,8 @@ def run_pipeline(grid, seed, cytokine):
     cyt_names = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
     idx = cyt_names.index(cytokine.lower())
 
-    data_path = Path(f"./preprocessed/{grid}x{grid}")
-    out_dir   = Path("./models/deeponet_h"); out_dir.mkdir(parents=True, exist_ok=True)
+    data_path = PREPROCESSED / f"{grid}x{grid}"
+    out_dir   = RESULTS_MODELS / "deeponet_h"; out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"\n[{cytokine.upper()}] {grid}x{grid} — loading data...")
     Xb = np.load(data_path/"X_branch.npy").astype(np.float32)
@@ -371,6 +374,6 @@ if __name__ == "__main__":
     if args.grid:
         run_pipeline(args.grid, args.seed, args.cytokine)
     else:
-        for d in sorted(Path("./preprocessed").iterdir()):
+        for d in sorted(PREPROCESSED.iterdir()):
             if d.is_dir():
                 run_pipeline(int(d.name.split("x")[0]), args.seed, args.cytokine)

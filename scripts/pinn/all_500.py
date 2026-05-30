@@ -1,5 +1,8 @@
 import argparse, json, gc, os, sys, time, warnings
 warnings.filterwarnings("ignore")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import PREPROCESSED, RESULTS_ADDITIONAL
 import numpy as np
 import tensorflow as tf
 import deepxde as dde
@@ -10,8 +13,8 @@ optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 GRID         = 500
 G2           = GRID * GRID
-DATA_DIR     = "preprocessed/500x500" # overridden by --data-dir
-RESULTS_DIR  = "models/pinn"
+DATA_DIR     = str(PREPROCESSED / "500x500") # overridden by --data-dir
+RESULTS_DIR  = str(RESULTS_ADDITIONAL / "pinn")
 CYT_MAP      = {"il8": 0, "il10": 3}
 CYT_DIFFUSE  = {0: 2.09e-6, 3: 1.45e-8} # m²/s, scaled to normalised domain
 CYT_DECAY    = {0: 0.200,   3: 0.500}
@@ -224,7 +227,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cytokine", choices=["il8","il10"], required=True)
     parser.add_argument("--seed",     type=int,               required=True)
-    parser.add_argument("--data-dir", default="preprocessed/500x500",
+    parser.add_argument("--data-dir", default=str(PREPROCESSED / "500x500"),
                         dest="data_dir",
                         help="Path to preprocessed/500x500 directory")
     args = parser.parse_args()

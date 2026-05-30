@@ -1,4 +1,8 @@
+import sys
 import argparse, json, gc, os, random, time
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import RESULTS_ADDITIONAL
 import numpy as np
 import tensorflow as tf
 import optuna
@@ -10,7 +14,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 GRID        = 500
-RESULTS_DIR = "models/sta_lstm"
+RESULTS_DIR = str(RESULTS_ADDITIONAL / "sta_lstm")
 CYT_MAP     = {"il8": 0, "il10": 3}
 WINDOW      = 2
 
