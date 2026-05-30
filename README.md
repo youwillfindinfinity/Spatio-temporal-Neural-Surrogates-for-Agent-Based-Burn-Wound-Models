@@ -2,6 +2,8 @@
 
 ![Graphical Abstract](Manuscript/Figures/1%20-%20Graphical%20Abstract.svg)
 
+[![DOI](https://zenodo.org/badge/1223516798.svg)](https://doi.org/10.5281/zenodo.20457662)
+
 > **Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models**  
 > Roland V. Bumbuc\*, Julia Kowalczuk\*, Rezo Getsadze, Ioannis Papapanagiotou, H. Ibrahim Korkmaz, Vivek M. Sheraton  
 > *Computers in Biology and Medicine* (submitted)  
