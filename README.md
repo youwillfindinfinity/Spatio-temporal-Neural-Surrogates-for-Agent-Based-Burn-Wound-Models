@@ -1,6 +1,6 @@
 # Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models
 
-![Graphical Abstract](Manuscript/FIgures/1%20-%20Graphical%20Abstract.svg)
+![Graphical Abstract](Manuscript/Figures/1%20-%20Graphical%20Abstract.svg)
 
 > **Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models**  
 > Roland V. Bumbuc\*, Julia Kowalczuk\*, Rezo Getsadze, Ioannis Papapanagiotou, H. Ibrahim Korkmaz, Vivek M. Sheraton  
@@ -67,8 +67,12 @@ surrogates_2D/
 │   ├── train_data_models.py    # Train data-driven models (sensitivity)
 │   ├── train_physics_models.py # Train physics-informed models (sensitivity)
 │   └── aggregate_results.py    # Aggregate sensitivity results → CSV
+├── data_raw/
+│   ├── 100h/                   # Raw VTK files for 100h multi-grid simulations
+│   └── 200h/                   # Raw VTK files for 200h single simulation
 ├── results/
-│   ├── models/                 # Result JSONs and vis PNGs per model/grid/seed
+│   ├── models/                 # Result JSONs per model/grid/seed (100h runs)
+│   ├── additional_simulations/ # Results for 200h and 500-grid experiments
 │   ├── sensitivity/            # Sensitivity analysis results (clip variants)
 │   └── sensitivity_lookback/   # Lookback-window sensitivity results
 ├── outputs/
@@ -78,7 +82,7 @@ surrogates_2D/
 ├── paths.py                    # Central path config — imported by all scripts
 ├── Manuscript/
 │   ├── cas-sc-template.tex     # LaTeX source (Computers in Biology and Medicine)
-│   └── FIgures/                # Figures used in the manuscript
+│   └── Figures/                # Figures used in the manuscript
 ├── hpc/
 │   ├── sync_to_hpc.sh          # Push code + preprocessed data to Snellius
 │   └── sync_from_hpc.sh        # Pull result JSONs from Snellius
@@ -111,10 +115,11 @@ Place the VTK files for the 100h simulation in a directory and run preprocessing
 # Expects a directory tree with subfolders named <GxG>/ (e.g. 100x100/, 250x250/)
 # each containing 101 .vtk files.
 python scripts/preprocessing100.py
-# LatticeData/ (default) → preprocessed/{100x100,250x250}/
+# data_raw/100h/ (default) → preprocessed/{100x100,250x250}/
 
-# For 200h data, specify the VTK directory:
-python scripts/preprocessing200.py --data-dir ./LatticeData --out-dir ./preprocessed_200h
+# For 200h data:
+python scripts/preprocessing200.py
+# data_raw/200h/ (default) → preprocessed_200h/
 ```
 
 The preprocessing scripts produce per-grid folders containing:
