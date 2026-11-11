@@ -16,7 +16,7 @@ CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
 CELL_TYPE_IDS   = {"EC": 1, "NN": 2, "NA": 3, "M1": 4, "M2": 5}
 
-N_TIMESTEPS  = 201
+N_TIMESTEPS  = 101
 WINDOW       = 2 # look-back window for LSTM/branch inputs (consistent with prev work)
 GPR_MAX_GRID = 100     
 

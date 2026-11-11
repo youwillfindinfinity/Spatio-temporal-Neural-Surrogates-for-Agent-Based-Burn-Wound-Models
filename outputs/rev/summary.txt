@@ -1,0 +1,217 @@
+REVISION EXPERIMENTS - SUMMARY (294 runs)
+skill = 1 - MSE_model / MSE_persistence (one step ahead); > 0 means better than copying the previous frame
+front = +/- band around the 0.05 c_max contour of the true field; values are RMSE / c_max
+
+=== IL10  100x100 ===
+model/variant                n   R2 near    SSIM    Dice  skill n  skill f    front   inter.  roll19 roll19fz  train s
+persistence (prev. frame)         0.9910  0.9967  0.9975    0.000    0.000   0.0211      nan   0.761    0.761         
+convlstm/base                3    0.9774  0.9817  0.9334   -1.520   -1.095   0.0324      nan   0.944    0.710     42.0
+convlstm/residual            3    0.9911  0.9967  0.9975    0.005    0.003   0.0211      nan   0.777    0.779     12.5
+deeponet/base                3    0.9866  0.9519  0.9974   -0.496   -0.654   0.0244      nan   0.736    0.649    198.9
+deeponet/no_branch           3    0.9907  0.9962  0.9975   -0.039   -0.068   0.0215      nan   0.842    0.778    546.5
+deeponet/no_fields           3    0.1404  0.4112  0.2381  -94.700  -63.750   0.2045      nan  -0.774   -0.774    608.3
+deeponet/no_gate             3    0.9895  0.9926  0.9975   -0.165   -0.239   0.0227      nan   0.612    0.577    191.5
+fno/base                     3    0.9696  0.9736  0.9916   -2.385   -3.077   0.0382      nan   0.754    0.704     26.2
+fno/residual                 3    0.9911  0.9967  0.9975    0.005    0.003   0.0211      nan   0.779    0.780     16.7
+lookback_convlstm/w1         3    0.9812  0.9811  0.8903   -1.092   -1.010   0.0296      nan                      28.2
+lookback_convlstm/w2         3    0.9687  0.9710  0.9116   -2.487   -1.732   0.0379      nan                      29.0
+lookback_convlstm/w3         3    0.9685  0.9702  0.8984   -2.506   -1.889   0.0379      nan                      46.9
+lookback_convlstm/w4         3    0.9553  0.9544  0.9127   -3.982   -3.152   0.0438      nan                      49.7
+lookback_convlstm/w5         3    0.9593  0.9648  0.9416   -3.532   -3.099   0.0401      nan                      84.2
+lookback_unet/w1             3    0.9543  0.9024  0.6929   -4.090   -4.458   0.0424      nan                      34.9
+lookback_unet/w2             3    0.9624  0.9024  0.8093   -3.187   -3.298   0.0391      nan                      34.0
+lookback_unet/w3             3    0.9603  0.9247  0.7890   -3.425   -3.655   0.0403      nan                      35.3
+lookback_unet/w4             3    0.9612  0.9281  0.8115   -3.314   -3.510   0.0403      nan                      36.3
+lookback_unet/w5             3    0.9467  0.9057  0.6834   -4.933   -5.238   0.0474      nan                      37.3
+stalstm/base                 3    0.6274  0.6442  0.7008  -40.480  -36.350   0.1322      nan   0.448    0.471     22.1
+unet/base                    3    0.9629  0.8937  0.7949   -3.131   -3.256   0.0384      nan   0.836    0.705     36.2
+unet/ntrain35                3    0.8495  0.6281  0.2885  -15.760  -14.120   0.0657      nan   0.523    0.507     27.3
+unet/ntrain52                3    0.9373  0.8284  0.5843   -5.979   -6.021   0.0480      nan   0.723    0.642     31.0
+unet/residual                3    0.9910  0.9965  0.9975    0.001    0.001   0.0211      nan   0.766    0.766     13.1
+unet/weighted                3    0.9386  0.8114  0.5877   -5.840   -6.087   0.0458      nan   0.742    0.682     32.3
+
+=== IL10  250x250 ===
+model/variant                n   R2 near    SSIM    Dice  skill n  skill f    front   inter.  roll19 roll19fz  train s
+persistence (prev. frame)         0.9993  0.9991  0.9974    0.000    0.000   0.0068      nan   0.951    0.951         
+convlstm/base                3    0.9976  0.9921  0.9800   -2.332   -1.657   0.0122      nan   0.940    0.937    190.2
+convlstm/residual            3    0.9993  0.9991  0.9990    0.118    0.059   0.0064      nan   0.983    0.967    161.2
+deeponet/base                3    0.9981  0.9964  0.9699   -1.653   -3.315   0.0108      nan   0.914    0.916   1891.0
+deeponet/no_branch           3    0.9993  0.9992  0.9993    0.090    0.009   0.0065      nan   0.987    0.958   5610.9
+deeponet/no_fields           3    0.1178  0.2257  0.3402-1203.000 -643.300   0.2341      nan   0.110    0.110   7038.1
+deeponet/no_gate             3    0.9990  0.9966  0.9908   -0.439   -1.184   0.0081      nan   0.966    0.946   2245.0
+deeponet/zeroshot_100to250   3    0.9832  0.9744  0.9131  -21.900  -16.020   0.0323      nan                          
+fno/base                     3    0.9973  0.9870  0.9628   -2.610   -2.309   0.0127      nan   0.850    0.910    122.2
+fno/residual                 3    0.9993  0.9991  0.9977    0.076    0.029   0.0065      nan   0.976    0.957     28.2
+lookback_convlstm/w1         3    0.9959  0.9824  0.9636   -4.568   -3.184   0.0157      nan                      74.5
+lookback_convlstm/w2         3    0.9977  0.9929  0.9806   -2.166   -1.568   0.0119      nan                     173.3
+lookback_convlstm/w3         3    0.9974  0.9928  0.9652   -2.521   -1.904   0.0126      nan                     248.2
+lookback_convlstm/w4         3    0.9979  0.9944  0.9797   -1.887   -1.399   0.0114      nan                     324.1
+lookback_convlstm/w5         3    0.9973  0.9931  0.9718   -2.612   -1.963   0.0127      nan                     400.1
+lookback_unet/w1             3    0.9931  0.9371  0.9323   -8.342   -7.326   0.0203      nan                     139.3
+lookback_unet/w2             3    0.9937  0.9421  0.9364   -7.621   -6.667   0.0195      nan                     140.7
+lookback_unet/w3             3    0.9910  0.9283  0.9145  -11.280  -10.250   0.0231      nan                     127.8
+lookback_unet/w4             3    0.9925  0.9331  0.9160   -9.179   -8.121   0.0211      nan                     141.0
+lookback_unet/w5             3    0.9931  0.9365  0.9342   -8.351   -7.125   0.0203      nan                     141.6
+stalstm/base                 3    0.8896  0.7999  0.8071 -149.600 -104.100   0.0827      nan   0.849    0.848     49.7
+unet/base                    3    0.9944  0.9534  0.9473   -6.614   -5.770   0.0184      nan   0.852    0.919    152.5
+unet/ntrain35                3    0.9761  0.7882  0.7520  -31.560  -26.650   0.0369      nan   0.646    0.813     94.9
+unet/ntrain52                3    0.9857  0.8771  0.8513  -18.470  -17.040   0.0289      nan   0.739    0.882    114.0
+unet/residual                3    0.9993  0.9991  0.9990    0.108    0.053   0.0064      nan   0.978    0.966     82.5
+unet/weighted                3    0.9913  0.8657  0.8967  -10.890   -9.230   0.0220      nan   0.884    0.929    146.3
+
+=== IL8  100x100 ===
+model/variant                n   R2 near    SSIM    Dice  skill n  skill f    front   inter.  roll19 roll19fz  train s
+persistence (prev. frame)         0.9999  0.9999  0.9962    0.000    0.000   0.0009   0.0020   0.972    0.972         
+convlstm/base                3    0.9945  0.9840  0.9777  -55.810  -74.730   0.0067   0.0114   0.890    0.899     38.9
+convlstm/residual            3    1.0000  0.9998  0.9985    0.798    0.784   0.0004   0.0008   0.995    0.995      8.9
+deeponet/base                3    0.9968  0.9642  0.9742  -32.690 -119.500   0.0070   0.0064  -2.583   -2.598    454.5
+deeponet/no_branch           3    0.9999  0.9997  0.9972    0.095   -0.542   0.0011   0.0015   0.984    0.987    396.5
+deeponet/no_fields           3    0.9231  0.8874  0.9252 -798.700 -984.100   0.0233   0.0568   0.919    0.919   1172.5
+deeponet/no_gate             3    0.9983  0.9896  0.9825  -17.050  -79.090   0.0052   0.0060  -6.663   -6.799    625.7
+fno/base                     3    0.9954  0.9845  0.9756  -47.250  -76.010   0.0074   0.0118   0.519    0.499     32.0
+fno/residual                 3    1.0000  0.9998  0.9987    0.657    0.578   0.0004   0.0011   0.991    0.990     10.4
+lookback_convlstm/w1         3    0.9940  0.9760  0.9750  -61.920  -80.790   0.0077   0.0124                      23.5
+lookback_convlstm/w2         3    0.9954  0.9766  0.9789  -46.620  -61.320   0.0067   0.0103                      33.9
+lookback_convlstm/w3         3    0.9941  0.9810  0.9746  -59.990  -80.300   0.0075   0.0117                      40.7
+lookback_convlstm/w4         3    0.9942  0.9790  0.9735  -58.840  -77.770   0.0078   0.0115                      49.7
+lookback_convlstm/w5         3    0.9943  0.9769  0.9750  -58.510  -78.320   0.0078   0.0120                      67.6
+lookback_unet/w1             3    0.9607  0.8816  0.9246 -407.500 -678.200   0.0216   0.0351                      32.8
+lookback_unet/w2             3    0.9778  0.9337  0.9450 -229.300 -319.800   0.0174   0.0255                      33.7
+lookback_unet/w3             3    0.9769  0.9394  0.9515 -239.000 -357.300   0.0167   0.0271                      34.5
+lookback_unet/w4             3    0.9737  0.9177  0.9402 -272.400 -393.200   0.0190   0.0268                      34.4
+lookback_unet/w5             3    0.9708  0.9157  0.9264 -302.900 -445.800   0.0210   0.0282                      36.3
+stalstm/base                 3    0.9749  0.8787  0.9508 -260.100 -608.000   0.0141   0.0290   0.927    0.955     25.1
+unet/base                    3    0.9796  0.9352  0.9459 -210.800 -299.900   0.0174   0.0237   0.803    0.840     33.1
+unet/ntrain35                3    0.9135  0.7736  0.8619 -898.100-1260.000   0.0334   0.0466   0.570    0.658     26.6
+unet/ntrain52                3    0.9687  0.9102  0.9286 -324.700 -462.000   0.0218   0.0293   0.746    0.787     30.1
+unet/residual                3    1.0000  0.9995  0.9989    0.765    0.761   0.0004   0.0008   0.994    0.993     11.5
+unet/weighted                3    0.9711  0.9023  0.9337 -299.300 -462.500   0.0197   0.0273   0.686    0.792     31.5
+
+=== IL8  250x250 ===
+model/variant                n   R2 near    SSIM    Dice  skill n  skill f    front   inter.  roll19 roll19fz  train s
+persistence (prev. frame)         0.9999  0.9999  0.9984    0.000    0.000   0.0009   0.0021   0.956    0.956         
+convlstm/base                3    0.9975  0.9854  0.9909  -15.580  -22.320   0.0064   0.0066   0.950    0.965    100.1
+convlstm/residual            3    1.0000  0.9997  0.9993    0.858    0.824   0.0006   0.0007   0.994    0.993     39.9
+deeponet/base                3    0.9972  0.9537  0.9864  -17.870  -68.970   0.0080   0.0063  -0.504   -0.495   1817.1
+deeponet/no_branch           3    1.0000  0.9996  0.9988    0.636    0.309   0.0010   0.0011   0.989    0.991   3647.4
+deeponet/no_fields           3    0.9272  0.8223  0.9592 -484.100 -634.800   0.0239   0.0464   0.920    0.920   6929.9
+deeponet/no_gate             3    0.9973  0.9745  0.9843  -16.840  -54.630   0.0091   0.0068  -0.042   -0.040   2220.4
+deeponet/zeroshot_100to250   3    0.9963  0.9488  0.9863  -23.520  -73.490   0.0084   0.0071                          
+fno/base                     3    0.9980  0.9864  0.9941  -12.180  -21.630   0.0054   0.0068   0.885    0.892    121.1
+fno/residual                 3    1.0000  0.9996  0.9988    0.862    0.817   0.0006   0.0006   0.994    0.993     31.0
+lookback_convlstm/w1         3    0.9964  0.9800  0.9881  -23.260  -31.850   0.0082   0.0078                      62.0
+lookback_convlstm/w2         3    0.9974  0.9866  0.9904  -16.410  -23.650   0.0068   0.0069                     100.3
+lookback_convlstm/w3         3    0.9972  0.9848  0.9896  -17.460  -25.330   0.0071   0.0069                     141.2
+lookback_convlstm/w4         3    0.9973  0.9854  0.9901  -16.890  -24.860   0.0070   0.0071                     181.3
+lookback_convlstm/w5         3    0.9975  0.9863  0.9902  -15.910  -23.120   0.0067   0.0070                     231.5
+lookback_unet/w1             3    0.9838  0.9049  0.9792 -107.100 -150.200   0.0140   0.0200                      59.4
+lookback_unet/w2             3    0.9837  0.9187  0.9785 -107.700 -143.800   0.0142   0.0203                      58.6
+lookback_unet/w3             3    0.9848  0.9253  0.9826 -100.600 -133.600   0.0126   0.0198                      69.6
+lookback_unet/w4             3    0.9833  0.9133  0.9768 -110.100 -156.600   0.0147   0.0198                      71.6
+lookback_unet/w5             3    0.9842  0.9166  0.9818 -104.000 -140.800   0.0127   0.0201                      79.3
+stalstm/base                 3    0.9591  0.8742  0.9857 -271.400 -485.900   0.0088   0.0348   0.926    0.896     46.9
+unet/base                    3    0.9849  0.9254  0.9808  -99.930 -138.000   0.0129   0.0197   0.867    0.887     64.2
+unet/ntrain35                3    0.9705  0.8528  0.9639 -195.900 -265.100   0.0214   0.0261   0.536    0.582     46.7
+unet/ntrain52                3    0.9816  0.9069  0.9756 -121.400 -161.700   0.0165   0.0212   0.843    0.862     58.2
+unet/residual                3    1.0000  0.9999  0.9994    0.933    0.908   0.0004   0.0005   0.997    0.997     30.7
+unet/weighted                3    0.9884  0.8910  0.9745  -76.020  -96.420   0.0138   0.0126   0.931    0.941     65.2
+
+Per-frame spatial correlation, lowest frame per configuration (model mean over seeds):
+  il10 100 convlstm/base: min 0.9689  median 0.9889  max 0.9940
+  il10 100 convlstm/residual: min 0.9750  median 0.9951  max 1.0000
+  il10 100 deeponet/base: min 0.9719  median 0.9934  max 0.9985
+  il10 100 deeponet/no_branch: min 0.9747  median 0.9949  max 0.9999
+  il10 100 deeponet/no_fields: min 0.3452  median 0.3713  max 0.3864
+  il10 100 deeponet/no_gate: min 0.9739  median 0.9944  max 0.9994
+  il10 100 fno/base: min 0.9612  median 0.9842  max 0.9918
+  il10 100 fno/residual: min 0.9750  median 0.9951  max 1.0000
+  il10 100 lookback_convlstm/w1: min 0.9695  median 0.9903  max 0.9952
+  il10 100 lookback_convlstm/w2: min 0.9655  median 0.9854  max 0.9910
+  il10 100 lookback_convlstm/w3: min 0.9645  median 0.9850  max 0.9906
+  il10 100 lookback_convlstm/w4: min 0.9604  median 0.9816  max 0.9869
+  il10 100 lookback_convlstm/w5: min 0.9643  median 0.9857  max 0.9906
+  il10 100 lookback_unet/w1: min 0.9507  median 0.9725  max 0.9834
+  il10 100 lookback_unet/w2: min 0.9589  median 0.9792  max 0.9869
+  il10 100 lookback_unet/w3: min 0.9547  median 0.9747  max 0.9853
+  il10 100 lookback_unet/w4: min 0.9558  median 0.9781  max 0.9847
+  il10 100 lookback_unet/w5: min 0.9461  median 0.9675  max 0.9781
+  il10 100 stalstm/base: min 0.7183  median 0.7837  max 0.8310
+  il10 100 unet/base: min 0.9591  median 0.9789  max 0.9871
+  il10 100 unet/ntrain35: min 0.8952  median 0.9224  max 0.9405
+  il10 100 unet/ntrain52: min 0.9428  median 0.9637  max 0.9760
+  il10 100 unet/residual: min 0.9750  median 0.9951  max 1.0000
+  il10 100 unet/weighted: min 0.9450  median 0.9663  max 0.9774
+  il10 250 convlstm/base: min 0.9972  median 0.9986  max 0.9991
+  il10 250 convlstm/residual: min 0.9983  median 0.9996  max 1.0000
+  il10 250 deeponet/base: min 0.9976  median 0.9989  max 0.9997
+  il10 250 deeponet/no_branch: min 0.9983  median 0.9996  max 1.0000
+  il10 250 deeponet/no_fields: min 0.3478  median 0.3499  max 0.3504
+  il10 250 deeponet/no_gate: min 0.9981  median 0.9993  max 0.9999
+  il10 250 deeponet/zeroshot_100to250: min 0.9932  median 0.9948  max 0.9963
+  il10 250 fno/base: min 0.9970  median 0.9983  max 0.9991
+  il10 250 fno/residual: min 0.9983  median 0.9996  max 1.0000
+  il10 250 lookback_convlstm/w1: min 0.9964  median 0.9977  max 0.9984
+  il10 250 lookback_convlstm/w2: min 0.9972  median 0.9986  max 0.9992
+  il10 250 lookback_convlstm/w3: min 0.9971  median 0.9986  max 0.9991
+  il10 250 lookback_convlstm/w4: min 0.9974  median 0.9987  max 0.9993
+  il10 250 lookback_convlstm/w5: min 0.9970  median 0.9984  max 0.9990
+  il10 250 lookback_unet/w1: min 0.9944  median 0.9960  max 0.9976
+  il10 250 lookback_unet/w2: min 0.9945  median 0.9963  max 0.9977
+  il10 250 lookback_unet/w3: min 0.9928  median 0.9953  max 0.9968
+  il10 250 lookback_unet/w4: min 0.9937  median 0.9957  max 0.9972
+  il10 250 lookback_unet/w5: min 0.9943  median 0.9962  max 0.9974
+  il10 250 stalstm/base: min 0.9173  median 0.9371  max 0.9516
+  il10 250 unet/base: min 0.9951  median 0.9967  max 0.9980
+  il10 250 unet/ntrain35: min 0.9813  median 0.9872  max 0.9921
+  il10 250 unet/ntrain52: min 0.9885  median 0.9925  max 0.9952
+  il10 250 unet/residual: min 0.9983  median 0.9996  max 1.0000
+  il10 250 unet/weighted: min 0.9934  median 0.9954  max 0.9968
+  il8 100 convlstm/base: min 0.9970  median 0.9972  max 0.9974
+  il8 100 convlstm/residual: min 1.0000  median 1.0000  max 1.0000
+  il8 100 deeponet/base: min 0.9974  median 0.9990  max 0.9998
+  il8 100 deeponet/no_branch: min 0.9999  median 1.0000  max 1.0000
+  il8 100 deeponet/no_fields: min 0.9613  median 0.9634  max 0.9639
+  il8 100 deeponet/no_gate: min 0.9982  median 0.9993  max 0.9998
+  il8 100 fno/base: min 0.9966  median 0.9974  max 0.9981
+  il8 100 fno/residual: min 1.0000  median 1.0000  max 1.0000
+  il8 100 lookback_convlstm/w1: min 0.9970  median 0.9970  max 0.9972
+  il8 100 lookback_convlstm/w2: min 0.9977  median 0.9978  max 0.9978
+  il8 100 lookback_convlstm/w3: min 0.9968  median 0.9970  max 0.9972
+  il8 100 lookback_convlstm/w4: min 0.9969  median 0.9971  max 0.9973
+  il8 100 lookback_convlstm/w5: min 0.9968  median 0.9970  max 0.9973
+  il8 100 lookback_unet/w1: min 0.9719  median 0.9780  max 0.9840
+  il8 100 lookback_unet/w2: min 0.9866  median 0.9884  max 0.9899
+  il8 100 lookback_unet/w3: min 0.9849  median 0.9872  max 0.9900
+  il8 100 lookback_unet/w4: min 0.9834  median 0.9858  max 0.9881
+  il8 100 lookback_unet/w5: min 0.9812  median 0.9839  max 0.9872
+  il8 100 stalstm/base: min 0.9849  median 0.9889  max 0.9919
+  il8 100 unet/base: min 0.9878  median 0.9892  max 0.9909
+  il8 100 unet/ntrain35: min 0.9474  median 0.9535  max 0.9614
+  il8 100 unet/ntrain52: min 0.9813  median 0.9837  max 0.9864
+  il8 100 unet/residual: min 1.0000  median 1.0000  max 1.0000
+  il8 100 unet/weighted: min 0.9838  median 0.9857  max 0.9884
+  il8 250 convlstm/base: min 0.9986  median 0.9987  max 0.9989
+  il8 250 convlstm/residual: min 1.0000  median 1.0000  max 1.0000
+  il8 250 deeponet/base: min 0.9980  median 0.9992  max 0.9999
+  il8 250 deeponet/no_branch: min 1.0000  median 1.0000  max 1.0000
+  il8 250 deeponet/no_fields: min 0.9654  median 0.9669  max 0.9671
+  il8 250 deeponet/no_gate: min 0.9978  median 0.9990  max 0.9997
+  il8 250 deeponet/zeroshot_100to250: min 0.9979  median 0.9989  max 0.9994
+  il8 250 fno/base: min 0.9986  median 0.9989  max 0.9992
+  il8 250 fno/residual: min 1.0000  median 1.0000  max 1.0000
+  il8 250 lookback_convlstm/w1: min 0.9981  median 0.9982  max 0.9983
+  il8 250 lookback_convlstm/w2: min 0.9986  median 0.9987  max 0.9989
+  il8 250 lookback_convlstm/w3: min 0.9985  median 0.9986  max 0.9988
+  il8 250 lookback_convlstm/w4: min 0.9985  median 0.9987  max 0.9988
+  il8 250 lookback_convlstm/w5: min 0.9986  median 0.9988  max 0.9989
+  il8 250 lookback_unet/w1: min 0.9910  median 0.9918  max 0.9925
+  il8 250 lookback_unet/w2: min 0.9912  median 0.9918  max 0.9922
+  il8 250 lookback_unet/w3: min 0.9918  median 0.9923  max 0.9927
+  il8 250 lookback_unet/w4: min 0.9903  median 0.9915  max 0.9923
+  il8 250 lookback_unet/w5: min 0.9913  median 0.9920  max 0.9925
+  il8 250 stalstm/base: min 0.9886  median 0.9895  max 0.9901
+  il8 250 unet/base: min 0.9918  median 0.9924  max 0.9929
+  il8 250 unet/ntrain35: min 0.9845  median 0.9854  max 0.9869
+  il8 250 unet/ntrain52: min 0.9899  median 0.9905  max 0.9914
+  il8 250 unet/residual: min 1.0000  median 1.0000  max 1.0000
+  il8 250 unet/weighted: min 0.9940  median 0.9942  max 0.9944
