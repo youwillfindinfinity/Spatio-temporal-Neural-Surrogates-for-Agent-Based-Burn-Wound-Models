@@ -1,6 +1,6 @@
 """Training-free analyses and manuscript figures for the experiments on the revision ABM runs.
 Reads results/<REV_OUT> and the preprocessed runs (REV_DATA_ROOT); writes tables and figures
-(PNG and PDF) to outputs/<REV_OUT>/figures. CPU only; safe to re-run at any time.
+(PNG and PDF) to outputs/figures. CPU only; safe to re-run at any time.
 
   T1  active pixel fraction per grid, cytokine and window (baseline seeds)
   T2  errors relative to the front of the cytokine field (contour at 0.05 c_max)
@@ -25,7 +25,7 @@ from paths import OUTPUTS
 warnings.filterwarnings("ignore")
 
 SRC = C.OUT
-DST = OUTPUTS / C.os.environ.get("REV_OUT", "rev") / "figures"; DST.mkdir(parents=True, exist_ok=True)
+DST = OUTPUTS / "figures"; DST.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"font.size": 8, "axes.titlesize": 9, "legend.fontsize": 7, "figure.dpi": 120})
 ARCH = [("unet", "U-Net"), ("convlstm", "ConvLSTM"), ("fno", "FNO"), ("pointwise", "Point-wise"), ("stalstm", "STA-LSTM")]
 # Model colours of the original manuscript (scripts/figures.py), extended along the same palette for the new models.

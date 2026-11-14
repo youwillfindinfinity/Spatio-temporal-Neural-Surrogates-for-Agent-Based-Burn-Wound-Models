@@ -1,7 +1,5 @@
 # Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models
 
-![Graphical Abstract](Manuscript/Figures/1%20-%20Graphical%20Abstract.svg)
-
 [![DOI](https://zenodo.org/badge/1223516798.svg)](https://doi.org/10.5281/zenodo.20457662)
 
 > **Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models**  
@@ -82,9 +80,6 @@ surrogates_2D/
 │   ├── eda/                    # Exploratory data analysis summaries
 │   └── metrics/                # Aggregated metric CSVs
 ├── paths.py                    # Central path config — imported by all scripts
-├── Manuscript/
-│   ├── cas-sc-template.tex     # LaTeX source (Computers in Biology and Medicine)
-│   └── Figures/                # Figures used in the manuscript
 ├── hpc/
 │   ├── sync_to_hpc.sh          # Push code + preprocessed data to Snellius
 │   └── sync_from_hpc.sh        # Pull result JSONs from Snellius
