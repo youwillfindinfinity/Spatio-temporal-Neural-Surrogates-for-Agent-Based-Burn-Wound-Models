@@ -1,4 +1,4 @@
-REVISION EXPERIMENTS - SUMMARY (294 runs)
+REVISION EXPERIMENTS - SUMMARY (411 runs)
 skill = 1 - MSE_model / MSE_persistence (one step ahead); > 0 means better than copying the previous frame
 front = +/- band around the 0.05 c_max contour of the true field; values are RMSE / c_max
 
@@ -23,6 +23,16 @@ lookback_unet/w2             3    0.9624  0.9024  0.8093   -3.187   -3.298   0.0
 lookback_unet/w3             3    0.9603  0.9247  0.7890   -3.425   -3.655   0.0403      nan                      35.3
 lookback_unet/w4             3    0.9612  0.9281  0.8115   -3.314   -3.510   0.0403      nan                      36.3
 lookback_unet/w5             3    0.9467  0.9057  0.6834   -4.933   -5.238   0.0474      nan                      37.3
+main_convlstm/direct         3    0.9820  0.9863  0.9635   -1.007   -0.867   0.0288      nan   0.897    0.727     50.0
+main_convlstm/increment      3    0.9911  0.9967  0.9975    0.004    0.003   0.0211      nan   0.775    0.776     30.3
+main_fno/direct              3    0.9804  0.9862  0.9948   -1.179   -1.648   0.0310      nan   0.803    0.736     35.3
+main_fno/increment           3    0.9911  0.9967  0.9975    0.005    0.003   0.0211      nan   0.778    0.780     18.7
+main_pointwise/direct        3    0.9884  0.9932  0.9968   -0.294   -0.323   0.0239      nan   0.867    0.759     52.4
+main_pointwise/increment     3    0.9911  0.9966  0.9975    0.005    0.003   0.0211      nan   0.777    0.779     17.0
+main_stalstm/direct          3    0.6270  0.8019  0.9449  -40.530  -34.860   0.1358      nan   0.472    0.472     10.0
+main_stalstm/increment       3    0.9910  0.9967  0.9975   -0.000    0.000   0.0211      nan   0.761    0.761      5.8
+main_unet/direct             3    0.9471  0.8479  0.6596   -4.885   -5.440   0.0444      nan   0.750    0.694     33.0
+main_unet/increment          3    0.9910  0.9966  0.9975    0.002    0.001   0.0211      nan   0.767    0.767     18.2
 stalstm/base                 3    0.6274  0.6442  0.7008  -40.480  -36.350   0.1322      nan   0.448    0.471     22.1
 unet/base                    3    0.9629  0.8937  0.7949   -3.131   -3.256   0.0384      nan   0.836    0.705     36.2
 unet/ntrain35                3    0.8495  0.6281  0.2885  -15.760  -14.120   0.0657      nan   0.523    0.507     27.3
@@ -52,6 +62,16 @@ lookback_unet/w2             3    0.9937  0.9421  0.9364   -7.621   -6.667   0.0
 lookback_unet/w3             3    0.9910  0.9283  0.9145  -11.280  -10.250   0.0231      nan                     127.8
 lookback_unet/w4             3    0.9925  0.9331  0.9160   -9.179   -8.121   0.0211      nan                     141.0
 lookback_unet/w5             3    0.9931  0.9365  0.9342   -8.351   -7.125   0.0203      nan                     141.6
+main_convlstm/direct         3    0.9977  0.9944  0.9709   -2.171   -1.622   0.0118      nan   0.881    0.905    323.9
+main_convlstm/increment      3    0.9993  0.9990  0.9991    0.013    0.003   0.0067      nan   0.958    0.956     24.4
+main_fno/direct              3    0.9973  0.9867  0.9628   -2.630   -2.328   0.0128      nan   0.847    0.908    107.6
+main_fno/increment           3    0.9993  0.9991  0.9979    0.077    0.030   0.0065      nan   0.975    0.957     33.4
+main_pointwise/direct        3    0.9991  0.9958  0.9971   -0.215   -0.325   0.0074      nan   0.908    0.928    227.0
+main_pointwise/increment     3    0.9993  0.9991  0.9985    0.079    0.032   0.0065      nan   0.974    0.954     64.8
+main_stalstm/direct          3    0.9362  0.8277  0.8462  -86.090  -73.610   0.0630      nan   0.875    0.882     53.8
+main_stalstm/increment       3    0.9993  0.9985  0.9977    0.002    0.001   0.0068      nan   0.951    0.951      8.1
+main_unet/direct             3    0.9947  0.9499  0.9507   -6.225   -5.493   0.0179      nan   0.881    0.931    140.7
+main_unet/increment          3    0.9993  0.9990  0.9985    0.099    0.051   0.0064      nan   0.973    0.964     50.4
 stalstm/base                 3    0.8896  0.7999  0.8071 -149.600 -104.100   0.0827      nan   0.849    0.848     49.7
 unet/base                    3    0.9944  0.9534  0.9473   -6.614   -5.770   0.0184      nan   0.852    0.919    152.5
 unet/ntrain35                3    0.9761  0.7882  0.7520  -31.560  -26.650   0.0369      nan   0.646    0.813     94.9
@@ -80,6 +100,16 @@ lookback_unet/w2             3    0.9778  0.9337  0.9450 -229.300 -319.800   0.0
 lookback_unet/w3             3    0.9769  0.9394  0.9515 -239.000 -357.300   0.0167   0.0271                      34.5
 lookback_unet/w4             3    0.9737  0.9177  0.9402 -272.400 -393.200   0.0190   0.0268                      34.4
 lookback_unet/w5             3    0.9708  0.9157  0.9264 -302.900 -445.800   0.0210   0.0282                      36.3
+main_convlstm/direct         3    0.9978  0.9942  0.9882  -22.020  -31.460   0.0037   0.0066   0.915    0.939     52.2
+main_convlstm/increment      3    1.0000  0.9998  0.9988    0.845    0.817   0.0004   0.0007   0.996    0.996     34.0
+main_fno/direct              3    0.9970  0.9897  0.9806  -30.090  -50.830   0.0059   0.0094   0.772    0.700     44.2
+main_fno/increment           3    1.0000  0.9996  0.9986    0.711    0.697   0.0004   0.0009   0.992    0.992     13.6
+main_pointwise/direct        3    0.9989  0.9946  0.9929  -10.220  -19.390   0.0042   0.0038   0.913    0.935     26.8
+main_pointwise/increment     3    1.0000  0.9991  0.9990    0.627    0.612   0.0004   0.0010   0.989    0.989      9.8
+main_stalstm/direct          3    0.9825  0.8943  0.9650 -181.000 -760.000   0.0104   0.0227   0.841    0.964     25.4
+main_stalstm/increment       3    1.0000  0.9986  0.9994    0.468    0.470   0.0003   0.0013   0.985    0.985      5.3
+main_unet/direct             3    0.9837  0.9530  0.9539 -169.000 -235.300   0.0154   0.0217   0.735    0.770     48.5
+main_unet/increment          3    1.0000  0.9999  0.9984    0.831    0.799   0.0004   0.0006   0.996    0.996     15.4
 stalstm/base                 3    0.9749  0.8787  0.9508 -260.100 -608.000   0.0141   0.0290   0.927    0.955     25.1
 unet/base                    3    0.9796  0.9352  0.9459 -210.800 -299.900   0.0174   0.0237   0.803    0.840     33.1
 unet/ntrain35                3    0.9135  0.7736  0.8619 -898.100-1260.000   0.0334   0.0466   0.570    0.658     26.6
@@ -109,6 +139,15 @@ lookback_unet/w2             3    0.9837  0.9187  0.9785 -107.700 -143.800   0.0
 lookback_unet/w3             3    0.9848  0.9253  0.9826 -100.600 -133.600   0.0126   0.0198                      69.6
 lookback_unet/w4             3    0.9833  0.9133  0.9768 -110.100 -156.600   0.0147   0.0198                      71.6
 lookback_unet/w5             3    0.9842  0.9166  0.9818 -104.000 -140.800   0.0127   0.0201                      79.3
+main_convlstm/direct         3    0.9986  0.9922  0.9936   -8.658  -12.440   0.0047   0.0050   0.965    0.975    163.7
+main_convlstm/increment      3    1.0000  0.9993  0.9993    0.869    0.852   0.0005   0.0006   0.994    0.993     46.1
+main_fno/direct              3    0.9980  0.9863  0.9941  -12.220  -21.700   0.0054   0.0068   0.884    0.892    106.5
+main_fno/increment           3    1.0000  0.9997  0.9994    0.830    0.782   0.0004   0.0008   0.991    0.990     26.6
+main_pointwise/direct        3    0.9998  0.9987  0.9981   -0.407   -1.098   0.0017   0.0022   0.972    0.972    125.1
+main_pointwise/increment     3    1.0000  0.9999  0.9994    0.788    0.708   0.0004   0.0010   0.988    0.988     19.6
+main_stalstm/increment       3    0.9999  0.9967  0.9993    0.597    0.603   0.0005   0.0010   0.983    0.983     12.6
+main_unet/direct             3    0.9929  0.9437  0.9863  -46.110  -68.310   0.0099   0.0125   0.923    0.953    147.2
+main_unet/increment          3    1.0000  0.9999  0.9993    0.901    0.872   0.0005   0.0005   0.996    0.995     36.0
 stalstm/base                 3    0.9591  0.8742  0.9857 -271.400 -485.900   0.0088   0.0348   0.926    0.896     46.9
 unet/base                    3    0.9849  0.9254  0.9808  -99.930 -138.000   0.0129   0.0197   0.867    0.887     64.2
 unet/ntrain35                3    0.9705  0.8528  0.9639 -195.900 -265.100   0.0214   0.0261   0.536    0.582     46.7
@@ -135,6 +174,16 @@ Per-frame spatial correlation, lowest frame per configuration (model mean over s
   il10 100 lookback_unet/w3: min 0.9547  median 0.9747  max 0.9853
   il10 100 lookback_unet/w4: min 0.9558  median 0.9781  max 0.9847
   il10 100 lookback_unet/w5: min 0.9461  median 0.9675  max 0.9781
+  il10 100 main_convlstm/direct: min 0.9707  median 0.9911  max 0.9960
+  il10 100 main_convlstm/increment: min 0.9750  median 0.9951  max 1.0000
+  il10 100 main_fno/direct: min 0.9688  median 0.9912  max 0.9963
+  il10 100 main_fno/increment: min 0.9750  median 0.9951  max 1.0000
+  il10 100 main_pointwise/direct: min 0.9735  median 0.9941  max 0.9990
+  il10 100 main_pointwise/increment: min 0.9750  median 0.9951  max 1.0000
+  il10 100 main_stalstm/direct: min 0.7110  median 0.7749  max 0.8204
+  il10 100 main_stalstm/increment: min 0.9750  median 0.9951  max 1.0000
+  il10 100 main_unet/direct: min 0.9488  median 0.9700  max 0.9813
+  il10 100 main_unet/increment: min 0.9750  median 0.9951  max 1.0000
   il10 100 stalstm/base: min 0.7183  median 0.7837  max 0.8310
   il10 100 unet/base: min 0.9591  median 0.9789  max 0.9871
   il10 100 unet/ntrain35: min 0.8952  median 0.9224  max 0.9405
@@ -160,6 +209,16 @@ Per-frame spatial correlation, lowest frame per configuration (model mean over s
   il10 250 lookback_unet/w3: min 0.9928  median 0.9953  max 0.9968
   il10 250 lookback_unet/w4: min 0.9937  median 0.9957  max 0.9972
   il10 250 lookback_unet/w5: min 0.9943  median 0.9962  max 0.9974
+  il10 250 main_convlstm/direct: min 0.9973  median 0.9987  max 0.9992
+  il10 250 main_convlstm/increment: min 0.9983  median 0.9996  max 1.0000
+  il10 250 main_fno/direct: min 0.9970  median 0.9983  max 0.9991
+  il10 250 main_fno/increment: min 0.9983  median 0.9996  max 1.0000
+  il10 250 main_pointwise/direct: min 0.9982  median 0.9995  max 0.9999
+  il10 250 main_pointwise/increment: min 0.9983  median 0.9996  max 1.0000
+  il10 250 main_stalstm/direct: min 0.9386  median 0.9603  max 0.9761
+  il10 250 main_stalstm/increment: min 0.9983  median 0.9996  max 1.0000
+  il10 250 main_unet/direct: min 0.9952  median 0.9969  max 0.9980
+  il10 250 main_unet/increment: min 0.9983  median 0.9996  max 1.0000
   il10 250 stalstm/base: min 0.9173  median 0.9371  max 0.9516
   il10 250 unet/base: min 0.9951  median 0.9967  max 0.9980
   il10 250 unet/ntrain35: min 0.9813  median 0.9872  max 0.9921
@@ -184,6 +243,16 @@ Per-frame spatial correlation, lowest frame per configuration (model mean over s
   il8 100 lookback_unet/w3: min 0.9849  median 0.9872  max 0.9900
   il8 100 lookback_unet/w4: min 0.9834  median 0.9858  max 0.9881
   il8 100 lookback_unet/w5: min 0.9812  median 0.9839  max 0.9872
+  il8 100 main_convlstm/direct: min 0.9989  median 0.9990  max 0.9990
+  il8 100 main_convlstm/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 100 main_fno/direct: min 0.9977  median 0.9983  max 0.9988
+  il8 100 main_fno/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 100 main_pointwise/direct: min 0.9991  median 0.9993  max 0.9997
+  il8 100 main_pointwise/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 100 main_stalstm/direct: min 0.9923  median 0.9951  max 0.9975
+  il8 100 main_stalstm/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 100 main_unet/direct: min 0.9904  median 0.9916  max 0.9927
+  il8 100 main_unet/increment: min 1.0000  median 1.0000  max 1.0000
   il8 100 stalstm/base: min 0.9849  median 0.9889  max 0.9919
   il8 100 unet/base: min 0.9878  median 0.9892  max 0.9909
   il8 100 unet/ntrain35: min 0.9474  median 0.9535  max 0.9614
@@ -209,6 +278,15 @@ Per-frame spatial correlation, lowest frame per configuration (model mean over s
   il8 250 lookback_unet/w3: min 0.9918  median 0.9923  max 0.9927
   il8 250 lookback_unet/w4: min 0.9903  median 0.9915  max 0.9923
   il8 250 lookback_unet/w5: min 0.9913  median 0.9920  max 0.9925
+  il8 250 main_convlstm/direct: min 0.9992  median 0.9993  max 0.9993
+  il8 250 main_convlstm/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 250 main_fno/direct: min 0.9986  median 0.9989  max 0.9992
+  il8 250 main_fno/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 250 main_pointwise/direct: min 0.9999  median 0.9999  max 0.9999
+  il8 250 main_pointwise/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 250 main_stalstm/increment: min 1.0000  median 1.0000  max 1.0000
+  il8 250 main_unet/direct: min 0.9958  median 0.9963  max 0.9968
+  il8 250 main_unet/increment: min 1.0000  median 1.0000  max 1.0000
   il8 250 stalstm/base: min 0.9886  median 0.9895  max 0.9901
   il8 250 unet/base: min 0.9918  median 0.9924  max 0.9929
   il8 250 unet/ntrain35: min 0.9845  median 0.9854  max 0.9869
