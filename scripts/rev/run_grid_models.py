@@ -39,12 +39,16 @@ def build_unet(grid, hp):
     return U.build_unet(grid_size=grid, in_channels=22, base_filters=hp["base_filters"], depth=hp["depth"], dropout=hp["dropout"])
 
 
-def build_convlstm(grid, filters=32, w=2):
-    inp = tf.keras.Input((grid, grid, 11 * w))
-    x = L.Reshape((grid, grid, w, 11))(inp)
+def build_convlstm(grid, filters=32, w=2, n_layers=2, n_extra=0):
+    """n_extra: additional static channels (e.g. cell masks at the target time) appended after the recurrent part."""
+    inp = tf.keras.Input((grid, grid, 11 * w + n_extra))
+    seq = L.Lambda(lambda z: z[..., :11 * w])(inp) if n_extra else inp
+    x = L.Reshape((grid, grid, w, 11))(seq)
     x = L.Permute((3, 1, 2, 4))(x)                                   # (w, G, G, 11)
-    x = L.ConvLSTM2D(filters, 3, padding="same", return_sequences=True)(x)
-    x = L.ConvLSTM2D(filters, 3, padding="same", return_sequences=False)(x)
+    for k in range(n_layers):
+        x = L.ConvLSTM2D(filters, 3, padding="same", return_sequences=k < n_layers - 1)(x)
+    if n_extra:
+        x = L.Concatenate()([x, L.Lambda(lambda z: z[..., 11 * w:])(inp)])
     x = L.Conv2D(filters, 3, padding="same", activation="relu")(x)
     return tf.keras.Model(inp, L.Conv2D(1, 1, padding="same")(x))
 
@@ -72,8 +76,8 @@ class SpectralConv2D(L.Layer):
         return tf.transpose(tf.signal.irfft2d(of, fft_length=[H, W]), [0, 2, 3, 1])
 
 
-def build_fno(grid, width=32, modes=12, depth=4):
-    inp = tf.keras.Input((grid, grid, 22))
+def build_fno(grid, width=32, modes=12, depth=4, n_in=22):
+    inp = tf.keras.Input((grid, grid, n_in))
     lin = np.linspace(-1.0, 1.0, grid, dtype=np.float32)
     xy = np.stack(np.meshgrid(lin, lin, indexing="ij"), -1)[None]     # (1, G, G, 2)
     coords = L.Lambda(lambda z: tf.tile(tf.constant(xy), [tf.shape(z)[0], 1, 1, 1]))(inp)

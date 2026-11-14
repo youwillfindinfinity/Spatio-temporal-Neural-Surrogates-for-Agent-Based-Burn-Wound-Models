@@ -7,7 +7,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from paths import RESULTS, OUTPUTS
 
-SRC, DST = RESULTS / "rev", OUTPUTS / "rev"
+import os
+TAG = os.environ.get("REV_OUT", "rev")
+SRC, DST = RESULTS / TAG, OUTPUTS / TAG
 DST.mkdir(parents=True, exist_ok=True)
 runs = [json.load(open(p)) for p in sorted(SRC.glob("*/*/res_*.json"))]
 if not runs:

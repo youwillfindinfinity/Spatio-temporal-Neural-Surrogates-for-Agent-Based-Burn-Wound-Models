@@ -6,8 +6,13 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from paths import RESULTS, RESULTS_MODELS, OUTPUTS
 
-SRC = {"manuscript (stored)": RESULTS_MODELS / "pinn", "soft (re-run)": RESULTS / "rev_pinn" / "soft" / "pinn",
-       "strict": RESULTS / "rev_pinn" / "strict" / "pinn"}
+import os
+TAG = os.environ.get("REV_OUT")
+if TAG:      # revision ABM runs, residual consistent with the ABM
+    SRC = {"soft": RESULTS / f"{TAG}_pinn" / "soft" / "pinn", "strict": RESULTS / f"{TAG}_pinn" / "strict" / "pinn"}
+else:        # original data and code
+    SRC = {"manuscript (stored)": RESULTS_MODELS / "pinn", "soft (re-run)": RESULTS / "rev_pinn" / "soft" / "pinn",
+           "strict": RESULTS / "rev_pinn" / "strict" / "pinn"}
 KEYS = ["Global_R2", "SSIM", "Avg_Dice", "Spatial_Correlation", "Masked_RMSE"]
 lines = ["PINN: softened vs strict residual (mean +/- sample SD over available seeds)", ""]
 for cyt in ("il10", "il8"):
@@ -25,6 +30,6 @@ for cyt in ("il10", "il8"):
                 tt = np.mean([r.get("train_time_seconds", np.nan) for r in rs])
                 lines.append(f"{name:22s}{len(rs):>3d}{wn:>7s}" + "".join(f"{c:>24s}" for c in cells) + f"{tt:10.0f}")
         lines.append("")
-out = OUTPUTS / "rev"; out.mkdir(parents=True, exist_ok=True)
+out = OUTPUTS / (TAG or "rev"); out.mkdir(parents=True, exist_ok=True)
 (out / "summary_pinn.txt").write_text("\n".join(lines) + "\n")
 print("\n".join(lines))

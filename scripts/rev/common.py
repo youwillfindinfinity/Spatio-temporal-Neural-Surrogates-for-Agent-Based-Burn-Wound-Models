@@ -20,11 +20,37 @@ sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / "scripts"))
 from paths import PREPROCESSED, RESULTS, RESULTS_MODELS          # noqa: E402
 import metrics as paper_metrics                                    # noqa: E402  (scripts/metrics.py)
 
+import os
 CYTS = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 TRAIN, VAL = (0, 70), (70, 80)
 START, END = 80, 99
 WINDOWS = {"near": (80, 90), "far": (90, 99)}
-OUT = RESULTS / "rev"
+# REV_DATA_ROOT: folder with one sub-folder per ABM run (scripts/rev/preprocess_runs.py).
+# Unset = the original single-trajectory data in preprocessed/<G>x<G>.
+DATA_ROOT = Path(os.environ["REV_DATA_ROOT"]) if os.environ.get("REV_DATA_ROOT") else None
+TRAIN_EXP = os.environ.get("REV_TRAIN_EXP", "E3_il10_from_m2")
+OUT = RESULTS / os.environ.get("REV_OUT", "rev")
+
+
+def train_run(grid, seed=1):
+    return f"{TRAIN_EXP}_G{grid}_s{seed}"
+
+
+def run_dir(grid, run=None):
+    if DATA_ROOT is None:
+        return PREPROCESSED / f"{grid}x{grid}"
+    return DATA_ROOT / (run or train_run(grid))
+
+
+def test_runs(grid):
+    """All preprocessed runs of this grid except the training run, as {run_id: experiment}."""
+    if DATA_ROOT is None:
+        return {}
+    out = {}
+    for d in sorted(DATA_ROOT.iterdir()):
+        if d.is_dir() and f"_G{grid}_s" in d.name and d.name != train_run(grid) and (d / "X_unet.npy").exists():
+            out[d.name] = d.name.split(f"_G{grid}_s")[0]
+    return out
 
 
 def set_seed(seed):
@@ -33,16 +59,21 @@ def set_seed(seed):
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
 
-def load(grid, cytokine):
+_CACHE = {}
+
+
+def load(grid, cytokine, run=None):
+    """Arrays of one run for one target cytokine. Files are read once per process and cached."""
     idx = CYTS.index(cytokine)
-    dp = PREPROCESSED / f"{grid}x{grid}"
-    Xu = np.load(dp / "X_unet.npy").astype(np.float32)
-    Y = np.load(dp / "Y_target.npy").astype(np.float32)[..., idx]
-    M = np.load(dp / "Y_masks_spatial.npy").astype(np.float32)
-    Xt = np.load(dp / "X_trunk.npy").astype(np.float32)
-    cmax = float(json.load(open(dp / "metadata.json"))["scaling"]["max"][idx])
-    assert Xu.shape[0] == 99, f"expected 99 samples, got {Xu.shape[0]} (check N_TIMESTEPS = 101)"
-    return {"grid": grid, "cytokine": cytokine, "idx": idx, "Xu": Xu, "Y": Y, "M": M, "Xt": Xt, "cmax": cmax}
+    dp = run_dir(grid, run)
+    if dp not in _CACHE:
+        Xu = np.load(dp / "X_unet.npy").astype(np.float32)
+        assert Xu.shape[0] == 99, f"expected 99 samples, got {Xu.shape[0]} (check N_TIMESTEPS = 101)"
+        _CACHE[dp] = (Xu, np.load(dp / "Y_target.npy").astype(np.float32), np.load(dp / "Y_masks_spatial.npy").astype(np.float32),
+                      np.load(dp / "X_trunk.npy").astype(np.float32), json.load(open(dp / "metadata.json"))["scaling"]["max"])
+    Xu, Yall, M, Xt, cmaxs = _CACHE[dp]
+    return {"grid": grid, "cytokine": cytokine, "idx": idx, "Xu": Xu, "Y": Yall[..., idx], "M": M, "Xt": Xt, "cmax": float(cmaxs[idx]),
+            "run": run or (train_run(grid) if DATA_ROOT else "original")}
 
 
 def to_seq(Xu):
@@ -56,6 +87,11 @@ def den(a, cmax):
 
 
 def stored_params(model_dir, cytokine, grid):
+    """Hyperparameters: those tuned on the current data (main_<model>/direct) if present,
+    otherwise the ones stored with the original study."""
+    new = OUT / f"main_{model_dir.replace('sta_lstm', 'stalstm')}" / "direct" / f"hp_{cytokine}_{grid}.json"
+    if new.exists():
+        return json.load(open(new))["best_params"]
     return json.load(open(RESULTS_MODELS / model_dir / f"res_{cytokine}_{grid}_42.json"))["best_params"]
 
 
@@ -108,27 +144,65 @@ def _paper(truth, pred, M, cmax):
     return {k: m[k] for k in ("Global_R2", "SSIM", "Avg_Dice", "Spatial_Correlation", "Masked_RMSE", "Unmasked_RMSE")}
 
 
-def rollout(predict, Xu, idx, mode):
-    prev2 = Xu[START, ..., idx].copy(); prev1 = Xu[START, ..., 11 + idx].copy()
-    frozen = Xu[START].copy(); out = []
-    for i in range(START, END):
+def call(predict, x, ids, data):
+    """Call a model wrapper; wrappers with needs_data = True also receive the run's data dict."""
+    return predict(x, ids, data) if getattr(predict, "needs_data", False) else predict(x, ids)
+
+
+def rollout(predict, Xu, idx, mode, start=START, end=END, data=None):
+    prev2 = Xu[start, ..., idx].copy(); prev1 = Xu[start, ..., 11 + idx].copy()
+    frozen = Xu[start].copy(); out = []
+    for i in range(start, end):
         x = Xu[i].copy()
         if mode == "frozen":
-            x[..., 0:6] = frozen[..., 11:17] if i > START else frozen[..., 0:6]
+            x[..., 0:6] = frozen[..., 11:17] if i > start else frozen[..., 0:6]
             x[..., 11:17] = frozen[..., 11:17]
         x[..., idx] = prev2; x[..., 11 + idx] = prev1
-        y = np.clip(np.asarray(predict(x[None], [i]))[0], -1.0, 1.0)
+        y = np.clip(np.asarray(call(predict, x[None], [i], data))[0], -1.0, 1.0)
         out.append(y); prev2, prev1 = prev1, y
     return np.stack(out)
 
 
-def evaluate(model, variant, data, seed, predict, train_time=None, extra=None, do_rollout=True, save_pred=True):
+def evaluate_transfer(predict, grid, cytokine):
+    """Frozen-weight evaluation on every other run of the same grid (other seeds, other ABM settings).
+    Inputs and targets of the test runs are scaled with the training run's c_max.
+      window : t = 82-100 h, same metrics as for the training run
+      full   : t = 2-100 h (whole trajectory, including the early phase)
+      roll-outs from t = 81 h (19 steps) and from the first two frames (99 steps), vs frozen persistence"""
+    out = {}
+    for run, exp in test_runs(grid).items():
+        d = load(grid, cytokine, run); idx, cmax, Xu = d["idx"], d["cmax"], d["Xu"]
+        ids = list(range(Xu.shape[0]))
+        truth = den(d["Y"], cmax)
+        pred = np.maximum(den(np.concatenate([np.asarray(call(predict, Xu[i:i + 1], [i], d)) for i in ids]), cmax), 0.0)
+        pers = den(Xu[..., 11 + idx], cmax)
+        r = {"experiment": exp}
+        w = slice(START, END)
+        mse = lambda a, b: float(np.mean((a - b) ** 2))
+        r["window"] = {"model": _paper(truth[w], pred[w], d["M"][w], cmax), "persistence": _paper(truth[w], pers[w], d["M"][w], cmax),
+                       "skill_vs_persistence": 1.0 - mse(truth[w], pred[w]) / max(mse(truth[w], pers[w]), 1e-300)}
+        r["full"] = {"R2_model": _r2(truth, pred), "R2_persistence": _r2(truth, pers),
+                     "RMSE_rel_model": float(np.sqrt(mse(truth, pred)) / cmax), "RMSE_rel_persistence": float(np.sqrt(mse(truth, pers)) / cmax),
+                     "skill_vs_persistence": 1.0 - mse(truth, pred) / max(mse(truth, pers), 1e-300),
+                     "per_frame_R2_model": [_r2(truth[k], pred[k]) for k in ids], "per_frame_R2_persistence": [_r2(truth[k], pers[k]) for k in ids],
+                     "per_frame_skill": [1.0 - mse(truth[k], pred[k]) / max(mse(truth[k], pers[k]), 1e-300) for k in ids]}
+        ro = np.maximum(den(rollout(predict, Xu, idx, "gt", data=d), cmax), 0.0)
+        r["rollout_from_t81"] = {"R2_model": [_r2(truth[START + k], ro[k]) for k in range(END - START)],
+                                 "R2_persist_frozen": [_r2(truth[START + k], pers[START]) for k in range(END - START)]}
+        ro = np.maximum(den(rollout(predict, Xu, idx, "gt", 0, Xu.shape[0], data=d), cmax), 0.0)
+        r["rollout_from_start"] = {"R2_model": [_r2(truth[k], ro[k]) for k in ids], "R2_persist_frozen": [_r2(truth[k], pers[0]) for k in ids],
+                                   "RMSE_rel_model": [float(np.sqrt(mse(truth[k], ro[k])) / cmax) for k in ids]}
+        out[run] = r
+    return out
+
+
+def evaluate(model, variant, data, seed, predict, train_time=None, extra=None, do_rollout=True, save_pred=True, transfer=False):
     """Full evaluation of one trained model; writes a JSON (and test predictions) and returns the dict."""
     grid, cyt, idx, cmax = data["grid"], data["cytokine"], data["idx"], data["cmax"]
     Xu, Y, M = data["Xu"], data["Y"], data["M"]
     ids = list(range(START, END))
     t0 = time.time()
-    pred_s = np.concatenate([np.asarray(predict(Xu[i:i + 1], [i])) for i in ids])
+    pred_s = np.concatenate([np.asarray(call(predict, Xu[i:i + 1], [i], data)) for i in ids])
     infer_s = time.time() - t0
     truth = den(Y[START:END], cmax)
     pred = np.maximum(den(pred_s, cmax), 0.0)
@@ -161,13 +235,16 @@ def evaluate(model, variant, data, seed, predict, train_time=None, extra=None, d
     ro = {}
     if do_rollout:
         for mode in ("gt", "frozen"):
-            r = np.maximum(den(rollout(predict, Xu, idx, mode), cmax), 0.0)
+            r = np.maximum(den(rollout(predict, Xu, idx, mode, data=data), cmax), 0.0)
             ro[mode] = r
             res["rollout"][f"R2_{mode}"] = [_r2(truth[k], r[k]) for k in range(len(ids))]
             res["rollout"][f"RMSE_{mode}"] = [float(np.sqrt(np.mean((truth[k] - r[k]) ** 2))) for k in range(len(ids))]
         res["rollout"]["R2_persist_frozen"] = [_r2(truth[k], pers_frozen[k]) for k in range(len(ids))]
         res["rollout"]["RMSE_persist_frozen"] = [float(np.sqrt(np.mean((truth[k] - pers_frozen[k]) ** 2))) for k in range(len(ids))]
 
+    res["run"] = data.get("run")
+    if transfer and DATA_ROOT is not None:
+        res["transfer"] = evaluate_transfer(predict, grid, cyt)
     p = result_path(model, variant, cyt, grid, seed)
     json.dump(res, open(p, "w"), indent=1)
     if save_pred:
@@ -177,7 +254,8 @@ def evaluate(model, variant, data, seed, predict, train_time=None, extra=None, d
     print(f"[{model}/{variant} {cyt} {grid} s{seed}] near R2 {w['model']['Global_R2']:.4f} "
           f"(persist {w['persistence']['Global_R2']:.4f}) skill {w['skill_vs_persistence']:+.3f}"
           + (f" | rollout19 R2 gt {res['rollout']['R2_gt'][-1]:.3f} frozen-persist {res['rollout']['R2_persist_frozen'][-1]:.3f}" if do_rollout else "")
-          + (f" | train {train_time:.0f}s" if train_time else ""), flush=True)
+          + (f" | train {train_time:.0f}s" if train_time else "")
+          + (f" | transfer runs {len(res['transfer'])}" if res.get("transfer") else ""), flush=True)
     return res
 
 

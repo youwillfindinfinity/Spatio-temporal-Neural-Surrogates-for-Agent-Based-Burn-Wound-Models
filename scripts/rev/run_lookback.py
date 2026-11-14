@@ -11,7 +11,7 @@ import run_grid_models as G
 
 
 def full_sequence(grid):
-    dp = C.PREPROCESSED / f"{grid}x{grid}"
+    dp = C.run_dir(grid)
     X = np.load(dp / "X_unet.npy").astype(np.float32)
     Y = np.load(dp / "Y_target.npy").astype(np.float32)
     M = np.load(dp / "Y_masks_spatial.npy").astype(np.float32)

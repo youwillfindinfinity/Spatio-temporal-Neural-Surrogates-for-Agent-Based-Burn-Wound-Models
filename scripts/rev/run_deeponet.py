@@ -106,7 +106,7 @@ def run(variant, grid, cytokine, seed):
     extra = {"hyperparameters": hp, "n_parameters": int(model.count_params())}
     C.evaluate("deeponet", variant, d, seed, make_predict(model, d, variant), train_time=round(t, 1), extra=extra)
     zs = int(os.environ.get("REV_ZS_TARGET", 250))
-    if variant == "base" and grid == int(os.environ.get("REV_ZS_SOURCE", 100)) and (C.PREPROCESSED / f"{zs}x{zs}" / "X_unet.npy").exists():
+    if variant == "base" and grid == int(os.environ.get("REV_ZS_SOURCE", 100)) and (C.run_dir(zs) / "X_unet.npy").exists():
         d2 = C.load(zs, cytokine)
         C.evaluate("deeponet", f"zeroshot_{grid}to{zs}", d2, seed, make_predict(model, d2, variant),
                    extra={"note": "trained at 100^2, evaluated at 250^2 without re-training; inputs scaled with the 250^2 c_max"},
