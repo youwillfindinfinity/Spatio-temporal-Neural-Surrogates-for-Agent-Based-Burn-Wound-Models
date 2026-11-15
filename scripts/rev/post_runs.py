@@ -147,7 +147,7 @@ def t2_front_and_maps():
                 a.contour((truth[k] > 0.05 * cmax).T.astype(float), levels=[0.5], colors="cyan", linewidths=0.5); a.set_xticks([]); a.set_yticks([])
             fig.colorbar(im, ax=ax[1:], fraction=0.012, pad=0.01, label="|error|")
             fig.suptitle(f"{lab}, {grid}$^2$, t = 88 h; cyan: contour at 5 % of c_max", y=1.02)
-            save(fig, f"F7_error_maps_{cyt}_{grid}")
+            save(fig, f"{'Fig10' if grid == 100 else 'FigA1'}_error_maps_{cyt}_{grid}")
     with open(DST.parent / "front_analysis.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
 
@@ -171,7 +171,7 @@ def f1_data_overview():
             im = a.imshow(truth[k].T, origin="lower", cmap=CMAP_FIELD, vmax=np.percentile(truth[k], 99.5))
             ys, xs = np.where(d["M"][k, ..., 4 if cyt == "il10" else 0].T > 0.5); a.plot(xs, ys, ".", color="white", ms=1.5, alpha=0.8)
             a.set_title(f"{lab}, {grid}$^2$, t = 88 h; dots: {'M2' if cyt == 'il10' else 'endothelial'} cells"); a.set_xticks([]); a.set_yticks([]); fig.colorbar(im, ax=a, fraction=0.046)
-    fig.tight_layout(); save(fig, "F1_data_overview")
+    fig.tight_layout(); save(fig, "Fig1_data_overview")
 
 
 # ------------------------------------------------------------------ F2
@@ -193,7 +193,7 @@ def f2_skill():
                 a.set_title(f"{lab}, {grid}$^2$ - {form}")
                 if col == 0: a.set_ylabel("skill vs persistence")
             col += 1
-    fig.tight_layout(); save(fig, "F2_skill")
+    fig.tight_layout(); save(fig, "Fig3_skill")
 
 
 # ------------------------------------------------------------------ F3
@@ -214,7 +214,7 @@ def f3_rollout():
             a.set_title(f"{lab}, {grid}$^2$"); a.set_xlabel("lead time (h)")
             if col == 0: a.set_ylabel("per-frame $R^2$"); a.legend()
             col += 1
-    fig.tight_layout(); save(fig, "F3_rollout")
+    fig.tight_layout(); save(fig, "Fig4_rollout")
 
 
 # ------------------------------------------------------------------ F4
@@ -240,7 +240,7 @@ def f4_transfer():
             a.axhline(0, color="k", lw=0.8); a.set_title(f"{lab}, {grid}$^2$")
             if col == 0: a.set_ylabel("skill vs persistence"); a.legend()
             col += 1
-    fig.tight_layout(); save(fig, "F4_transfer")
+    fig.tight_layout(); save(fig, "Fig5_transfer")
 
 
 # ------------------------------------------------------------------ F5
@@ -262,7 +262,7 @@ def f5_ablation():
             ax[0, col].set_yscale("symlog", linthresh=1); ax[0, col].set_title(f"{lab}, {grid}$^2$"); ax[1, col].set_ylim(-1, 1.02)
             if col == 0: ax[0, col].set_ylabel("skill vs persistence"); ax[1, col].set_ylabel("roll-out $R^2$ at 19 h")
             col += 1
-    fig.tight_layout(); save(fig, "F5_ablation")
+    fig.tight_layout(); save(fig, "Fig8_ablation")
 
 
 # ------------------------------------------------------------------ F6
@@ -285,7 +285,7 @@ def f6_data_size():
             a.set_yscale("symlog", linthresh=1); a.axhline(0, color="k", lw=0.8); a.set_xticks([1, 2, 3]); a.set_xlabel("training trajectories"); a.set_title(f"{lab}, {grid}$^2$")
             if col == 0: a.set_ylabel("skill vs persistence"); a.legend()
             col += 1
-    fig.tight_layout(); save(fig, "F6_data_size")
+    fig.tight_layout(); save(fig, "Fig9_data_size")
 
 
 # ------------------------------------------------------------------ F8
@@ -304,7 +304,7 @@ def f8_correlation():
             if vals:
                 ax[0, col].boxplot(vals, vert=False, whis=(0, 100)); ax[0, col].set_yticklabels(labs)
             ax[0, col].set_title(f"{lab}, {grid}$^2$"); ax[0, col].set_xlabel("per-frame spatial correlation"); col += 1
-    fig.tight_layout(); save(fig, "F8_per_frame_correlation")
+    fig.tight_layout(); save(fig, "Fig7_per_frame_correlation")
 
 
 # ------------------------------------------------------------------ F9
@@ -330,7 +330,7 @@ def f9_target_masks():
             a.set_title(f"{lab}, {grid}$^2$ (hatched: masks at target time)")
             if col == 0: a.set_ylabel("skill vs persistence (increment)")
             col += 1
-    fig.tight_layout(); save(fig, "F9_target_time_masks")
+    fig.tight_layout(); save(fig, "Fig6_target_time_masks")
 
 
 if __name__ == "__main__":
