@@ -15,3 +15,4 @@ logs/
 *.h5
 revision_scripts*.zip
 results/*/*/_data
+results/*/*/_data
