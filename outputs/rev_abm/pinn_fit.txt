@@ -1,0 +1,25 @@
+file                                     orient            train t2-71             val t72-81            near t82-91            far t92-100   stored near R2
+strict il10 100 s1                           ij   R2 +0.042 corr +0.10   R2 -0.007 corr +0.09   R2 -0.042 corr +0.06   R2 -0.083 corr +0.06   -0.0417
+strict il10 100 s100                         ij   R2 +0.043 corr +0.11   R2 -0.015 corr +0.10   R2 -0.057 corr +0.07   R2 -0.096 corr +0.06   -0.0571
+strict il10 100 s42                          ij   R2 +0.042 corr +0.10   R2 -0.005 corr +0.10   R2 -0.036 corr +0.07   R2 -0.071 corr +0.06   -0.0361
+strict il10 250 s1                           ij   R2 +0.026 corr +0.08   R2 -0.019 corr +0.10   R2 -0.078 corr +0.07   R2 -0.129 corr +0.06   -0.0785
+strict il10 250 s100                         ij   R2 +0.027 corr +0.08   R2 -0.004 corr +0.09   R2 -0.050 corr +0.06   R2 -0.105 corr +0.05   -0.0499
+strict il10 250 s42                          ij   R2 -0.170 corr +0.08   R2 -0.431 corr +0.05   R2 -0.441 corr +0.02   R2 -0.418 corr +0.02   -0.5531
+strict il8 100 s1                            ij   R2 +0.880 corr +0.90   R2 +0.919 corr +0.96   R2 +0.910 corr +0.95   R2 +0.889 corr +0.94   +0.9095
+strict il8 100 s100                          ij   R2 +0.872 corr +0.89   R2 +0.912 corr +0.96   R2 +0.899 corr +0.95   R2 +0.869 corr +0.93   +0.8990
+strict il8 100 s42                           ij   R2 +0.883 corr +0.90   R2 +0.921 corr +0.96   R2 +0.908 corr +0.95   R2 +0.880 corr +0.94   +0.9080
+strict il8 250 s1                            ij   R2 +0.915 corr +0.91   R2 +0.946 corr +0.97   R2 +0.946 corr +0.97   R2 +0.943 corr +0.97   +0.9457
+strict il8 250 s100                          ij   R2 +0.909 corr +0.90   R2 +0.942 corr +0.97   R2 +0.939 corr +0.97   R2 +0.933 corr +0.97   +0.9393
+strict il8 250 s42                           ij   R2 +0.918 corr +0.91   R2 +0.948 corr +0.97   R2 +0.946 corr +0.97   R2 +0.942 corr +0.97   +0.9465
+soft il10 100 s1                             ij   R2 +0.040 corr +0.09   R2 -0.030 corr +0.11   R2 -0.249 corr +0.07   R2 -0.474 corr +0.04   -0.2490
+soft il10 100 s100                           ij   R2 +0.044 corr +0.10   R2 -0.006 corr +0.13   R2 -0.120 corr +0.11   R2 -0.318 corr +0.07   -0.1202
+soft il10 100 s42                            ij   R2 +0.041 corr +0.09   R2 -0.040 corr +0.10   R2 -0.258 corr +0.06   R2 -0.471 corr +0.04   -0.2580
+soft il10 250 s1                             ij   R2 +0.028 corr +0.08   R2 -0.001 corr +0.11   R2 -0.045 corr +0.10   R2 -0.087 corr +0.09   -0.0449
+soft il10 250 s100                           ij   R2 +0.027 corr +0.08   R2 +0.001 corr +0.10   R2 -0.041 corr +0.08   R2 -0.085 corr +0.07   -0.0412
+soft il10 250 s42                            ij   R2 +0.027 corr +0.08   R2 -0.002 corr +0.11   R2 -0.057 corr +0.08   R2 -0.118 corr +0.07   -0.0565
+soft il8 100 s1                              ij   R2 +0.860 corr +0.89   R2 +0.889 corr +0.94   R2 +0.881 corr +0.94   R2 +0.867 corr +0.93   +0.8806
+soft il8 100 s100                            ij   R2 +0.870 corr +0.90   R2 +0.903 corr +0.95   R2 +0.898 corr +0.95   R2 +0.888 corr +0.94   +0.8980
+soft il8 100 s42                             ij   R2 +0.799 corr +0.84   R2 +0.850 corr +0.92   R2 +0.848 corr +0.92   R2 +0.841 corr +0.92   +0.8484
+soft il8 250 s1                              ij   R2 +0.804 corr +0.81   R2 +0.859 corr +0.93   R2 +0.858 corr +0.93   R2 +0.847 corr +0.93   +0.8577
+soft il8 250 s100                            ij   R2 +0.815 corr +0.82   R2 +0.866 corr +0.93   R2 +0.864 corr +0.93   R2 +0.854 corr +0.93   +0.8642
+soft il8 250 s42                             ij   R2 +0.835 corr +0.84   R2 +0.884 corr +0.94   R2 +0.881 corr +0.94   R2 +0.868 corr +0.94   +0.8805
