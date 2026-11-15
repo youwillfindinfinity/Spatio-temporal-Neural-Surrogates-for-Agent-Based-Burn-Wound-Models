@@ -9,9 +9,9 @@ models/**/*.crswap
 models/**/*.h5 
 models/**/*.weights.h5 
 preprocessed_abm/
-results/rev*/
 logs/
 *.npy
 *.npz
 *.h5
 revision_scripts*.zip
+results/*/*/_data

@@ -1,0 +1,13 @@
+{
+ "best_params": {
+  "learning_rate": 0.0009952357753007803,
+  "batch_size": 4,
+  "width": 64,
+  "modes": 12,
+  "depth": 4
+ },
+ "best_val_loss": 0.00074613350443542,
+ "tuning_seconds": 172.8,
+ "n_trials": 20,
+ "tune_epochs": 20
+}

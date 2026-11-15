@@ -1,0 +1,12 @@
+{
+ "best_params": {
+  "learning_rate": 0.0003657175329165261,
+  "batch_size": 8,
+  "filters": 64,
+  "lstm_units": 128
+ },
+ "best_val_loss": 0.00017436894995626062,
+ "tuning_seconds": 147.2,
+ "n_trials": 20,
+ "tune_epochs": 20
+}

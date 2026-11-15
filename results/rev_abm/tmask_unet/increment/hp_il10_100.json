@@ -1,0 +1,13 @@
+{
+ "best_params": {
+  "learning_rate": 0.0005048876143861323,
+  "batch_size": 4,
+  "base_filters": 64,
+  "depth": 4,
+  "dropout": 0.10655868344153353
+ },
+ "best_val_loss": 0.0011358846677467227,
+ "tuning_seconds": 289.1,
+ "n_trials": 20,
+ "tune_epochs": 20
+}
