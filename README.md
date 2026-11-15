@@ -1,39 +1,48 @@
-# Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models
+# Neural Surrogates for Cytokine Fields in an Agent-Based Burn Wound Model
 
-![Graphical Abstract](Manuscript/Figures/1%20-%20Graphical%20Abstract.svg)
+![Graphical abstract](outputs/figures/GraphicalAbstract.png)
 
 [![DOI](https://zenodo.org/badge/1223516798.svg)](https://doi.org/10.5281/zenodo.20457662)
 
-> **Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models**  
+> **Neural Surrogates for Cytokine Fields in an Agent-Based Burn Wound Model: a Persistence-Referenced Benchmark**  
 > Roland V. Bumbuc\*, Julia Kowalczuk\*, Rezo Getsadze, Ioannis Papapanagiotou, H. Ibrahim Korkmaz, Vivek M. Sheraton  
-> *Computers in Biology and Medicine* (submitted)  
+> *Computer Methods and Programs in Biomedicine* (under review)  
 > \*Equal contribution
+
+The code of the original submission is kept under the tag `v1.0.0`.
 
 ---
 
 ## Overview
 
-Agent-based models (ABMs) of the post-burn immune response capture cell-level heterogeneity and spatially resolved cytokine dynamics, but their cost (hundreds to thousands of seconds per trajectory) limits repeated-evaluation workflows such as parameter sweeps, sensitivity analysis, and Bayesian calibration. This repository benchmarks **five neural surrogate architectures** for predicting cytokine concentration fields from a 2D burn wound ABM:
+This repository contains the code and results of a benchmark of neural surrogates for the IL-8 and IL-10 fields of a hybrid agent-based model (ABM) of the post-burn immune response (CompuCell3D coupled to FiPy). The surrogates predict the next hourly field of one cytokine from the two preceding frames (six cytokine fields and five cell-type masks per frame). The cell masks come from the ABM, so the agent dynamics are not learned.
 
-| Architecture | Key characteristic |
+Consecutive hourly frames of the ABM are almost identical, so a model that copies the last frame already reaches R² of 0.9999 for IL-8. All models are therefore compared with this persistence baseline:
+
+```
+skill = 1 - MSE_model / MSE_persistence
+```
+
+| Model | Role |
 |---|---|
-| **DeepONet** | Operator learning; best accuracy at 250² |
-| **PI-DeepONet** | DeepONet + physics-informed loss |
-| **U-Net** | Encoder–decoder CNN; best accuracy/speed balance |
-| **STA-LSTM** | Spatial-attention + LSTM; sequential inductive bias |
-| **PINN** | Physics-informed NN via DeepXDE |
+| **U-Net** | main benchmark |
+| **ConvLSTM** | main benchmark |
+| **Fourier neural operator (FNO)** | main benchmark |
+| **STA-LSTM** | main benchmark |
+| **Point-wise network** | main benchmark (the DeepONet trunk used on its own) |
+| **DeepONet** | ablation only |
+| **PINN** | physics-based reference |
 
-Models are evaluated on **two cytokines** spanning the field-sparsity spectrum:
-- **IL-8** — dense field (\<1% zero pixels)
-- **IL-10** — sparse field (up to ~13% non-zero pixels)
+Each of the five benchmark architectures is trained in two forms: **direct** (the network outputs the next frame) and **increment** (the network outputs a correction that is added to the previous frame). Both forms have their own 20-trial Optuna search and are trained with three seeds, at lattice sizes of 100² and 250².
 
-at **two grid resolutions**: 100×100 and 250×250.
+**Main results**
 
-**Key findings:**
-- DeepONet achieves R² > 0.99 at 250² for both cytokines.
-- U-Net trains 17–41× faster than DeepONet at comparable accuracy.
-- Physics-informed losses do not improve over data-driven baselines on this discrete stochastic ABM.
-- Surrogates yield 10²–10⁴× per-evaluation speed-ups, amortising training within ~1 ABM trajectory.
+- Persistence reaches R² of 0.9999 (100²) and 0.9998 (250²) for IL-8, and 0.96 and 0.95 for IL-10.
+- In increment form all five architectures beat persistence for IL-8 (skill 0.70-0.88 at 100², 0.59-0.95 at 250²). They stay accurate over 19 h roll-outs and keep their skill on unseen seeds and on runs with a wider boundary margin.
+- In direct form the same architectures are worse than persistence for IL-8, although their R² is above 0.99.
+- For IL-10, which is produced by a small number of moving M2 macrophages, the gain over persistence is close to zero (skill 0.001-0.006). It rises to 0.07-0.25 when the models also receive the cell masks at the target time.
+- With frozen weights, the U-Net is worse than persistence on runs with five times more endothelial cells at 250².
+- The PINN, with a residual, sources and boundary condition that match the ABM, reaches R² of 0.91 (100²) and 0.94 (250²) for IL-8 and does not fit IL-10.
 
 ---
 
@@ -42,241 +51,136 @@ at **two grid resolutions**: 100×100 and 250×250.
 ```
 surrogates_2D/
 ├── scripts/
-│   ├── preprocessing100.py     # Preprocess 100h VTK data → .npy arrays
-│   ├── preprocessing200.py     # Preprocess 200h VTK data → .npy arrays
-│   ├── sta_lstm/
-│   │   ├── all.py              # Train STA-LSTM (100h data, all grids)
-│   │   └── all_500.py          # Train STA-LSTM (500×500 grid)
-│   ├── unet/
-│   │   ├── all.py              # Train U-Net (100h data)
-│   │   └── all_500.py          # Train U-Net (500×500 grid)
-│   ├── deeponet/
-│   │   ├── all.py              # Train DeepONet (100h data)
-│   │   └── all_500.py          # Train DeepONet (500×500 grid)
-│   ├── pi_deeponet/
-│   │   ├── all.py              # Train PI-DeepONet (100h data)
-│   │   └── all_500.py          # Train PI-DeepONet (500×500 grid)
-│   ├── pinn/
-│   │   ├── all.py              # Train PINN (100h data)
-│   │   └── all_500.py          # Train PINN (500×500 grid)
-│   ├── figures.py              # Reproduce all paper figures
-│   ├── metrics.py              # Shared metric functions
-│   ├── lookback.py             # Lookback-window sensitivity study
-│   └── submit_snellius.sh      # Submit all jobs to Snellius HPC
-├── sensitivity/
-│   ├── preprocess_p95.py       # Preprocess with fixed 95th-percentile clip
-│   ├── preprocess_no_clip.py   # Preprocess without clipping
-│   ├── train_data_models.py    # Train data-driven models (sensitivity)
-│   ├── train_physics_models.py # Train physics-informed models (sensitivity)
-│   └── aggregate_results.py    # Aggregate sensitivity results → CSV
-├── data_raw/
-│   ├── 100h/                   # Raw VTK files for 100h multi-grid simulations
-│   └── 200h/                   # Raw VTK files for 200h single simulation
+│   ├── rev/                      # experiments of the revised manuscript
+│   │   ├── preprocess_runs.py    # ABM runs (VTK) -> arrays, one scaling per grid
+│   │   ├── common.py             # shared data loading, metrics, persistence, roll-out
+│   │   ├── run_main.py           # five architectures x {direct, increment}
+│   │   ├── run_multitraj.py      # training on 1, 2 or 3 ABM trajectories
+│   │   ├── run_grid_models.py    # U-Net variants (training-set size, weighting)
+│   │   ├── run_lookback.py       # look-back window sweep
+│   │   ├── run_deeponet.py       # DeepONet ablation
+│   │   ├── run_pinn_abm.py       # PINN, strict and softened residual
+│   │   ├── run_pinn_dataonly.py  # PINN control without PDE and boundary terms
+│   │   ├── physics_step*.py      # re-implemented cytokine update of the ABM
+│   │   ├── abm_variability.py    # run-to-run variability of the ABM
+│   │   ├── check_*.py            # checks reported in the manuscript
+│   │   ├── aggregate*.py         # result JSONs -> tables
+│   │   ├── collect_for_paper.py  # values quoted in the manuscript
+│   │   └── post_runs.py          # tables and figures of the manuscript
+│   ├── unet/, sta_lstm/, deeponet/, pi_deeponet/, pinn/   # original submission
+│   └── preprocessing100.py, figures.py, metrics.py, ...   # original submission
+├── sensitivity/                  # clipping sensitivity (original submission)
 ├── results/
-│   ├── models/                 # Result JSONs per model/grid/seed (100h runs)
-│   ├── additional_simulations/ # Results for 200h and 500-grid experiments
-│   ├── sensitivity/            # Sensitivity analysis results (clip variants)
-│   └── sensitivity_lookback/   # Lookback-window sensitivity results
+│   ├── rev_abm/                  # revised manuscript: all models except the PINN
+│   ├── rev_abm_pinn/             # revised manuscript: PINN (strict, soft, data only)
+│   ├── rev/, rev_pinn/           # same experiments on the simulations of the original submission
+│   └── models/, sensitivity/, ...  # original submission
 ├── outputs/
-│   ├── figures/                # Generated paper figures
-│   ├── eda/                    # Exploratory data analysis summaries
-│   └── metrics/                # Aggregated metric CSVs
-├── paths.py                    # Central path config — imported by all scripts
-├── Manuscript/
-│   ├── cas-sc-template.tex     # LaTeX source (Computers in Biology and Medicine)
-│   └── Figures/                # Figures used in the manuscript
-├── hpc/
-│   ├── sync_to_hpc.sh          # Push code + preprocessed data to Snellius
-│   └── sync_from_hpc.sh        # Pull result JSONs from Snellius
-├── requirements.txt
-├── .env.example                # Template for HPC credentials (copy to .env)
-└── all_metrics.csv             # Aggregated metrics across all models and seeds
+│   ├── figures/                  # figures of the revised manuscript
+│   ├── rev_abm/                  # tables behind the revised manuscript
+│   └── rev/, eda/, metrics/      # earlier analyses
+├── submit_revision4.sh           # Snellius: preprocessing, main models, ablation
+├── submit_revision5.sh           # Snellius: target-time masks, figures
+├── submit_revision6.sh           # Snellius: PINN, physics check
+├── paths.py                      # central path configuration
+└── requirements.txt
 ```
+
+`submit_revision.sh`, `submit_revision2.sh` and `submit_revision3.sh` ran the same experiments on the simulations of the original submission (`results/rev`).
 
 ---
 
-## Quick start
+## Reproducing the revised manuscript
 
-### 1. Install dependencies
+### 1. Install
 
-Python 3.10+ is recommended. A GPU with CUDA support is required for full training runs.
+Python 3.11 with TensorFlow 2.15 was used. A GPU is needed for training.
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Prepare your data
+### 2. ABM runs
 
-The ABM simulation data consists of VTK files produced by the burn wound ABM (CompuCell3D / CPM). Each `.vtk` file is one timestep; 101 or 201 files are expected per simulation run.
-
-Place the VTK files for the 100h simulation in a directory and run preprocessing:
+The experiments use 22 ABM simulations of 100 h (101 hourly frames): the baseline configuration with five seeds, a configuration with five times more endothelial cells (three seeds) and one with a wider boundary margin (three seeds), each at 100² and 250². Each run is a folder `<experiment>_G<grid>_s<seed>/LatticeData/Step_*.vtk`. Baseline seed 1 is the only run used for training.
 
 ```bash
-# Expects a directory tree with subfolders named <GxG>/ (e.g. 100x100/, 250x250/)
-# each containing 101 .vtk files.
-python scripts/preprocessing100.py
-# data_raw/100h/ (default) → preprocessed/{100x100,250x250}/
-
-# For 200h data:
-python scripts/preprocessing200.py
-# data_raw/200h/ (default) → preprocessed_200h/
+python scripts/rev/preprocess_runs.py --runs-root <folder with the runs> --out preprocessed_abm
+export REV_DATA_ROOT=$PWD/preprocessed_abm REV_OUT=rev_abm
 ```
 
-The preprocessing scripts produce per-grid folders containing:
+All runs of a grid are scaled with the constants of the training run, so trained models can be applied to the other runs with frozen weights.
 
-| File | Shape | Used by |
-|---|---|---|
-| `Y_target.npy` | (99, G, G, 6) | All models |
-| `Y_masks_spatial.npy` | (99, G, G, 5) | All models (eval + loss) |
-| `X_lstm.npy` | (99, 2, G, G, 11) | STA-LSTM |
-| `X_unet.npy` | (99, G, G, 22) | U-Net |
-| `X_branch.npy` | (99, 2, G, G, 11) | DeepONet / PI-DeepONet |
-| `X_trunk.npy` | (99, G²,  3) | DeepONet / PI-DeepONet |
-| `X_colloc.npy` | (99, G²,  3) | PINN / PI-DeepONet |
-| `Y_ic.npy` | (G, G, 6) | PINN |
-| `Y_bc_mask.npy` | (G, G) | PINN |
-| `Y_raw_phys.npy` | (101, G, G, 6) | PINN (PDE residuals) |
-| `metadata.json` | — | All models (scaling params) |
-
-### 3. Train a model
-
-Each training script accepts `--cytokine` (required) and optionally `--grid` and `--seed`.
+### 3. Train and evaluate
 
 ```bash
-# Train U-Net on IL-8 at all available grid sizes (seed 42, with Optuna HP search)
-python scripts/unet/all.py --cytokine il8
-
-# Train on a specific grid with a different seed (reuses HP from seed=42 run)
-python scripts/unet/all.py --cytokine il10 --grid 250 --seed 1
-
-# Train DeepONet on IL-10 at 100×100
-python scripts/deeponet/all.py --cytokine il10 --grid 100
-
-# Train STA-LSTM on IL-8 at all grids
-python scripts/sta_lstm/all.py --cytokine il8
-
-# Train PINN (grid argument required)
-python scripts/pinn/all.py --cytokine il8 --grid 100
-
-# Train PI-DeepONet
-python scripts/pi_deeponet/all.py --cytokine il10 --grid 250
-```
-
-Results are written to `results/models/<model_name>/res_<cytokine>_<grid>_<seed>.json`.
-
-### 4. Reproduce paper figures
-
-After training all models, generate paper figures with:
-
-```bash
-python scripts/figures.py
-# Outputs saved to outputs/figures/
-```
-
----
-
-## Reproducing paper results
-
-The full experiment matrix is:
-- **Models**: DeepONet, PI-DeepONet, U-Net, STA-LSTM, PINN
-- **Cytokines**: il8, il10
-- **Grids**: 100, 250
-- **Seeds**: 1, 42, 100
-
-Run all combinations:
-
-```bash
-for MODEL in unet sta_lstm deeponet pi_deeponet; do
-    for CYT in il8 il10; do
-        for SEED in 1 42 100; do
-            python scripts/${MODEL}/all.py --cytokine ${CYT} --seed ${SEED}
-        done
-    done
+# main benchmark: hyperparameter search, then seeds 42, 1 and 100, both forms, both cytokines
+for M in unet convlstm fno stalstm pointwise; do
+  for G in 100 250; do
+    python scripts/rev/run_main.py --model $M --grid $G
+  done
 done
 
-# PINN requires --grid
-for CYT in il8 il10; do
-    for GRID in 100 250; do
-        for SEED in 1 42 100; do
-            python scripts/pinn/all.py --cytokine ${CYT} --grid ${GRID} --seed ${SEED}
-        done
-    done
-done
+# models that also receive the cell masks at the target time
+python scripts/rev/run_main.py --model unet --grid 100 --target-masks
+
+# further experiments (U-Net hyperparameters are taken from the main search)
+python scripts/rev/run_multitraj.py --grid 100
+python scripts/rev/run_grid_models.py --model unet --grid 100 --variants weighted ntrain35 ntrain52
+python scripts/rev/run_lookback.py --grid 100
+python scripts/rev/run_deeponet.py --grid 100 --variants base no_branch no_gate no_fields --seeds 42 1 100
+
+# PINN
+python scripts/rev/run_pinn_abm.py --variant strict --grid 100
+python scripts/rev/run_pinn_abm.py --variant soft --grid 100
+python scripts/rev/run_pinn_dataonly.py --grid 100
 ```
 
-Pre-computed results (JSON files) are included in `models/` for all reported combinations.
+Every result JSON contains the one-step metrics for the near (82-91 h) and far (92-100 h) test windows, the persistence baseline, the skill, the 19 h roll-out and the frozen-weight results on the other runs. Finished runs are skipped when a script is started again.
 
----
+### 4. Tables and figures
 
-## Running on Snellius HPC
+```bash
+python scripts/rev/aggregate.py
+python scripts/rev/aggregate_transfer.py
+python scripts/rev/aggregate_pinn.py
+python scripts/rev/post_runs.py          # figures -> outputs/figures
+python scripts/rev/collect_for_paper.py  # -> outputs/rev_abm/for_paper.txt
+```
 
-1. Copy and fill the credentials file:
+`Fig2_architectures` and `GraphicalAbstract` in `outputs/figures` were drawn by hand and are not produced by `post_runs.py`.
 
-   ```bash
-   cp .env.example .env
-   # Edit .env: set SNELLIUS_USER, SNELLIUS_PASS, SNELLIUS_PROJECT_DIR
-   ```
+### Snellius
 
-2. Push code and preprocessed data:
-
-   ```bash
-   bash hpc/sync_to_hpc.sh [--dry-run]
-   ```
-
-3. Submit jobs:
-
-   ```bash
-   bash scripts/submit_snellius.sh
-   ```
-
-4. Pull results back:
-
-   ```bash
-   bash hpc/sync_from_hpc.sh
-   # Or pull specific directories:
-   bash hpc/sync_from_hpc.sh models sensitivity_results
-   ```
+`submit_revision4.sh`, `submit_revision5.sh` and `submit_revision6.sh` submit the steps above as separate jobs on the `gpu_a100` partition. Set `REPO`, `RUNS` and `ACCOUNT` at the top of each script first.
 
 ---
 
 ## Data format
 
-Inputs are normalised to **[-1, 1]** per cytokine channel using adaptive percentile clipping:
+Each cytokine channel is clipped at a percentile chosen from its kurtosis (no clipping below a kurtosis of 20, otherwise the 99.5th to 98th percentile) and mapped linearly to [-1, 1]:
 
-- Kurtosis < 20 → no clipping (100th percentile)
-- Kurtosis 20–600 → clip at 99.5th–98.0th percentile
+```
+u_phys = (u_scaled + 1) / 2 * c_max
+```
 
-Denormalisation: `u_phys = (u_scaled + 1) / 2 * clip_max[j]`
-
-The clip parameters are stored in `preprocessed/{GxG}/metadata.json` under `scaling.max`.
-
----
-
-## Sensitivity analyses
-
-The `sensitivity/` directory contains scripts for two robustness checks reported in the paper:
-
-| Study | Script | Output |
-|---|---|---|
-| Clipping variant (p95, no-clip, adaptive) | `sensitivity/preprocess_{p95,no_clip}.py` + `train_*.py` | `results/sensitivity/` |
-| Lookback window (w=1..10) | `scripts/lookback.py` | `results/sensitivity_lookback/` |
+The constants are stored in `metadata.json` of each preprocessed run. Cell-type masks are binary and use the CompuCell3D type identifiers of the model: endothelial cells (1), resting neutrophils (2), activated neutrophils (5), M1 macrophages (8) and M2 macrophages (9).
 
 ---
 
 ## Citation
 
-If you use this code or the pre-computed results in your research, please cite:
-
 ```bibtex
 @article{bumbuc2026surrogates2d,
-  title   = {Spatio-temporal Neural Surrogates for Agent-Based Burn Wound Models},
+  title   = {Neural Surrogates for Cytokine Fields in an Agent-Based Burn Wound Model:
+             a Persistence-Referenced Benchmark},
   author  = {Bumbuc, Roland V. and Kowalczuk, Julia and Getsadze, Rezo and
              Papapanagiotou, Ioannis and Korkmaz, H. Ibrahim and Sheraton, Vivek M.},
-  journal = {Computers in Biology and Medicine},
+  journal = {Computer Methods and Programs in Biomedicine},
   year    = {2026},
-  note    = {Submitted}
+  note    = {Under review}
 }
 ```
 

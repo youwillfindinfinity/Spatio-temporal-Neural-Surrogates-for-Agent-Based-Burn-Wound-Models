@@ -1,0 +1,65 @@
+{
+ "grid": 250,
+ "seed": 1,
+ "cytokine": "il8",
+ "best_params": {
+  "hidden": 50,
+  "n_layers": 4,
+  "learning_rate": 0.0034456445720950414,
+  "lambda_pde": 0.006266213738528543,
+  "lambda_ic": 0.10251752410245643,
+  "lambda_bc": 0.134652687497888
+ },
+ "optuna_best_val_loss": 0.027668991552645423,
+ "train_time_seconds": 2637.83,
+ "pred_time_seconds": 0.28,
+ "results": {
+  "Near_Horizon_t82_t91": {
+   "Global_R2": 0.9456714510296471,
+   "Per_Timestep_R2": [
+    0.9463261425887655,
+    0.9462545086978112,
+    0.9461522319975485,
+    0.946021259679463,
+    0.945861120411465,
+    0.9456732808398083,
+    0.9454582360770938,
+    0.9452149197747077,
+    0.9449450537431611,
+    0.9446313737457688
+   ],
+   "Masked_RMSE": 1.2966808656352829e-08,
+   "Unmasked_RMSE": 2.298089468299257e-09,
+   "Avg_Dice": 0.9747429668934442,
+   "Dice_Empty_Skipped": 0,
+   "Spatial_Correlation": 0.9731649140150956,
+   "SSIM": 0.8739809799301396,
+   "SSIM_Skipped_Frames": 0
+  },
+  "Far_Horizon_t92_t100": {
+   "Global_R2": 0.9425671076876324,
+   "Per_Timestep_R2": [
+    0.9442869259508702,
+    0.9439158287235568,
+    0.9435195703710896,
+    0.9430989157094068,
+    0.942654625697323,
+    0.942186869223692,
+    0.9416956396820382,
+    0.9411812745405218,
+    0.9406595704865797
+   ],
+   "Masked_RMSE": 1.2972913229312571e-08,
+   "Unmasked_RMSE": 2.517105522441879e-09,
+   "Avg_Dice": 0.9755628325740879,
+   "Dice_Empty_Skipped": 0,
+   "Spatial_Correlation": 0.9720325575173709,
+   "SSIM": 0.8639664235412036,
+   "SSIM_Skipped_Frames": 0
+  }
+ },
+ "variant": "strict",
+ "run": "E3_il10_from_m2_G250_s1",
+ "boundaryat": 25,
+ "residual": "normalised coordinates; ABM sources and boundary segments"
+}

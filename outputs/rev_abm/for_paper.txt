@@ -1,0 +1,733 @@
+== MAIN MODELS: near / far window, mean +/- SD over seeds
+
+main_convlstm direct il8 100 (n=3)  train_s 63.43 +/- 23  infer_s 0.5483 +/- 0.0046
+  near: skill -20.71 +/- 5.2 | Global_R2 0.998 +/- 0.00048 | SSIM 0.996 +/- 0.0012 | Avg_Dice 0.9842 +/- 0.0051 | Spatial_Correlation 0.999 +/- 0.00024 | Masked_RMSE 2.129e-08 +/- 3.1e-09 | Unmasked_RMSE 9.457e-09 +/- 1.1e-09
+  far: skill -28.91 +/- 7.5 | Global_R2 0.9977 +/- 0.00058 | SSIM 0.9951 +/- 0.0015 | Avg_Dice 0.9837 +/- 0.006 | Spatial_Correlation 0.9989 +/- 0.00027 | Masked_RMSE 2.51e-08 +/- 4.6e-09 | Unmasked_RMSE 1.06e-08 +/- 1.3e-09
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -130.7 +/- 27 | E2a_endothelial_x5_m2 -181.5 +/- 57 | E2b_geometry_margin_G5_m2-ownscale -46.3 +/- 8 | E2b_geometry_margin_G5_m2 -34.82 +/- 6 | E3_il10_from_m2 -27.07 +/- 6
+
+main_convlstm direct il8 250 (n=3)  train_s 320.9 +/- 0.38  infer_s 0.587 +/- 0.0017
+  near: skill -7.587 +/- 1.2 | Global_R2 0.9987 +/- 0.00019 | SSIM 0.9887 +/- 0.0023 | Avg_Dice 0.9954 +/- 0.0011 | Spatial_Correlation 0.9994 +/- 9.1e-05 | Masked_RMSE 6.076e-10 +/- 5.3e-11 | Unmasked_RMSE 3.557e-10 +/- 2.5e-11
+  far: skill -10.99 +/- 2 | Global_R2 0.9985 +/- 0.00024 | SSIM 0.9821 +/- 0.0059 | Avg_Dice 0.9956 +/- 0.0013 | Spatial_Correlation 0.9993 +/- 0.00011 | Masked_RMSE 6.962e-10 +/- 6.9e-11 | Unmasked_RMSE 4.047e-10 +/- 3.3e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -79.25 +/- 2.6 | E2a_endothelial_x5_m2 -131.3 +/- 1.6e+02 | E2b_geometry_margin_G5_m2-ownscale -16.78 +/- 1.4 | E2b_geometry_margin_G5_m2 -8.862 +/- 3.3 | E3_il10_from_m2 -9.733 +/- 1.4
+
+main_convlstm direct il10 100 (n=3)  train_s 63.3 +/- 0.26  infer_s 0.5507 +/- 0.0015
+  near: skill -0.2456 +/- 0.17 | Global_R2 0.9547 +/- 0.0063 | SSIM 0.9754 +/- 0.0027 | Avg_Dice 0.9884 +/- 0.0029 | Spatial_Correlation 0.9772 +/- 0.0032 | Masked_RMSE 4.689e-09 +/- 2.4e-11 | Unmasked_RMSE 1.558e-09 +/- 1.1e-10
+  far: skill -0.3056 +/- 0.2 | Global_R2 0.9559 +/- 0.0069 | SSIM 0.9752 +/- 0.003 | Avg_Dice 0.9883 +/- 0.0037 | Spatial_Correlation 0.9778 +/- 0.0036 | Masked_RMSE 5.106e-09 +/- 2.5e-11 | Unmasked_RMSE 1.696e-09 +/- 1.3e-10
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -5.866 +/- 0.36 | E2a_endothelial_x5_m2 -0.75 +/- 0.27 | E2b_geometry_margin_G5_m2-ownscale -0.3224 +/- 0.16 | E2b_geometry_margin_G5_m2 -0.2716 +/- 0.16 | E3_il10_from_m2 -0.2734 +/- 0.15
+
+main_convlstm direct il10 250 (n=3)  train_s 300.2 +/- 39  infer_s 0.628 +/- 0.063
+  near: skill -0.03395 +/- 0.013 | Global_R2 0.9506 +/- 0.00062 | SSIM 0.9695 +/- 0.00037 | Avg_Dice 0.8759 +/- 0.012 | Spatial_Correlation 0.975 +/- 0.00031 | Masked_RMSE 6.606e-10 +/- 2.3e-13 | Unmasked_RMSE 1.343e-10 +/- 8.4e-13
+  far: skill -0.0484 +/- 0.018 | Global_R2 0.9538 +/- 0.00077 | SSIM 0.9713 +/- 0.00037 | Avg_Dice 0.8829 +/- 0.011 | Spatial_Correlation 0.9768 +/- 0.00038 | Masked_RMSE 6.995e-10 +/- 3.7e-13 | Unmasked_RMSE 1.411e-10 +/- 1.2e-12
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.0724 +/- 0.018 | E2a_endothelial_x5_m2 -0.165 +/- 0.019 | E2b_geometry_margin_G5_m2-ownscale -0.04 +/- 0.013 | E2b_geometry_margin_G5_m2 -0.0417 +/- 0.013 | E3_il10_from_m2 -0.04304 +/- 0.013
+
+main_convlstm increment il8 100 (n=3)  train_s 17.3 +/- 1.4  infer_s 0.6097 +/- 0.051
+  near: skill 0.8686 +/- 0.02 | Global_R2 1 +/- 1.9e-06 | SSIM 0.9996 +/- 6.8e-05 | Avg_Dice 0.9989 +/- 0.00016 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.257e-09 +/- 2.3e-10 | Unmasked_RMSE 7.377e-10 +/- 5.9e-11
+  far: skill 0.8147 +/- 0.032 | Global_R2 1 +/- 2.5e-06 | SSIM 0.9997 +/- 8.1e-05 | Avg_Dice 0.9989 +/- 0.00011 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.567e-09 +/- 2.6e-10 | Unmasked_RMSE 8.366e-10 +/- 7.4e-11
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.9676 +/- 0.0082 | E2a_endothelial_x5_m2 0.7727 +/- 0.01 | E2b_geometry_margin_G5_m2-ownscale 0.8162 +/- 0.02 | E2b_geometry_margin_G5_m2 0.8824 +/- 0.013 | E3_il10_from_m2 0.8342 +/- 0.037
+
+main_convlstm increment il8 250 (n=3)  train_s 56.53 +/- 48  infer_s 0.6357 +/- 0.051
+  near: skill 0.8501 +/- 0.022 | Global_R2 1 +/- 3.4e-06 | SSIM 0.9993 +/- 0.00012 | Avg_Dice 0.9994 +/- 6e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 7.371e-11 +/- 1.4e-12 | Unmasked_RMSE 4.699e-11 +/- 3.4e-12
+  far: skill 0.8145 +/- 0.037 | Global_R2 1 +/- 4.6e-06 | SSIM 0.9994 +/- 0.00016 | Avg_Dice 0.9995 +/- 6.2e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 8.266e-11 +/- 1.5e-12 | Unmasked_RMSE 5.028e-11 +/- 4.9e-12
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.9692 +/- 0.0045 | E2a_endothelial_x5_m2 0.4883 +/- 0.042 | E2b_geometry_margin_G5_m2-ownscale 0.8091 +/- 0.025 | E2b_geometry_margin_G5_m2 0.876 +/- 0.014 | E3_il10_from_m2 0.8302 +/- 0.026
+
+main_convlstm increment il10 100 (n=3)  train_s 23.63 +/- 1.1  infer_s 0.637 +/- 0.11
+  near: skill 0.00367 +/- 0.00011 | Global_R2 0.9638 +/- 4e-06 | SSIM 0.9797 +/- 1.6e-05 | Avg_Dice 0.9909 +/- 0 | Spatial_Correlation 0.9817 +/- 7e-07 | Masked_RMSE 4.662e-09 +/- 4e-13 | Unmasked_RMSE 1.396e-09 +/- 7.8e-14
+  far: skill 0.003889 +/- 0.00013 | Global_R2 0.9664 +/- 4.3e-06 | SSIM 0.9801 +/- 1.6e-05 | Avg_Dice 0.9914 +/- 0 | Spatial_Correlation 0.9831 +/- 7.5e-07 | Masked_RMSE 5.104e-09 +/- 1.7e-13 | Unmasked_RMSE 1.484e-09 +/- 9.6e-14
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.003726 +/- 0.00028 | E2a_endothelial_x5_m2 0.004468 +/- 0.00015 | E2b_geometry_margin_G5_m2-ownscale 0.004454 +/- 0.00021 | E2b_geometry_margin_G5_m2 0.004328 +/- 0.0002 | E3_il10_from_m2 0.004242 +/- 0.00017
+
+main_convlstm increment il10 250 (n=3)  train_s 45.77 +/- 11  infer_s 0.684 +/- 0.11
+  near: skill 0.006401 +/- 8.4e-05 | Global_R2 0.9525 +/- 4e-06 | SSIM 0.9722 +/- 5.8e-05 | Avg_Dice 0.9085 +/- 0.0037 | Spatial_Correlation 0.9759 +/- 3.3e-07 | Masked_RMSE 6.615e-10 +/- 6.9e-14 | Unmasked_RMSE 1.317e-10 +/- 5.6e-15
+  far: skill 0.006723 +/- 0.00013 | Global_R2 0.9562 +/- 5.9e-06 | SSIM 0.9743 +/- 2.7e-05 | Avg_Dice 0.9346 +/- 0.0035 | Spatial_Correlation 0.9779 +/- 6e-07 | Masked_RMSE 7.021e-10 +/- 8.3e-14 | Unmasked_RMSE 1.374e-10 +/- 9.2e-15
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.006886 +/- 0.00018 | E2a_endothelial_x5_m2 0.006489 +/- 0.00022 | E2b_geometry_margin_G5_m2-ownscale 0.006717 +/- 8.2e-05 | E2b_geometry_margin_G5_m2 0.006702 +/- 8.7e-05 | E3_il10_from_m2 0.006644 +/- 0.00015
+
+main_fno direct il8 100 (n=3)  train_s 37.2 +/- 7  infer_s 0.429 +/- 0.0052
+  near: skill -19.21 +/- 3 | Global_R2 0.9981 +/- 0.00028 | SSIM 0.9917 +/- 0.0021 | Avg_Dice 0.9855 +/- 0.0016 | Spatial_Correlation 0.9991 +/- 0.00014 | Masked_RMSE 2.101e-08 +/- 3e-09 | Unmasked_RMSE 9.153e-09 +/- 6.9e-10
+  far: skill -31.69 +/- 4 | Global_R2 0.9975 +/- 0.00031 | SSIM 0.9877 +/- 0.0034 | Avg_Dice 0.9856 +/- 0.0023 | Spatial_Correlation 0.9989 +/- 0.00016 | Masked_RMSE 2.462e-08 +/- 3.4e-09 | Unmasked_RMSE 1.113e-08 +/- 6.9e-10
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -311.5 +/- 87 | E2a_endothelial_x5_m2 -430.9 +/- 1.1e+02 | E2b_geometry_margin_G5_m2-ownscale -570.9 +/- 2.5e+02 | E2b_geometry_margin_G5_m2 -588.1 +/- 2.4e+02 | E3_il10_from_m2 -631.4 +/- 1.8e+02
+
+main_fno direct il8 250 (n=3)  train_s 87.87 +/- 25  infer_s 0.4747 +/- 0.0055
+  near: skill -6.935 +/- 1 | Global_R2 0.9988 +/- 0.00016 | SSIM 0.9912 +/- 0.0027 | Avg_Dice 0.9953 +/- 0.00078 | Spatial_Correlation 0.9994 +/- 6.4e-05 | Masked_RMSE 1.361e-09 +/- 2e-10 | Unmasked_RMSE 3.42e-10 +/- 2.2e-11
+  far: skill -13.47 +/- 2.5 | Global_R2 0.9982 +/- 0.00031 | SSIM 0.9887 +/- 0.0031 | Avg_Dice 0.9952 +/- 0.00092 | Spatial_Correlation 0.9992 +/- 9.4e-05 | Masked_RMSE 1.739e-09 +/- 1.9e-10 | Unmasked_RMSE 4.444e-10 +/- 3.9e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -137.4 +/- 36 | E2a_endothelial_x5_m2 -520.8 +/- 3.1e+02 | E2b_geometry_margin_G5_m2-ownscale -230 +/- 1e+02 | E2b_geometry_margin_G5_m2 -267.7 +/- 1.1e+02 | E3_il10_from_m2 -208.7 +/- 69
+
+main_fno direct il10 100 (n=3)  train_s 40.57 +/- 6.3  infer_s 0.4313 +/- 0.004
+  near: skill -0.1624 +/- 0.036 | Global_R2 0.9578 +/- 0.0013 | SSIM 0.975 +/- 0.00093 | Avg_Dice 0.9908 +/- 0.00015 | Spatial_Correlation 0.9793 +/- 0.00052 | Masked_RMSE 4.706e-09 +/- 1.9e-11 | Unmasked_RMSE 1.508e-09 +/- 2.3e-11
+  far: skill -0.2527 +/- 0.045 | Global_R2 0.9577 +/- 0.0015 | SSIM 0.9736 +/- 0.001 | Avg_Dice 0.991 +/- 0.00041 | Spatial_Correlation 0.98 +/- 0.00057 | Masked_RMSE 5.145e-09 +/- 1.7e-11 | Unmasked_RMSE 1.664e-09 +/- 3e-11
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -2.005 +/- 1.1 | E2a_endothelial_x5_m2 -1.338 +/- 0.46 | E2b_geometry_margin_G5_m2-ownscale -0.3005 +/- 0.032 | E2b_geometry_margin_G5_m2 -0.3501 +/- 0.054 | E3_il10_from_m2 -0.3425 +/- 0.063
+
+main_fno direct il10 250 (n=3)  train_s 109.6 +/- 33  infer_s 0.4663 +/- 0.0097
+  near: skill -0.01946 +/- 0.0062 | Global_R2 0.9513 +/- 0.0003 | SSIM 0.9666 +/- 0.0011 | Avg_Dice 0.9211 +/- 0.012 | Spatial_Correlation 0.9754 +/- 0.00015 | Masked_RMSE 6.613e-10 +/- 4.2e-13 | Unmasked_RMSE 1.334e-10 +/- 4.1e-13
+  far: skill -0.03015 +/- 0.0082 | Global_R2 0.9546 +/- 0.00036 | SSIM 0.9676 +/- 0.001 | Avg_Dice 0.9213 +/- 0.0055 | Spatial_Correlation 0.9772 +/- 0.00018 | Masked_RMSE 7.01e-10 +/- 4.7e-13 | Unmasked_RMSE 1.399e-10 +/- 5.5e-13
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.1164 +/- 0.027 | E2a_endothelial_x5_m2 -0.7366 +/- 0.2 | E2b_geometry_margin_G5_m2-ownscale -0.04764 +/- 0.0072 | E2b_geometry_margin_G5_m2 -0.06775 +/- 0.0091 | E3_il10_from_m2 -0.04806 +/- 0.0075
+
+main_fno increment il8 100 (n=3)  train_s 13.37 +/- 1.1  infer_s 0.3857 +/- 0.00058
+  near: skill 0.7484 +/- 0.037 | Global_R2 1 +/- 3.4e-06 | SSIM 0.9994 +/- 0.0002 | Avg_Dice 0.9985 +/- 8.5e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.358e-09 +/- 8.3e-11 | Unmasked_RMSE 1.021e-09 +/- 7.3e-11
+  far: skill 0.7351 +/- 0.039 | Global_R2 1 +/- 3e-06 | SSIM 0.9994 +/- 0.00022 | Avg_Dice 0.9986 +/- 0.00019 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.594e-09 +/- 6.8e-11 | Unmasked_RMSE 1.001e-09 +/- 7.2e-11
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.8333 +/- 0.032 | E2a_endothelial_x5_m2 0.5684 +/- 0.037 | E2b_geometry_margin_G5_m2-ownscale 0.654 +/- 0.065 | E2b_geometry_margin_G5_m2 0.7244 +/- 0.044 | E3_il10_from_m2 0.723 +/- 0.036
+
+main_fno increment il8 250 (n=3)  train_s 40.4 +/- 7.1  infer_s 0.4157 +/- 0.006
+  near: skill 0.8584 +/- 0.0055 | Global_R2 1 +/- 8.4e-07 | SSIM 0.9995 +/- 0.00015 | Avg_Dice 0.9991 +/- 5e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.159e-10 +/- 2.7e-11 | Unmasked_RMSE 4.574e-11 +/- 8.8e-13
+  far: skill 0.8362 +/- 0.0064 | Global_R2 1 +/- 8e-07 | SSIM 0.9996 +/- 0.00013 | Avg_Dice 0.9994 +/- 3.7e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.242e-10 +/- 2.7e-11 | Unmasked_RMSE 4.74e-11 +/- 9.2e-13
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.9178 +/- 0.011 | E2a_endothelial_x5_m2 0.3892 +/- 0.031 | E2b_geometry_margin_G5_m2-ownscale 0.812 +/- 0.018 | E2b_geometry_margin_G5_m2 0.8666 +/- 0.011 | E3_il10_from_m2 0.8309 +/- 0.012
+
+main_fno increment il10 100 (n=3)  train_s 13.23 +/- 3.6  infer_s 0.4637 +/- 0.0081
+  near: skill 0.00354 +/- 0.00025 | Global_R2 0.9638 +/- 9.1e-06 | SSIM 0.9797 +/- 1.7e-05 | Avg_Dice 0.9909 +/- 0 | Spatial_Correlation 0.9817 +/- 1.6e-06 | Masked_RMSE 4.664e-09 +/- 1.9e-12 | Unmasked_RMSE 1.396e-09 +/- 1.7e-13
+  far: skill 0.003858 +/- 0.00027 | Global_R2 0.9664 +/- 9.2e-06 | SSIM 0.9801 +/- 3.6e-05 | Avg_Dice 0.9914 +/- 0 | Spatial_Correlation 0.9831 +/- 1.8e-06 | Masked_RMSE 5.105e-09 +/- 1.9e-12 | Unmasked_RMSE 1.484e-09 +/- 2e-13
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.002715 +/- 0.00013 | E2a_endothelial_x5_m2 0.003884 +/- 0.0007 | E2b_geometry_margin_G5_m2-ownscale 0.004379 +/- 0.00035 | E2b_geometry_margin_G5_m2 0.004323 +/- 0.00033 | E3_il10_from_m2 0.004266 +/- 0.00019
+
+main_fno increment il10 250 (n=3)  train_s 29.03 +/- 5.7  infer_s 0.4963 +/- 0.011
+  near: skill 0.006436 +/- 8.4e-05 | Global_R2 0.9525 +/- 4e-06 | SSIM 0.9723 +/- 0.00014 | Avg_Dice 0.9192 +/- 0.0066 | Spatial_Correlation 0.9759 +/- 5.9e-07 | Masked_RMSE 6.614e-10 +/- 1.1e-13 | Unmasked_RMSE 1.316e-10 +/- 5.6e-15
+  far: skill 0.006695 +/- 0.00012 | Global_R2 0.9562 +/- 5.1e-06 | SSIM 0.9743 +/- 7e-05 | Avg_Dice 0.9389 +/- 0.0049 | Spatial_Correlation 0.9779 +/- 3.2e-07 | Masked_RMSE 7.019e-10 +/- 1.2e-13 | Unmasked_RMSE 1.374e-10 +/- 8e-15
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.006927 +/- 0.0001 | E2a_endothelial_x5_m2 0.006862 +/- 0.00017 | E2b_geometry_margin_G5_m2-ownscale 0.006641 +/- 9.4e-05 | E2b_geometry_margin_G5_m2 0.00663 +/- 0.00011 | E3_il10_from_m2 0.006626 +/- 0.00017
+
+main_pointwise direct il8 100 (n=3)  train_s 27.27 +/- 4.4  infer_s 0.193 +/- 0.0046
+  near: skill -2.227 +/- 0.56 | Global_R2 0.9997 +/- 5.3e-05 | SSIM 0.9986 +/- 0.00027 | Avg_Dice 0.9946 +/- 0.00047 | Spatial_Correlation 0.9999 +/- 2.9e-05 | Masked_RMSE 6.936e-09 +/- 6.8e-10 | Unmasked_RMSE 3.655e-09 +/- 3.2e-10
+  far: skill -3.615 +/- 0.82 | Global_R2 0.9996 +/- 6.4e-05 | SSIM 0.9983 +/- 0.00029 | Avg_Dice 0.9951 +/- 0.0003 | Spatial_Correlation 0.9998 +/- 3.7e-05 | Masked_RMSE 7.964e-09 +/- 1.1e-09 | Unmasked_RMSE 4.176e-09 +/- 3.7e-10
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -5.751 +/- 1.2 | E2a_endothelial_x5_m2 -6.017 +/- 2.9 | E2b_geometry_margin_G5_m2-ownscale -2.393 +/- 0.7 | E2b_geometry_margin_G5_m2 -2.303 +/- 0.95 | E3_il10_from_m2 -3.36 +/- 0.84
+
+main_pointwise direct il8 250 (n=3)  train_s 110.5 +/- 19  infer_s 0.2177 +/- 0.0029
+  near: skill -1.704 +/- 0.36 | Global_R2 0.9996 +/- 5.4e-05 | SSIM 0.9959 +/- 0.0023 | Avg_Dice 0.9975 +/- 0.00057 | Spatial_Correlation 0.9998 +/- 2.1e-05 | Masked_RMSE 3.337e-10 +/- 4.3e-11 | Unmasked_RMSE 1.996e-10 +/- 1.3e-11
+  far: skill -3.109 +/- 0.65 | Global_R2 0.9995 +/- 8.1e-05 | SSIM 0.9934 +/- 0.0047 | Avg_Dice 0.9974 +/- 0.00039 | Spatial_Correlation 0.9998 +/- 3e-05 | Masked_RMSE 3.968e-10 +/- 5e-11 | Unmasked_RMSE 2.369e-10 +/- 1.9e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -1.583 +/- 0.32 | E2a_endothelial_x5_m2 -19.7 +/- 4.7 | E2b_geometry_margin_G5_m2-ownscale -2.313 +/- 0.53 | E2b_geometry_margin_G5_m2 -3.23 +/- 0.87 | E3_il10_from_m2 -2.764 +/- 0.42
+
+main_pointwise direct il10 100 (n=3)  train_s 29.37 +/- 0.8  infer_s 0.1963 +/- 0.0029
+  near: skill -0.01058 +/- 0.0019 | Global_R2 0.9633 +/- 6.9e-05 | SSIM 0.9791 +/- 5.2e-05 | Avg_Dice 0.9908 +/- 0.0002 | Spatial_Correlation 0.9814 +/- 2.7e-05 | Masked_RMSE 4.668e-09 +/- 4.8e-12 | Unmasked_RMSE 1.406e-09 +/- 1.3e-12
+  far: skill -0.01502 +/- 0.0046 | Global_R2 0.9657 +/- 0.00015 | SSIM 0.9795 +/- 0.00013 | Avg_Dice 0.9912 +/- 0.00022 | Spatial_Correlation 0.9828 +/- 7.5e-05 | Masked_RMSE 5.105e-09 +/- 5.6e-12 | Unmasked_RMSE 1.498e-09 +/- 3.4e-12
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.2432 +/- 0.084 | E2a_endothelial_x5_m2 -0.1035 +/- 0.027 | E2b_geometry_margin_G5_m2-ownscale -0.009331 +/- 0.0028 | E2b_geometry_margin_G5_m2 -0.01014 +/- 0.002 | E3_il10_from_m2 -0.01992 +/- 0.0099
+
+main_pointwise direct il10 250 (n=3)  train_s 157.4 +/- 46  infer_s 0.222 +/- 0.001
+  near: skill 0.003647 +/- 0.00024 | Global_R2 0.9524 +/- 1.2e-05 | SSIM 0.9721 +/- 3.3e-05 | Avg_Dice 0.9474 +/- 0.0043 | Spatial_Correlation 0.9759 +/- 2.5e-06 | Masked_RMSE 6.615e-10 +/- 5.1e-14 | Unmasked_RMSE 1.318e-10 +/- 1.6e-14
+  far: skill 0.002889 +/- 0.00045 | Global_R2 0.9561 +/- 2e-05 | SSIM 0.9741 +/- 3.9e-05 | Avg_Dice 0.95 +/- 0.0039 | Spatial_Correlation 0.9778 +/- 8.3e-06 | Masked_RMSE 7.018e-10 +/- 3.9e-14 | Unmasked_RMSE 1.377e-10 +/- 3.1e-14
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.001857 +/- 0.00074 | E2a_endothelial_x5_m2 -0.02395 +/- 0.0093 | E2b_geometry_margin_G5_m2-ownscale 0.003465 +/- 0.00029 | E2b_geometry_margin_G5_m2 0.002957 +/- 0.00028 | E3_il10_from_m2 0.00332 +/- 0.00026
+
+main_pointwise increment il8 100 (n=3)  train_s 5.7 +/- 0.26  infer_s 0.228 +/- 0.0026
+  near: skill 0.6997 +/- 0.092 | Global_R2 1 +/- 8.7e-06 | SSIM 0.9991 +/- 0.00065 | Avg_Dice 0.999 +/- 0.00031 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 2.457e-09 +/- 6.2e-10 | Unmasked_RMSE 1.109e-09 +/- 1.8e-10
+  far: skill 0.6949 +/- 0.091 | Global_R2 1 +/- 7e-06 | SSIM 0.9991 +/- 0.00065 | Avg_Dice 0.9991 +/- 0.00028 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 2.651e-09 +/- 6.5e-10 | Unmasked_RMSE 1.068e-09 +/- 1.6e-10
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.7692 +/- 0.08 | E2a_endothelial_x5_m2 0.5298 +/- 0.1 | E2b_geometry_margin_G5_m2-ownscale 0.5881 +/- 0.15 | E2b_geometry_margin_G5_m2 0.6355 +/- 0.12 | E3_il10_from_m2 0.6852 +/- 0.08
+
+main_pointwise increment il8 250 (n=3)  train_s 32.43 +/- 1.8  infer_s 0.2577 +/- 0.0038
+  near: skill 0.8146 +/- 0.021 | Global_R2 1 +/- 3.2e-06 | SSIM 0.9992 +/- 0.0004 | Avg_Dice 0.9994 +/- 8.2e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.705e-10 +/- 2e-11 | Unmasked_RMSE 5.23e-11 +/- 3e-12
+  far: skill 0.792 +/- 0.032 | Global_R2 1 +/- 4e-06 | SSIM 0.9993 +/- 0.00039 | Avg_Dice 0.9994 +/- 6.9e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.806e-10 +/- 2e-11 | Unmasked_RMSE 5.332e-11 +/- 4.1e-12
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.9118 +/- 0.024 | E2a_endothelial_x5_m2 0.4044 +/- 0.045 | E2b_geometry_margin_G5_m2-ownscale 0.7676 +/- 0.046 | E2b_geometry_margin_G5_m2 0.8156 +/- 0.04 | E3_il10_from_m2 0.8009 +/- 0.026
+
+main_pointwise increment il10 100 (n=3)  train_s 13.4 +/- 4.1  infer_s 0.2263 +/- 0.0029
+  near: skill 0.00323 +/- 0.00015 | Global_R2 0.9638 +/- 5.5e-06 | SSIM 0.9797 +/- 1.3e-05 | Avg_Dice 0.9909 +/- 0 | Spatial_Correlation 0.9817 +/- 2.8e-06 | Masked_RMSE 4.666e-09 +/- 1.3e-12 | Unmasked_RMSE 1.396e-09 +/- 1.1e-13
+  far: skill 0.003544 +/- 0.00024 | Global_R2 0.9664 +/- 8.1e-06 | SSIM 0.9801 +/- 3.1e-05 | Avg_Dice 0.9914 +/- 0 | Spatial_Correlation 0.9831 +/- 1.8e-06 | Masked_RMSE 5.108e-09 +/- 1.5e-12 | Unmasked_RMSE 1.484e-09 +/- 1.8e-13
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.00141 +/- 0.00041 | E2a_endothelial_x5_m2 0.002379 +/- 0.00033 | E2b_geometry_margin_G5_m2-ownscale 0.004019 +/- 0.00028 | E2b_geometry_margin_G5_m2 0.003891 +/- 0.00027 | E3_il10_from_m2 0.003841 +/- 0.00015
+
+main_pointwise increment il10 250 (n=3)  train_s 50.8 +/- 5.7  infer_s 0.2597 +/- 0.0015
+  near: skill 0.006478 +/- 5.4e-05 | Global_R2 0.9525 +/- 2.6e-06 | SSIM 0.9721 +/- 3.6e-05 | Avg_Dice 0.9165 +/- 0.0029 | Spatial_Correlation 0.9759 +/- 2.5e-07 | Masked_RMSE 6.613e-10 +/- 6.4e-14 | Unmasked_RMSE 1.316e-10 +/- 3.6e-15
+  far: skill 0.006781 +/- 6.5e-05 | Global_R2 0.9562 +/- 2.9e-06 | SSIM 0.9742 +/- 1.8e-05 | Avg_Dice 0.9361 +/- 0.0021 | Spatial_Correlation 0.9779 +/- 1.9e-07 | Masked_RMSE 7.018e-10 +/- 7.5e-14 | Unmasked_RMSE 1.374e-10 +/- 4.5e-15
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.006911 +/- 9.1e-05 | E2a_endothelial_x5_m2 0.006806 +/- 6.9e-05 | E2b_geometry_margin_G5_m2-ownscale 0.006732 +/- 6.3e-05 | E2b_geometry_margin_G5_m2 0.006728 +/- 6.2e-05 | E3_il10_from_m2 0.006701 +/- 0.00015
+
+main_stalstm direct il8 100 (n=3)  train_s 20.47 +/- 11  infer_s 0.418 +/- 0.016
+  near: skill -1091 +/- 1.6e+03 | Global_R2 0.8973 +/- 0.15 | SSIM 0.9007 +/- 0.14 | Avg_Dice 0.9422 +/- 0.051 | Spatial_Correlation 0.9907 +/- 0.012 | Masked_RMSE 1.733e-07 +/- 1.6e-07 | Unmasked_RMSE 5.397e-08 +/- 4.9e-08
+  far: skill -1645 +/- 2.2e+03 | Global_R2 0.8728 +/- 0.17 | SSIM 0.8682 +/- 0.14 | Avg_Dice 0.9347 +/- 0.057 | Spatial_Correlation 0.9887 +/- 0.014 | Masked_RMSE 2.014e-07 +/- 1.6e-07 | Unmasked_RMSE 6.651e-08 +/- 5.2e-08
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -7555 +/- 1.5e+03 | E2a_endothelial_x5_m2 -9472 +/- 1.5e+03 | E2b_geometry_margin_G5_m2-ownscale -1.439e+04 +/- 1.8e+03 | E2b_geometry_margin_G5_m2 -1.269e+04 +/- 7.7e+02 | E3_il10_from_m2 -1.382e+04 +/- 1.4e+03
+
+main_stalstm direct il8 250 (n=3)  train_s 54.73 +/- 5.1  infer_s 0.5497 +/- 0.095
+  near: skill -56.5 +/- 10 | Global_R2 0.9913 +/- 0.0015 | SSIM 0.9261 +/- 0.024 | Avg_Dice 0.9933 +/- 0.0006 | Spatial_Correlation 0.9967 +/- 0.00012 | Masked_RMSE 5.251e-09 +/- 4.4e-10 | Unmasked_RMSE 9.197e-10 +/- 8e-11
+  far: skill -125.6 +/- 27 | Global_R2 0.9843 +/- 0.0034 | SSIM 0.8502 +/- 0.035 | Avg_Dice 0.9894 +/- 0.0035 | Spatial_Correlation 0.9952 +/- 0.00052 | Masked_RMSE 6.158e-09 +/- 5.8e-10 | Unmasked_RMSE 1.312e-09 +/- 1.5e-10
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -3504 +/- 4.2e+02 | E2a_endothelial_x5_m2 -9665 +/- 6.3e+02 | E2b_geometry_margin_G5_m2-ownscale -9844 +/- 3.9e+02 | E2b_geometry_margin_G5_m2 -8314 +/- 2.3e+02 | E3_il10_from_m2 -7000 +/- 3.7e+02
+
+main_stalstm direct il10 100 (n=3)  train_s 12.5 +/- 2.5  infer_s 0.41 +/- 0.0061
+  near: skill -18.09 +/- 0.24 | Global_R2 0.306 +/- 0.0086 | SSIM 0.4476 +/- 0.0086 | Avg_Dice 0.7661 +/- 0.0064 | Spatial_Correlation 0.5919 +/- 0.0069 | Masked_RMSE 7.127e-09 +/- 3.3e-11 | Unmasked_RMSE 6.11e-09 +/- 3.8e-11
+  far: skill -22.88 +/- 0.27 | Global_R2 0.194 +/- 0.0092 | SSIM 0.3437 +/- 0.0075 | Avg_Dice 0.6929 +/- 0.0077 | Spatial_Correlation 0.4992 +/- 0.0062 | Masked_RMSE 7.508e-09 +/- 3.3e-11 | Unmasked_RMSE 7.266e-09 +/- 4.2e-11
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -35.88 +/- 1.1 | E2a_endothelial_x5_m2 -36.32 +/- 1.6 | E2b_geometry_margin_G5_m2-ownscale -32.02 +/- 0.58 | E2b_geometry_margin_G5_m2 -31.57 +/- 0.55 | E3_il10_from_m2 -31.64 +/- 0.51
+
+main_stalstm direct il10 250 (n=3)  train_s 40.23 +/- 23  infer_s 0.4573 +/- 0.0093
+  near: skill -12.79 +/- 2 | Global_R2 0.3405 +/- 0.095 | SSIM 0.5175 +/- 0.14 | Avg_Dice 0.5962 +/- 0.036 | Spatial_Correlation 0.5959 +/- 0.09 | Masked_RMSE 7.196e-10 +/- 1.2e-11 | Unmasked_RMSE 4.897e-10 +/- 3.5e-11
+  far: skill -17.44 +/- 0.99 | Global_R2 0.1877 +/- 0.044 | SSIM 0.3925 +/- 0.1 | Avg_Dice 0.6058 +/- 0.023 | Spatial_Correlation 0.4752 +/- 0.069 | Masked_RMSE 8.095e-10 +/- 6.2e-12 | Unmasked_RMSE 5.918e-10 +/- 1.6e-11
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -30.99 +/- 4 | E2a_endothelial_x5_m2 -30.77 +/- 3.7 | E2b_geometry_margin_G5_m2-ownscale -30 +/- 3.9 | E2b_geometry_margin_G5_m2 -30.05 +/- 4 | E3_il10_from_m2 -30.07 +/- 3.9
+
+main_stalstm increment il8 100 (n=3)  train_s 18.47 +/- 10  infer_s 0.4917 +/- 0.069
+  near: skill 0.7901 +/- 0.24 | Global_R2 1 +/- 2.3e-05 | SSIM 0.9993 +/- 0.0011 | Avg_Dice 0.9993 +/- 0.00014 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.389e-09 +/- 5.8e-10 | Unmasked_RMSE 8.355e-10 +/- 5.1e-10
+  far: skill 0.7755 +/- 0.22 | Global_R2 1 +/- 1.7e-05 | SSIM 0.9993 +/- 0.0011 | Avg_Dice 0.9993 +/- 0.00032 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.422e-09 +/- 3.5e-10 | Unmasked_RMSE 8.517e-10 +/- 4.4e-10
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.5741 +/- 0.069 | E2a_endothelial_x5_m2 0.3395 +/- 0.036 | E2b_geometry_margin_G5_m2-ownscale 0.1209 +/- 0.071 | E2b_geometry_margin_G5_m2 0.3034 +/- 0.011 | E3_il10_from_m2 0.4118 +/- 0.075
+
+main_stalstm increment il8 250 (n=3)  train_s 8.267 +/- 0.058  infer_s 0.54 +/- 0.094
+  near: skill 0.5848 +/- 0.00016 | Global_R2 0.9999 +/- 2.4e-08 | SSIM 0.9964 +/- 3.6e-05 | Avg_Dice 0.9993 +/- 1.2e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 9.17e-11 +/- 3.1e-13 | Unmasked_RMSE 7.834e-11 +/- 1.5e-14
+  far: skill 0.5865 +/- 6e-05 | Global_R2 0.9999 +/- 7.5e-09 | SSIM 0.9965 +/- 3.4e-05 | Avg_Dice 0.9992 +/- 8.2e-06 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 8.371e-11 +/- 3.1e-13 | Unmasked_RMSE 7.532e-11 +/- 5.5e-15
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.5078 +/- 0.0034 | E2a_endothelial_x5_m2 0.2669 +/- 0.0022 | E2b_geometry_margin_G5_m2-ownscale 0.3061 +/- 0.0063 | E2b_geometry_margin_G5_m2 0.3585 +/- 0.0039 | E3_il10_from_m2 0.6025 +/- 0.0076
+
+main_stalstm increment il10 100 (n=3)  train_s 5.467 +/- 0.21  infer_s 0.4937 +/- 0.077
+  near: skill 0.002556 +/- 6.2e-05 | Global_R2 0.9637 +/- 2.2e-06 | SSIM 0.9798 +/- 2.6e-06 | Avg_Dice 0.9909 +/- 0 | Spatial_Correlation 0.9817 +/- 1.3e-07 | Masked_RMSE 4.659e-09 +/- 6.2e-13 | Unmasked_RMSE 1.397e-09 +/- 4.3e-14
+  far: skill 0.00264 +/- 7.8e-05 | Global_R2 0.9663 +/- 2.6e-06 | SSIM 0.9802 +/- 2e-06 | Avg_Dice 0.9914 +/- 0 | Spatial_Correlation 0.9831 +/- 3e-08 | Masked_RMSE 5.101e-09 +/- 6.5e-13 | Unmasked_RMSE 1.485e-09 +/- 5.8e-14
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.001582 +/- 5.8e-05 | E2a_endothelial_x5_m2 0.002577 +/- 7.1e-05 | E2b_geometry_margin_G5_m2-ownscale 0.00273 +/- 6.9e-05 | E2b_geometry_margin_G5_m2 0.002671 +/- 7.1e-05 | E3_il10_from_m2 0.002653 +/- 7e-05
+
+main_stalstm increment il10 250 (n=3)  train_s 7.367 +/- 0.15  infer_s 0.5247 +/- 0.079
+  near: skill 0.001134 +/- 1.2e-05 | Global_R2 0.9522 +/- 5.6e-07 | SSIM 0.9723 +/- 1.5e-05 | Avg_Dice 0.9264 +/- 0.00058 | Spatial_Correlation 0.9759 +/- 7.5e-08 | Masked_RMSE 6.62e-10 +/- 1.5e-14 | Unmasked_RMSE 1.32e-10 +/- 7.7e-16
+  far: skill 0.00116 +/- 1.2e-05 | Global_R2 0.956 +/- 5.1e-07 | SSIM 0.9744 +/- 7.6e-06 | Avg_Dice 0.9515 +/- 0.00061 | Spatial_Correlation 0.9779 +/- 7.7e-08 | Masked_RMSE 7.027e-10 +/- 1.5e-14 | Unmasked_RMSE 1.378e-10 +/- 8e-16
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.001144 +/- 1.5e-05 | E2a_endothelial_x5_m2 0.001164 +/- 1.6e-05 | E2b_geometry_margin_G5_m2-ownscale 0.001126 +/- 1.8e-05 | E2b_geometry_margin_G5_m2 0.001126 +/- 1.8e-05 | E3_il10_from_m2 0.001126 +/- 1.6e-05
+
+main_unet direct il8 100 (n=3)  train_s 65.57 +/- 5.1  infer_s 0.548 +/- 0.007
+  near: skill -145.1 +/- 35 | Global_R2 0.9863 +/- 0.0033 | SSIM 0.9342 +/- 0.013 | Avg_Dice 0.9571 +/- 0.0088 | Spatial_Correlation 0.9933 +/- 0.0017 | Masked_RMSE 4.284e-08 +/- 8.4e-09 | Unmasked_RMSE 2.454e-08 +/- 2.9e-09
+  far: skill -245.4 +/- 64 | Global_R2 0.981 +/- 0.0049 | SSIM 0.9166 +/- 0.013 | Avg_Dice 0.9528 +/- 0.0062 | Spatial_Correlation 0.9908 +/- 0.0026 | Masked_RMSE 5.598e-08 +/- 9.5e-09 | Unmasked_RMSE 3.043e-08 +/- 3.8e-09
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -419.7 +/- 2e+02 | E2a_endothelial_x5_m2 -774.5 +/- 7.5e+02 | E2b_geometry_margin_G5_m2-ownscale -271.9 +/- 86 | E2b_geometry_margin_G5_m2 -289.6 +/- 1e+02 | E3_il10_from_m2 -381.7 +/- 1.2e+02
+
+main_unet direct il8 250 (n=3)  train_s 145.2 +/- 13  infer_s 0.586 +/- 0.0095
+  near: skill -31.13 +/- 3.8 | Global_R2 0.9951 +/- 0.00058 | SSIM 0.9563 +/- 0.0099 | Avg_Dice 0.9864 +/- 0.004 | Spatial_Correlation 0.9976 +/- 0.00029 | Masked_RMSE 1.414e-09 +/- 2.7e-10 | Unmasked_RMSE 6.884e-10 +/- 4.2e-11
+  far: skill -44.37 +/- 11 | Global_R2 0.9944 +/- 0.0014 | SSIM 0.9482 +/- 0.0073 | Avg_Dice 0.9866 +/- 0.0058 | Spatial_Correlation 0.9974 +/- 0.00056 | Masked_RMSE 1.665e-09 +/- 4e-10 | Unmasked_RMSE 7.85e-10 +/- 9.5e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -73.08 +/- 15 | E2a_endothelial_x5_m2 -619.3 +/- 5.6e+02 | E2b_geometry_margin_G5_m2-ownscale -37.76 +/- 3.7 | E2b_geometry_margin_G5_m2 -38.5 +/- 5.2 | E3_il10_from_m2 -45.09 +/- 11
+
+main_unet direct il10 100 (n=3)  train_s 52.27 +/- 1.2  infer_s 0.4347 +/- 0.00058
+  near: skill -3.5 +/- 0.61 | Global_R2 0.8365 +/- 0.022 | SSIM 0.8855 +/- 0.016 | Avg_Dice 0.8621 +/- 0.026 | Spatial_Correlation 0.9214 +/- 0.012 | Masked_RMSE 5.481e-09 +/- 1.4e-10 | Unmasked_RMSE 2.961e-09 +/- 2.1e-10
+  far: skill -4.538 +/- 0.83 | Global_R2 0.8131 +/- 0.028 | SSIM 0.8709 +/- 0.021 | Avg_Dice 0.8325 +/- 0.031 | Spatial_Correlation 0.9088 +/- 0.015 | Masked_RMSE 5.94e-09 +/- 1.8e-10 | Unmasked_RMSE 3.493e-09 +/- 2.7e-10
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -12.68 +/- 2.6 | E2a_endothelial_x5_m2 -15.82 +/- 2.3 | E2b_geometry_margin_G5_m2-ownscale -5.726 +/- 0.75 | E2b_geometry_margin_G5_m2 -6.215 +/- 0.74 | E3_il10_from_m2 -6.227 +/- 0.86
+
+main_unet direct il10 250 (n=3)  train_s 139.6 +/- 11  infer_s 0.588 +/- 0.012
+  near: skill -0.0964 +/- 0.056 | Global_R2 0.9476 +/- 0.0027 | SSIM 0.9641 +/- 0.0054 | Avg_Dice 0.8397 +/- 0.034 | Spatial_Correlation 0.9735 +/- 0.0013 | Masked_RMSE 6.608e-10 +/- 4.8e-13 | Unmasked_RMSE 1.383e-10 +/- 3.5e-12
+  far: skill -0.1273 +/- 0.074 | Global_R2 0.9503 +/- 0.0033 | SSIM 0.9671 +/- 0.0052 | Avg_Dice 0.85 +/- 0.039 | Spatial_Correlation 0.975 +/- 0.0015 | Masked_RMSE 7.006e-10 +/- 1.6e-12 | Unmasked_RMSE 1.463e-10 +/- 4.8e-12
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.2408 +/- 0.17 | E2a_endothelial_x5_m2 -1.713 +/- 2 | E2b_geometry_margin_G5_m2-ownscale -0.109 +/- 0.051 | E2b_geometry_margin_G5_m2 -0.1335 +/- 0.077 | E3_il10_from_m2 -0.1223 +/- 0.059
+
+main_unet increment il8 100 (n=3)  train_s 15.37 +/- 3.4  infer_s 0.6017 +/- 0.25
+  near: skill 0.8756 +/- 0.023 | Global_R2 1 +/- 2.2e-06 | SSIM 0.9999 +/- 1.3e-05 | Avg_Dice 0.9987 +/- 0.00023 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.248e-09 +/- 7.6e-10 | Unmasked_RMSE 7.173e-10 +/- 6.9e-11
+  far: skill 0.8552 +/- 0.029 | Global_R2 1 +/- 2.3e-06 | SSIM 0.9999 +/- 4e-05 | Avg_Dice 0.9988 +/- 0.00035 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.263e-09 +/- 7.5e-10 | Unmasked_RMSE 7.39e-10 +/- 7.6e-11
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.7226 +/- 0.25 | E2a_endothelial_x5_m2 0.6603 +/- 0.083 | E2b_geometry_margin_G5_m2-ownscale 0.8541 +/- 0.029 | E2b_geometry_margin_G5_m2 0.8808 +/- 0.023 | E3_il10_from_m2 0.8536 +/- 0.028
+
+main_unet increment il8 250 (n=3)  train_s 55.4 +/- 6  infer_s 1.018 +/- 0.67
+  near: skill 0.9517 +/- 0.0064 | Global_R2 1 +/- 9.7e-07 | SSIM 0.9999 +/- 6.6e-06 | Avg_Dice 0.9996 +/- 4.4e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 2.52e-11 +/- 2.8e-13 | Unmasked_RMSE 2.669e-11 +/- 1.8e-12
+  far: skill 0.9115 +/- 0.009 | Global_R2 1 +/- 1.1e-06 | SSIM 0.9999 +/- 1e-05 | Avg_Dice 0.9996 +/- 5.2e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.313e-11 +/- 2.7e-12 | Unmasked_RMSE 3.481e-11 +/- 1.8e-12
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.6126 +/- 0.13 | E2a_endothelial_x5_m2 -0.8849 +/- 0.95 | E2b_geometry_margin_G5_m2-ownscale 0.9269 +/- 0.013 | E2b_geometry_margin_G5_m2 0.9558 +/- 0.0081 | E3_il10_from_m2 0.9373 +/- 0.0096
+
+main_unet increment il10 100 (n=3)  train_s 18.73 +/- 0.4  infer_s 0.823 +/- 0.41
+  near: skill 0.002129 +/- 0.00083 | Global_R2 0.9637 +/- 3e-05 | SSIM 0.9797 +/- 3.2e-05 | Avg_Dice 0.9909 +/- 0 | Spatial_Correlation 0.9817 +/- 5.8e-06 | Masked_RMSE 4.662e-09 +/- 5.8e-12 | Unmasked_RMSE 1.397e-09 +/- 5.8e-13
+  far: skill 0.002496 +/- 0.00085 | Global_R2 0.9663 +/- 2.9e-05 | SSIM 0.9801 +/- 5.7e-05 | Avg_Dice 0.9914 +/- 0 | Spatial_Correlation 0.9831 +/- 1.3e-06 | Masked_RMSE 5.105e-09 +/- 6.1e-12 | Unmasked_RMSE 1.485e-09 +/- 6.3e-13
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.001615 +/- 0.0006 | E2a_endothelial_x5_m2 0.002265 +/- 0.0005 | E2b_geometry_margin_G5_m2-ownscale 0.002652 +/- 0.00063 | E2b_geometry_margin_G5_m2 0.002591 +/- 0.00061 | E3_il10_from_m2 0.002495 +/- 0.0007
+
+main_unet increment il10 250 (n=3)  train_s 23.3 +/- 0.26  infer_s 0.668 +/- 0.27
+  near: skill 0.004908 +/- 0.0001 | Global_R2 0.9524 +/- 4.8e-06 | SSIM 0.9724 +/- 7.8e-06 | Avg_Dice 0.9371 +/- 0.0022 | Spatial_Correlation 0.9759 +/- 1.4e-06 | Masked_RMSE 6.621e-10 +/- 4.2e-14 | Unmasked_RMSE 1.318e-10 +/- 6.6e-15
+  far: skill 0.005057 +/- 5.4e-05 | Global_R2 0.9562 +/- 2.4e-06 | SSIM 0.9744 +/- 6.1e-06 | Avg_Dice 0.9547 +/- 0.0015 | Spatial_Correlation 0.9779 +/- 1.5e-06 | Masked_RMSE 7.026e-10 +/- 2.1e-14 | Unmasked_RMSE 1.375e-10 +/- 3.8e-15
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.004921 +/- 0.00013 | E2a_endothelial_x5_m2 0.004405 +/- 0.00019 | E2b_geometry_margin_G5_m2-ownscale 0.005204 +/- 0.00012 | E2b_geometry_margin_G5_m2 0.00516 +/- 0.00012 | E3_il10_from_m2 0.005117 +/- 0.0001
+
+tmask_convlstm direct il8 100 (n=3)  train_s 32.73 +/- 2.6  infer_s 0.5817 +/- 0.008
+  near: skill -41.67 +/- 9.1 | Global_R2 0.996 +/- 0.00085 | SSIM 0.9924 +/- 0.00082 | Avg_Dice 0.9807 +/- 0.0012 | Spatial_Correlation 0.998 +/- 0.00038 | Masked_RMSE 2.628e-08 +/- 5.8e-10 | Unmasked_RMSE 1.327e-08 +/- 1.4e-09
+  far: skill -57.07 +/- 12 | Global_R2 0.9955 +/- 0.00096 | SSIM 0.9898 +/- 0.0011 | Avg_Dice 0.9811 +/- 0.0013 | Spatial_Correlation 0.9979 +/- 0.00035 | Masked_RMSE 2.921e-08 +/- 6.7e-10 | Unmasked_RMSE 1.479e-08 +/- 1.6e-09
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -426.5 +/- 78 | E2a_endothelial_x5_m2 -162.9 +/- 42 | E2b_geometry_margin_G5_m2-ownscale -99.98 +/- 12 | E2b_geometry_margin_G5_m2 -55.61 +/- 12 | E3_il10_from_m2 -53.71 +/- 11
+
+tmask_convlstm direct il8 250 (n=3)  train_s 114.6 +/- 19  infer_s 0.69 +/- 0.071
+  near: skill -11.13 +/- 1.8 | Global_R2 0.9982 +/- 0.00028 | SSIM 0.9847 +/- 0.0044 | Avg_Dice 0.9922 +/- 0.00096 | Spatial_Correlation 0.9991 +/- 0.00013 | Masked_RMSE 5.632e-10 +/- 4.8e-11 | Unmasked_RMSE 4.227e-10 +/- 3.1e-11
+  far: skill -15.94 +/- 2.5 | Global_R2 0.9979 +/- 0.00031 | SSIM 0.98 +/- 0.0065 | Avg_Dice 0.9929 +/- 0.00082 | Spatial_Correlation 0.999 +/- 0.00016 | Masked_RMSE 7.157e-10 +/- 7.5e-11 | Unmasked_RMSE 4.812e-10 +/- 3.5e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -122.1 +/- 4.6 | E2a_endothelial_x5_m2 -474 +/- 66 | E2b_geometry_margin_G5_m2-ownscale -21.37 +/- 2.3 | E2b_geometry_margin_G5_m2 -15.51 +/- 3.8 | E3_il10_from_m2 -14.18 +/- 2.2
+
+tmask_convlstm direct il10 100 (n=3)  train_s 36.87 +/- 1.8  infer_s 0.3727 +/- 0.058
+  near: skill -0.3516 +/- 0.17 | Global_R2 0.9509 +/- 0.0063 | SSIM 0.9755 +/- 0.0017 | Avg_Dice 0.9703 +/- 0.00085 | Spatial_Correlation 0.9759 +/- 0.003 | Masked_RMSE 4.12e-09 +/- 4.2e-11 | Unmasked_RMSE 1.623e-09 +/- 1e-10
+  far: skill -0.4562 +/- 0.2 | Global_R2 0.9508 +/- 0.0068 | SSIM 0.9745 +/- 0.0018 | Avg_Dice 0.9725 +/- 0.0011 | Spatial_Correlation 0.976 +/- 0.0032 | Masked_RMSE 4.447e-09 +/- 2.8e-11 | Unmasked_RMSE 1.792e-09 +/- 1.2e-10
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -7.78 +/- 0.47 | E2a_endothelial_x5_m2 -1.102 +/- 0.43 | E2b_geometry_margin_G5_m2-ownscale -0.3895 +/- 0.14 | E2b_geometry_margin_G5_m2 -0.3568 +/- 0.15 | E3_il10_from_m2 -0.386 +/- 0.15
+
+tmask_convlstm direct il10 250 (n=3)  train_s 282 +/- 37  infer_s 0.651 +/- 0.0066
+  near: skill 0.2183 +/- 0.0016 | Global_R2 0.9626 +/- 7.4e-05 | SSIM 0.9782 +/- 0.00062 | Avg_Dice 0.8763 +/- 0.0018 | Spatial_Correlation 0.9812 +/- 5e-05 | Masked_RMSE 5.606e-10 +/- 6.7e-13 | Unmasked_RMSE 1.168e-10 +/- 1.2e-13
+  far: skill 0.2001 +/- 0.0026 | Global_R2 0.9648 +/- 0.00011 | SSIM 0.9789 +/- 0.00079 | Avg_Dice 0.8862 +/- 0.0028 | Spatial_Correlation 0.9824 +/- 5.8e-05 | Masked_RMSE 5.903e-10 +/- 6.6e-13 | Unmasked_RMSE 1.233e-10 +/- 2e-13
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.1835 +/- 0.0062 | E2a_endothelial_x5_m2 0.01971 +/- 0.089 | E2b_geometry_margin_G5_m2-ownscale 0.2148 +/- 0.0033 | E2b_geometry_margin_G5_m2 0.2122 +/- 0.0041 | E3_il10_from_m2 0.2117 +/- 0.0037
+
+tmask_convlstm increment il8 100 (n=3)  train_s 7.5 +/- 2.4  infer_s 0.401 +/- 0.059
+  near: skill 0.7164 +/- 0.059 | Global_R2 1 +/- 5.5e-06 | SSIM 0.9992 +/- 0.00025 | Avg_Dice 0.9989 +/- 0.00012 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.887e-09 +/- 4.5e-10 | Unmasked_RMSE 1.082e-09 +/- 1.1e-10
+  far: skill 0.6686 +/- 0.059 | Global_R2 1 +/- 4.5e-06 | SSIM 0.9992 +/- 0.00026 | Avg_Dice 0.9989 +/- 6.2e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 2.103e-09 +/- 4.7e-10 | Unmasked_RMSE 1.119e-09 +/- 1e-10
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.8649 +/- 0.036 | E2a_endothelial_x5_m2 0.6805 +/- 0.062 | E2b_geometry_margin_G5_m2-ownscale 0.629 +/- 0.078 | E2b_geometry_margin_G5_m2 0.7364 +/- 0.071 | E3_il10_from_m2 0.6822 +/- 0.06
+
+tmask_convlstm increment il8 250 (n=3)  train_s 60.73 +/- 1.7  infer_s 0.687 +/- 0.006
+  near: skill 0.8187 +/- 0.012 | Global_R2 1 +/- 1.8e-06 | SSIM 0.9993 +/- 6.1e-05 | Avg_Dice 0.9995 +/- 2.6e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.313e-10 +/- 4.7e-11 | Unmasked_RMSE 5.175e-11 +/- 1.7e-12
+  far: skill 0.7864 +/- 0.017 | Global_R2 1 +/- 2.1e-06 | SSIM 0.9995 +/- 4.4e-05 | Avg_Dice 0.9996 +/- 2.1e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.412e-10 +/- 4.8e-11 | Unmasked_RMSE 5.41e-11 +/- 2.2e-12
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.9206 +/- 0.0081 | E2a_endothelial_x5_m2 0.2891 +/- 0.031 | E2b_geometry_margin_G5_m2-ownscale 0.7779 +/- 0.0096 | E2b_geometry_margin_G5_m2 0.8531 +/- 0.0082 | E3_il10_from_m2 0.8011 +/- 0.013
+
+tmask_convlstm increment il10 100 (n=3)  train_s 21.3 +/- 3.2  infer_s 0.681 +/- 0.13
+  near: skill 0.2395 +/- 0.00068 | Global_R2 0.9724 +/- 2.5e-05 | SSIM 0.9854 +/- 9.1e-06 | Avg_Dice 0.9758 +/- 0.00017 | Spatial_Correlation 0.9861 +/- 1.3e-05 | Masked_RMSE 3.946e-09 +/- 4e-12 | Unmasked_RMSE 1.219e-09 +/- 5.5e-13
+  far: skill 0.2368 +/- 0.00062 | Global_R2 0.9742 +/- 2.1e-05 | SSIM 0.9854 +/- 3.4e-06 | Avg_Dice 0.9786 +/- 0.00011 | Spatial_Correlation 0.9871 +/- 1e-05 | Masked_RMSE 4.27e-09 +/- 4.7e-12 | Unmasked_RMSE 1.299e-09 +/- 5.3e-13
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.1541 +/- 0.0028 | E2a_endothelial_x5_m2 0.231 +/- 0.0061 | E2b_geometry_margin_G5_m2-ownscale 0.2438 +/- 0.0037 | E2b_geometry_margin_G5_m2 0.242 +/- 0.0035 | E3_il10_from_m2 0.2389 +/- 0.0046
+
+tmask_convlstm increment il10 250 (n=3)  train_s 73.73 +/- 5.6  infer_s 0.776 +/- 0.15
+  near: skill 0.2518 +/- 0.00018 | Global_R2 0.9642 +/- 8.5e-06 | SSIM 0.9804 +/- 0.00015 | Avg_Dice 0.955 +/- 0.01 | Spatial_Correlation 0.9819 +/- 2.8e-06 | Masked_RMSE 5.595e-10 +/- 3.8e-14 | Unmasked_RMSE 1.142e-10 +/- 1.4e-14
+  far: skill 0.2468 +/- 0.00044 | Global_R2 0.9668 +/- 1.9e-05 | SSIM 0.9815 +/- 0.00012 | Avg_Dice 0.9632 +/- 0.0062 | Spatial_Correlation 0.9833 +/- 8.6e-06 | Masked_RMSE 5.886e-10 +/- 4.5e-13 | Unmasked_RMSE 1.196e-10 +/- 3.5e-14
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.2535 +/- 0.0033 | E2a_endothelial_x5_m2 0.2472 +/- 0.0054 | E2b_geometry_margin_G5_m2-ownscale 0.2536 +/- 0.001 | E2b_geometry_margin_G5_m2 0.2535 +/- 0.0011 | E3_il10_from_m2 0.2532 +/- 0.0021
+
+tmask_fno direct il8 100 (n=3)  train_s 35.37 +/- 6.2  infer_s 0.443 +/- 0.006
+  near: skill -20.93 +/- 6 | Global_R2 0.9979 +/- 0.00056 | SSIM 0.9915 +/- 0.0029 | Avg_Dice 0.9853 +/- 0.0026 | Spatial_Correlation 0.9991 +/- 0.00023 | Masked_RMSE 2.271e-08 +/- 5.7e-09 | Unmasked_RMSE 9.495e-09 +/- 1.3e-09
+  far: skill -35.55 +/- 11 | Global_R2 0.9972 +/- 0.00082 | SSIM 0.9866 +/- 0.0045 | Avg_Dice 0.9853 +/- 0.0026 | Spatial_Correlation 0.9988 +/- 0.00031 | Masked_RMSE 2.661e-08 +/- 6.1e-09 | Unmasked_RMSE 1.17e-08 +/- 1.7e-09
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -282.5 +/- 81 | E2a_endothelial_x5_m2 -392.6 +/- 86 | E2b_geometry_margin_G5_m2-ownscale -505 +/- 2.5e+02 | E2b_geometry_margin_G5_m2 -518.8 +/- 2.3e+02 | E3_il10_from_m2 -570.5 +/- 1.9e+02
+
+tmask_fno direct il8 250 (n=3)  train_s 76.57 +/- 24  infer_s 0.51 +/- 0.01
+  near: skill -7.24 +/- 1.4 | Global_R2 0.9987 +/- 0.00022 | SSIM 0.9929 +/- 0.0015 | Avg_Dice 0.995 +/- 0.00063 | Spatial_Correlation 0.9994 +/- 8.3e-05 | Masked_RMSE 1.34e-09 +/- 3.5e-11 | Unmasked_RMSE 3.482e-10 +/- 3e-11
+  far: skill -14.83 +/- 4 | Global_R2 0.998 +/- 0.00049 | SSIM 0.9906 +/- 0.0019 | Avg_Dice 0.995 +/- 0.00066 | Spatial_Correlation 0.9992 +/- 0.00015 | Masked_RMSE 1.711e-09 +/- 7.4e-11 | Unmasked_RMSE 4.636e-10 +/- 5.8e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -115.9 +/- 38 | E2a_endothelial_x5_m2 -455.6 +/- 2.4e+02 | E2b_geometry_margin_G5_m2-ownscale -213.1 +/- 1.1e+02 | E2b_geometry_margin_G5_m2 -239.3 +/- 1e+02 | E3_il10_from_m2 -187.8 +/- 70
+
+tmask_fno direct il10 100 (n=3)  train_s 40.2 +/- 5.5  infer_s 0.4463 +/- 0.0055
+  near: skill -0.0626 +/- 0.01 | Global_R2 0.9614 +/- 0.00036 | SSIM 0.978 +/- 0.00051 | Avg_Dice 0.9863 +/- 0.00025 | Spatial_Correlation 0.9811 +/- 0.00029 | Masked_RMSE 4.182e-09 +/- 4.8e-11 | Unmasked_RMSE 1.441e-09 +/- 6.8e-12
+  far: skill -0.1382 +/- 0.0081 | Global_R2 0.9616 +/- 0.00027 | SSIM 0.9767 +/- 0.00014 | Avg_Dice 0.9875 +/- 0.00021 | Spatial_Correlation 0.9819 +/- 0.00026 | Masked_RMSE 4.535e-09 +/- 2.9e-11 | Unmasked_RMSE 1.586e-09 +/- 5.7e-12
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -1.673 +/- 0.96 | E2a_endothelial_x5_m2 -1.418 +/- 0.86 | E2b_geometry_margin_G5_m2-ownscale -0.1843 +/- 0.022 | E2b_geometry_margin_G5_m2 -0.2267 +/- 0.032 | E3_il10_from_m2 -0.2038 +/- 0.034
+
+tmask_fno direct il10 250 (n=3)  train_s 110 +/- 37  infer_s 0.4967 +/- 0.0031
+  near: skill 0.04705 +/- 0.006 | Global_R2 0.9544 +/- 0.00029 | SSIM 0.9704 +/- 0.00077 | Avg_Dice 0.9268 +/- 0.015 | Spatial_Correlation 0.977 +/- 0.00014 | Masked_RMSE 5.809e-10 +/- 9.9e-13 | Unmasked_RMSE 1.289e-10 +/- 4.1e-13
+  far: skill 0.04445 +/- 0.0073 | Global_R2 0.9579 +/- 0.00032 | SSIM 0.971 +/- 0.00073 | Avg_Dice 0.9288 +/- 0.0077 | Spatial_Correlation 0.9789 +/- 0.00015 | Masked_RMSE 6.106e-10 +/- 4.6e-13 | Unmasked_RMSE 1.348e-10 +/- 5.1e-13
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.01154 +/- 0.024 | E2a_endothelial_x5_m2 -0.6371 +/- 0.2 | E2b_geometry_margin_G5_m2-ownscale 0.03647 +/- 0.011 | E2b_geometry_margin_G5_m2 0.01905 +/- 0.012 | E3_il10_from_m2 0.04532 +/- 0.013
+
+tmask_fno increment il8 100 (n=3)  train_s 9.867 +/- 0.15  infer_s 0.3943 +/- 0.0085
+  near: skill 0.7143 +/- 0.022 | Global_R2 1 +/- 2.1e-06 | SSIM 0.9993 +/- 0.00011 | Avg_Dice 0.9987 +/- 7.1e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.315e-09 +/- 1.5e-10 | Unmasked_RMSE 1.09e-09 +/- 4.2e-11
+  far: skill 0.7103 +/- 0.02 | Global_R2 1 +/- 1.5e-06 | SSIM 0.9994 +/- 0.00012 | Avg_Dice 0.9989 +/- 0.00013 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.531e-09 +/- 1.3e-10 | Unmasked_RMSE 1.049e-09 +/- 3.6e-11
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.786 +/- 0.023 | E2a_endothelial_x5_m2 0.5095 +/- 0.031 | E2b_geometry_margin_G5_m2-ownscale 0.6136 +/- 0.023 | E2b_geometry_margin_G5_m2 0.6682 +/- 0.021 | E3_il10_from_m2 0.6969 +/- 0.021
+
+tmask_fno increment il8 250 (n=3)  train_s 55.7 +/- 29  infer_s 0.452 +/- 0.0044
+  near: skill 0.854 +/- 0.0022 | Global_R2 1 +/- 3.4e-07 | SSIM 0.9995 +/- 0.00015 | Avg_Dice 0.9991 +/- 2e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.505e-10 +/- 3.2e-11 | Unmasked_RMSE 4.646e-11 +/- 3.6e-13
+  far: skill 0.8317 +/- 0.0021 | Global_R2 1 +/- 2.6e-07 | SSIM 0.9996 +/- 0.00012 | Avg_Dice 0.9994 +/- 4.4e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.589e-10 +/- 3.2e-11 | Unmasked_RMSE 4.804e-11 +/- 3e-13
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.9154 +/- 0.011 | E2a_endothelial_x5_m2 0.3842 +/- 0.032 | E2b_geometry_margin_G5_m2-ownscale 0.7998 +/- 0.017 | E2b_geometry_margin_G5_m2 0.8576 +/- 0.012 | E3_il10_from_m2 0.8268 +/- 0.0096
+
+tmask_fno increment il10 100 (n=3)  train_s 12.63 +/- 1.7  infer_s 0.4767 +/- 0.0085
+  near: skill 0.07085 +/- 0.0024 | Global_R2 0.9662 +/- 8.7e-05 | SSIM 0.9814 +/- 7.4e-05 | Avg_Dice 0.9855 +/- 8.8e-05 | Spatial_Correlation 0.9829 +/- 4.3e-05 | Masked_RMSE 4.092e-09 +/- 2.1e-11 | Unmasked_RMSE 1.348e-09 +/- 1.7e-12
+  far: skill 0.0808 +/- 0.0028 | Global_R2 0.969 +/- 9.5e-05 | SSIM 0.9818 +/- 8e-05 | Avg_Dice 0.9867 +/- 7.7e-05 | Spatial_Correlation 0.9844 +/- 5e-05 | Masked_RMSE 4.433e-09 +/- 2.5e-11 | Unmasked_RMSE 1.426e-09 +/- 2.2e-12
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.04496 +/- 0.0038 | E2a_endothelial_x5_m2 0.06681 +/- 0.0079 | E2b_geometry_margin_G5_m2-ownscale 0.07087 +/- 0.018 | E2b_geometry_margin_G5_m2 0.07024 +/- 0.018 | E3_il10_from_m2 0.07842 +/- 0.015
+
+tmask_fno increment il10 250 (n=3)  train_s 22.17 +/- 1.5  infer_s 0.5367 +/- 0.0099
+  near: skill 0.06815 +/- 0.00015 | Global_R2 0.9554 +/- 7.4e-06 | SSIM 0.9744 +/- 0.0004 | Avg_Dice 0.9386 +/- 0.02 | Spatial_Correlation 0.9775 +/- 4.6e-06 | Masked_RMSE 5.808e-10 +/- 4.1e-13 | Unmasked_RMSE 1.275e-10 +/- 1.1e-14
+  far: skill 0.07643 +/- 7.1e-05 | Global_R2 0.9593 +/- 3.1e-06 | SSIM 0.9763 +/- 0.00024 | Avg_Dice 0.9484 +/- 0.013 | Spatial_Correlation 0.9795 +/- 1.1e-06 | Masked_RMSE 6.09e-10 +/- 3e-13 | Unmasked_RMSE 1.325e-10 +/- 5.1e-15
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.09593 +/- 0.0021 | E2a_endothelial_x5_m2 0.08825 +/- 0.0038 | E2b_geometry_margin_G5_m2-ownscale 0.07976 +/- 0.01 | E2b_geometry_margin_G5_m2 0.0795 +/- 0.0099 | E3_il10_from_m2 0.09124 +/- 0.011
+
+tmask_pointwise direct il8 100 (n=3)  train_s 34.23 +/- 16  infer_s 0.2007 +/- 0.00058
+  near: skill -2.006 +/- 0.23 | Global_R2 0.9997 +/- 2.2e-05 | SSIM 0.9989 +/- 0.00024 | Avg_Dice 0.9947 +/- 0.00049 | Spatial_Correlation 0.9999 +/- 1.4e-05 | Masked_RMSE 7.766e-09 +/- 4.4e-10 | Unmasked_RMSE 3.535e-09 +/- 1.3e-10
+  far: skill -3.296 +/- 0.43 | Global_R2 0.9997 +/- 3.4e-05 | SSIM 0.9986 +/- 0.0004 | Avg_Dice 0.9949 +/- 0.00053 | Spatial_Correlation 0.9999 +/- 2.1e-05 | Masked_RMSE 8.811e-09 +/- 9.4e-10 | Unmasked_RMSE 4.036e-09 +/- 2e-10
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -5.598 +/- 2.3 | E2a_endothelial_x5_m2 -6.14 +/- 3.5 | E2b_geometry_margin_G5_m2-ownscale -1.998 +/- 0.41 | E2b_geometry_margin_G5_m2 -2.03 +/- 0.77 | E3_il10_from_m2 -3.171 +/- 0.65
+
+tmask_pointwise direct il8 250 (n=3)  train_s 116.9 +/- 10  infer_s 0.2523 +/- 0.0095
+  near: skill -1.54 +/- 0.27 | Global_R2 0.9996 +/- 4.2e-05 | SSIM 0.9959 +/- 0.0021 | Avg_Dice 0.9975 +/- 0.0003 | Spatial_Correlation 0.9998 +/- 1.7e-05 | Masked_RMSE 3.64e-10 +/- 6.2e-11 | Unmasked_RMSE 1.936e-10 +/- 1.1e-11
+  far: skill -2.832 +/- 0.42 | Global_R2 0.9995 +/- 5.2e-05 | SSIM 0.9937 +/- 0.0037 | Avg_Dice 0.9974 +/- 0.00026 | Spatial_Correlation 0.9998 +/- 2e-05 | Masked_RMSE 4.326e-10 +/- 7.6e-11 | Unmasked_RMSE 2.29e-10 +/- 1.3e-11
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -1.394 +/- 0.36 | E2a_endothelial_x5_m2 -19.88 +/- 3.3 | E2b_geometry_margin_G5_m2-ownscale -2.214 +/- 0.47 | E2b_geometry_margin_G5_m2 -2.975 +/- 0.43 | E3_il10_from_m2 -2.562 +/- 0.3
+
+tmask_pointwise direct il10 100 (n=3)  train_s 38.13 +/- 13  infer_s 0.1993 +/- 0.0015
+  near: skill 0.05786 +/- 0.00065 | Global_R2 0.9658 +/- 2.4e-05 | SSIM 0.9809 +/- 3.1e-05 | Avg_Dice 0.9853 +/- 0.00021 | Spatial_Correlation 0.9827 +/- 1.1e-05 | Masked_RMSE 4.096e-09 +/- 3.7e-12 | Unmasked_RMSE 1.357e-09 +/- 4.7e-13
+  far: skill 0.06402 +/- 0.0026 | Global_R2 0.9684 +/- 8.7e-05 | SSIM 0.9813 +/- 7.4e-05 | Avg_Dice 0.9865 +/- 0.00015 | Spatial_Correlation 0.9842 +/- 4.6e-05 | Masked_RMSE 4.43e-09 +/- 5.1e-12 | Unmasked_RMSE 1.439e-09 +/- 2e-12
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.3209 +/- 0.15 | E2a_endothelial_x5_m2 -0.03595 +/- 0.016 | E2b_geometry_margin_G5_m2-ownscale 0.05785 +/- 0.019 | E2b_geometry_margin_G5_m2 0.05702 +/- 0.018 | E3_il10_from_m2 0.05644 +/- 0.024
+
+tmask_pointwise direct il10 250 (n=3)  train_s 121.3 +/- 36  infer_s 0.2557 +/- 0.00058
+  near: skill 0.06688 +/- 0.00058 | Global_R2 0.9554 +/- 2.8e-05 | SSIM 0.9747 +/- 6.2e-05 | Avg_Dice 0.9467 +/- 0.0037 | Spatial_Correlation 0.9774 +/- 1.2e-05 | Masked_RMSE 5.8e-10 +/- 2.9e-13 | Unmasked_RMSE 1.276e-10 +/- 4e-14
+  far: skill 0.07266 +/- 0.0015 | Global_R2 0.9591 +/- 6.5e-05 | SSIM 0.9764 +/- 6.9e-05 | Avg_Dice 0.9508 +/- 0.0034 | Spatial_Correlation 0.9794 +/- 3e-05 | Masked_RMSE 6.101e-10 +/- 4.3e-13 | Unmasked_RMSE 1.327e-10 +/- 1.1e-13
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.09063 +/- 0.0025 | E2a_endothelial_x5_m2 0.05984 +/- 0.014 | E2b_geometry_margin_G5_m2-ownscale 0.07649 +/- 0.0093 | E2b_geometry_margin_G5_m2 0.07593 +/- 0.0093 | E3_il10_from_m2 0.08727 +/- 0.011
+
+tmask_pointwise increment il8 100 (n=3)  train_s 9.567 +/- 1.3  infer_s 0.231 +/- 0.001
+  near: skill 0.6737 +/- 0.063 | Global_R2 1 +/- 5.9e-06 | SSIM 0.9991 +/- 0.00017 | Avg_Dice 0.9988 +/- 0.0002 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.666e-09 +/- 5.6e-10 | Unmasked_RMSE 1.161e-09 +/- 1.1e-10
+  far: skill 0.6531 +/- 0.056 | Global_R2 1 +/- 4.4e-06 | SSIM 0.9991 +/- 0.00017 | Avg_Dice 0.9988 +/- 0.00018 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.888e-09 +/- 5.4e-10 | Unmasked_RMSE 1.145e-09 +/- 9.3e-11
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.81 +/- 0.063 | E2a_endothelial_x5_m2 0.5903 +/- 0.082 | E2b_geometry_margin_G5_m2-ownscale 0.5718 +/- 0.084 | E2b_geometry_margin_G5_m2 0.6586 +/- 0.074 | E3_il10_from_m2 0.6509 +/- 0.055
+
+tmask_pointwise increment il8 250 (n=3)  train_s 36.87 +/- 1.3  infer_s 0.2973 +/- 0.0021
+  near: skill 0.8192 +/- 0.0098 | Global_R2 1 +/- 1.5e-06 | SSIM 0.9991 +/- 0.00027 | Avg_Dice 0.9993 +/- 2.5e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.559e-10 +/- 5e-11 | Unmasked_RMSE 5.169e-11 +/- 1.4e-12
+  far: skill 0.798 +/- 0.015 | Global_R2 1 +/- 1.9e-06 | SSIM 0.9993 +/- 0.00025 | Avg_Dice 0.9994 +/- 6.2e-06 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.643e-10 +/- 5e-11 | Unmasked_RMSE 5.261e-11 +/- 1.9e-12
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.928 +/- 0.0067 | E2a_endothelial_x5_m2 0.4135 +/- 0.033 | E2b_geometry_margin_G5_m2-ownscale 0.7652 +/- 0.023 | E2b_geometry_margin_G5_m2 0.8213 +/- 0.018 | E3_il10_from_m2 0.804 +/- 0.012
+
+tmask_pointwise increment il10 100 (n=3)  train_s 10.33 +/- 0.21  infer_s 0.2317 +/- 0.004
+  near: skill 0.07277 +/- 0.00038 | Global_R2 0.9663 +/- 1.4e-05 | SSIM 0.9814 +/- 1.7e-05 | Avg_Dice 0.9854 +/- 6.4e-05 | Spatial_Correlation 0.983 +/- 7.8e-06 | Masked_RMSE 4.078e-09 +/- 3.6e-12 | Unmasked_RMSE 1.347e-09 +/- 2.8e-13
+  far: skill 0.08302 +/- 0.00063 | Global_R2 0.969 +/- 2.1e-05 | SSIM 0.9818 +/- 1.4e-05 | Avg_Dice 0.9866 +/- 2.6e-05 | Spatial_Correlation 0.9845 +/- 1.3e-05 | Masked_RMSE 4.418e-09 +/- 6.2e-12 | Unmasked_RMSE 1.424e-09 +/- 4.9e-13
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.045 +/- 0.0034 | E2a_endothelial_x5_m2 0.06847 +/- 0.0083 | E2b_geometry_margin_G5_m2-ownscale 0.07248 +/- 0.018 | E2b_geometry_margin_G5_m2 0.07185 +/- 0.017 | E3_il10_from_m2 0.07915 +/- 0.014
+
+tmask_pointwise increment il10 250 (n=3)  train_s 53.13 +/- 18  infer_s 0.295 +/- 0.001
+  near: skill 0.0688 +/- 0.00059 | Global_R2 0.9555 +/- 2.8e-05 | SSIM 0.9748 +/- 1.3e-05 | Avg_Dice 0.9415 +/- 0.0055 | Spatial_Correlation 0.9775 +/- 1.4e-05 | Masked_RMSE 5.809e-10 +/- 6.8e-13 | Unmasked_RMSE 1.275e-10 +/- 4e-14
+  far: skill 0.0752 +/- 0.00026 | Global_R2 0.9593 +/- 1.1e-05 | SSIM 0.9765 +/- 1.7e-05 | Avg_Dice 0.9527 +/- 0.0035 | Spatial_Correlation 0.9795 +/- 6e-06 | Masked_RMSE 6.118e-10 +/- 2.9e-13 | Unmasked_RMSE 1.326e-10 +/- 1.9e-14
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.09333 +/- 0.0016 | E2a_endothelial_x5_m2 0.09021 +/- 0.002 | E2b_geometry_margin_G5_m2-ownscale 0.07897 +/- 0.0089 | E2b_geometry_margin_G5_m2 0.07894 +/- 0.0089 | E3_il10_from_m2 0.08853 +/- 0.01
+
+tmask_unet direct il8 100 (n=3)  train_s 62.53 +/- 11  infer_s 0.562 +/- 0.0061
+  near: skill -289.7 +/- 1.7e+02 | Global_R2 0.9727 +/- 0.016 | SSIM 0.923 +/- 0.044 | Avg_Dice 0.9332 +/- 0.024 | Spatial_Correlation 0.9868 +/- 0.0081 | Masked_RMSE 5.017e-08 +/- 1.7e-08 | Unmasked_RMSE 3.378e-08 +/- 1e-08
+  far: skill -491.5 +/- 3.2e+02 | Global_R2 0.9619 +/- 0.025 | SSIM 0.9046 +/- 0.052 | Avg_Dice 0.926 +/- 0.03 | Spatial_Correlation 0.9818 +/- 0.012 | Masked_RMSE 6.229e-08 +/- 2.5e-08 | Unmasked_RMSE 4.173e-08 +/- 1.4e-08
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -1148 +/- 8.7e+02 | E2a_endothelial_x5_m2 -808.9 +/- 3.7e+02 | E2b_geometry_margin_G5_m2-ownscale -757.9 +/- 5.8e+02 | E2b_geometry_margin_G5_m2 -674.2 +/- 5.2e+02 | E3_il10_from_m2 -906.7 +/- 6.4e+02
+
+tmask_unet direct il8 250 (n=3)  train_s 134.4 +/- 33  infer_s 0.6197 +/- 0.0075
+  near: skill -190 +/- 2.7e+02 | Global_R2 0.971 +/- 0.042 | SSIM 0.9061 +/- 0.084 | Avg_Dice 0.9691 +/- 0.033 | Spatial_Correlation 0.9873 +/- 0.018 | Masked_RMSE 2.964e-09 +/- 2.9e-09 | Unmasked_RMSE 1.376e-09 +/- 1.2e-09
+  far: skill -439.7 +/- 6.8e+02 | Global_R2 0.9452 +/- 0.085 | SSIM 0.8701 +/- 0.13 | Avg_Dice 0.9621 +/- 0.046 | Spatial_Correlation 0.9762 +/- 0.037 | Masked_RMSE 4.231e-09 +/- 4.7e-09 | Unmasked_RMSE 1.896e-09 +/- 1.9e-09
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -435 +/- 5.4e+02 | E2a_endothelial_x5_m2 -1138 +/- 1.6e+03 | E2b_geometry_margin_G5_m2-ownscale -417.5 +/- 5.6e+02 | E2b_geometry_margin_G5_m2 -439.1 +/- 6e+02 | E3_il10_from_m2 -342.9 +/- 4.4e+02
+
+tmask_unet direct il10 100 (n=3)  train_s 51.5 +/- 0.17  infer_s 0.574 +/- 0.24
+  near: skill -1.946 +/- 0.91 | Global_R2 0.8929 +/- 0.033 | SSIM 0.9382 +/- 0.025 | Avg_Dice 0.929 +/- 0.036 | Spatial_Correlation 0.9457 +/- 0.017 | Masked_RMSE 4.448e-09 +/- 1.7e-10 | Unmasked_RMSE 2.382e-09 +/- 3.6e-10
+  far: skill -2.557 +/- 1.1 | Global_R2 0.8799 +/- 0.037 | SSIM 0.9312 +/- 0.028 | Avg_Dice 0.9057 +/- 0.05 | Spatial_Correlation 0.9385 +/- 0.02 | Masked_RMSE 4.876e-09 +/- 1.3e-10 | Unmasked_RMSE 2.784e-09 +/- 4.2e-10
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -8.564 +/- 3.3 | E2a_endothelial_x5_m2 -8.263 +/- 2.6 | E2b_geometry_margin_G5_m2-ownscale -2.911 +/- 1.4 | E2b_geometry_margin_G5_m2 -3.117 +/- 1.5 | E3_il10_from_m2 -3.018 +/- 1.4
+
+tmask_unet direct il10 250 (n=3)  train_s 130 +/- 33  infer_s 0.6197 +/- 0.0029
+  near: skill 0.1067 +/- 0.069 | Global_R2 0.9573 +/- 0.0033 | SSIM 0.9705 +/- 0.0022 | Avg_Dice 0.8248 +/- 0.028 | Spatial_Correlation 0.9786 +/- 0.0015 | Masked_RMSE 5.711e-10 +/- 1.5e-12 | Unmasked_RMSE 1.248e-10 +/- 4.9e-12
+  far: skill 0.03997 +/- 0.12 | Global_R2 0.9577 +/- 0.0051 | SSIM 0.9719 +/- 0.0034 | Avg_Dice 0.8314 +/- 0.034 | Spatial_Correlation 0.9789 +/- 0.0023 | Masked_RMSE 6.047e-10 +/- 2.1e-12 | Unmasked_RMSE 1.349e-10 +/- 8.1e-12
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.2559 +/- 0.34 | E2a_endothelial_x5_m2 -2.435 +/- 2.5 | E2b_geometry_margin_G5_m2-ownscale 0.06451 +/- 0.097 | E2b_geometry_margin_G5_m2 -0.05988 +/- 0.19 | E3_il10_from_m2 0.0647 +/- 0.079
+
+tmask_unet increment il8 100 (n=3)  train_s 35.73 +/- 16  infer_s 0.5977 +/- 0.011
+  near: skill 0.8994 +/- 0.01 | Global_R2 1 +/- 9.4e-07 | SSIM 0.9999 +/- 1.2e-05 | Avg_Dice 0.9988 +/- 0.00011 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 8.503e-10 +/- 7.7e-11 | Unmasked_RMSE 6.463e-10 +/- 3.2e-11
+  far: skill 0.8664 +/- 0.016 | Global_R2 1 +/- 1.2e-06 | SSIM 0.9999 +/- 1.3e-05 | Avg_Dice 0.9988 +/- 0.00012 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 1.007e-09 +/- 1e-10 | Unmasked_RMSE 7.115e-10 +/- 4.4e-11
+  persistence near: Global_R2 0.9999 | SSIM 0.9999 | Avg_Dice 0.9962 | Spatial_Correlation 0.9999 | Masked_RMSE 3.456e-09 | Unmasked_RMSE 2.04e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale -0.6173 +/- 0.32 | E2a_endothelial_x5_m2 0.1521 +/- 0.47 | E2b_geometry_margin_G5_m2-ownscale 0.7691 +/- 0.026 | E2b_geometry_margin_G5_m2 0.8697 +/- 0.017 | E3_il10_from_m2 0.8661 +/- 0.012
+
+tmask_unet increment il8 250 (n=3)  train_s 50.67 +/- 5.8  infer_s 0.7183 +/- 0.12
+  near: skill 0.949 +/- 0.013 | Global_R2 1 +/- 2e-06 | SSIM 1 +/- 1.2e-05 | Avg_Dice 0.9995 +/- 5.1e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.044e-11 +/- 8.7e-12 | Unmasked_RMSE 2.731e-11 +/- 3.4e-12
+  far: skill 0.913 +/- 0.034 | Global_R2 1 +/- 4.3e-06 | SSIM 0.9999 +/- 2e-05 | Avg_Dice 0.9996 +/- 7.8e-05 | Spatial_Correlation 0.9999 +/- 0 | Masked_RMSE 3.905e-11 +/- 1.5e-11 | Unmasked_RMSE 3.413e-11 +/- 6.6e-12
+  persistence near: Global_R2 0.9998 | SSIM 0.9999 | Avg_Dice 0.9984 | Spatial_Correlation 0.9999 | Masked_RMSE 1.662e-10 | Unmasked_RMSE 1.216e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.4727 +/- 0.26 | E2a_endothelial_x5_m2 -0.3057 +/- 0.5 | E2b_geometry_margin_G5_m2-ownscale 0.9196 +/- 0.043 | E2b_geometry_margin_G5_m2 0.952 +/- 0.019 | E3_il10_from_m2 0.938 +/- 0.02
+
+tmask_unet increment il10 100 (n=3)  train_s 24.47 +/- 0.83  infer_s 0.8257 +/- 0.4
+  near: skill 0.1317 +/- 0.016 | Global_R2 0.9684 +/- 0.00057 | SSIM 0.983 +/- 0.00024 | Avg_Dice 0.9873 +/- 0.00058 | Spatial_Correlation 0.9841 +/- 0.0003 | Masked_RMSE 4.236e-09 +/- 5.5e-11 | Unmasked_RMSE 1.303e-09 +/- 1.2e-11
+  far: skill 0.1203 +/- 0.0077 | Global_R2 0.9703 +/- 0.00026 | SSIM 0.9827 +/- 0.00023 | Avg_Dice 0.9878 +/- 0.00064 | Spatial_Correlation 0.9852 +/- 0.00012 | Masked_RMSE 4.649e-09 +/- 2.9e-11 | Unmasked_RMSE 1.395e-09 +/- 6.1e-12
+  persistence near: Global_R2 0.9637 | SSIM 0.9796 | Avg_Dice 0.9909 | Spatial_Correlation 0.9817 | Masked_RMSE 4.671e-09 | Unmasked_RMSE 1.398e-09
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.05965 +/- 0.0069 | E2a_endothelial_x5_m2 0.1084 +/- 0.014 | E2b_geometry_margin_G5_m2-ownscale 0.1342 +/- 0.015 | E2b_geometry_margin_G5_m2 0.1329 +/- 0.014 | E3_il10_from_m2 0.1321 +/- 0.013
+
+tmask_unet increment il10 250 (n=3)  train_s 39.2 +/- 1.3  infer_s 0.8397 +/- 0.52
+  near: skill 0.1588 +/- 0.0037 | Global_R2 0.9598 +/- 0.00018 | SSIM 0.9776 +/- 0.00025 | Avg_Dice 0.9317 +/- 0.008 | Spatial_Correlation 0.9797 +/- 9.3e-05 | Masked_RMSE 5.942e-10 +/- 2.3e-12 | Unmasked_RMSE 1.211e-10 +/- 2.7e-13
+  far: skill 0.1458 +/- 0.0021 | Global_R2 0.9624 +/- 9.3e-05 | SSIM 0.9788 +/- 1.2e-05 | Avg_Dice 0.9424 +/- 0.0072 | Spatial_Correlation 0.9811 +/- 6.4e-05 | Masked_RMSE 6.391e-10 +/- 4e-12 | Unmasked_RMSE 1.274e-10 +/- 1.6e-13
+  persistence near: Global_R2 0.9522 | SSIM 0.9726 | Avg_Dice 0.9867 | Spatial_Correlation 0.9759 | Masked_RMSE 6.627e-10 | Unmasked_RMSE 1.321e-10
+  transfer window skill: E2a_endothelial_x5_m2-ownscale 0.1419 +/- 0.0061 | E2a_endothelial_x5_m2 0.1147 +/- 0.014 | E2b_geometry_margin_G5_m2-ownscale 0.1562 +/- 0.004 | E2b_geometry_margin_G5_m2 0.1552 +/- 0.0042 | E3_il10_from_m2 0.1559 +/- 0.0032
+
+== PINN
+results/rev_abm_pinn/soft/pinn/res_il10_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03477615080750719, 'train_time_seconds': 3276.13, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il10_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03477615080750719, 'train_time_seconds': 3290.48, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il10_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03477615080750719, 'train_time_seconds': 3280.57, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il10_250_1.json {'grid': 250, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14550662349874458, 'train_time_seconds': 3987.54, 'pred_time_seconds': 0.35, 'variant': 'soft', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il10_250_100.json {'grid': 250, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14550662349874458, 'train_time_seconds': 3955.42, 'pred_time_seconds': 0.34, 'variant': 'soft', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il10_250_42.json {'grid': 250, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14550662349874458, 'train_time_seconds': 3979.74, 'pred_time_seconds': 0.34, 'variant': 'soft', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il8_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04019011812535791, 'train_time_seconds': 2298.56, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il8_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04019011812535791, 'train_time_seconds': 2300.3, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il8_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04019011812535791, 'train_time_seconds': 2282.86, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il8_250_1.json {'grid': 250, 'seed': 1, 'cytokine': 'il8', 'optuna_best_val_loss': 0.03877390604733121, 'train_time_seconds': 2604.71, 'pred_time_seconds': 0.28, 'variant': 'soft', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il8_250_100.json {'grid': 250, 'seed': 100, 'cytokine': 'il8', 'optuna_best_val_loss': 0.03877390604733121, 'train_time_seconds': 2613.54, 'pred_time_seconds': 0.29, 'variant': 'soft', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/soft/pinn/res_il8_250_42.json {'grid': 250, 'seed': 42, 'cytokine': 'il8', 'optuna_best_val_loss': 0.03877390604733121, 'train_time_seconds': 2628.46, 'pred_time_seconds': 0.29, 'variant': 'soft', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il10_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.034783243021725245, 'train_time_seconds': 4244.01, 'pred_time_seconds': 0.16, 'variant': 'strict', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il10_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.034783243021725245, 'train_time_seconds': 4231.42, 'pred_time_seconds': 0.15, 'variant': 'strict', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il10_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.034783243021725245, 'train_time_seconds': 4237.96, 'pred_time_seconds': 0.16, 'variant': 'strict', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il10_250_1.json {'grid': 250, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14536291495925882, 'train_time_seconds': 5133.68, 'pred_time_seconds': 0.38, 'variant': 'strict', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il10_250_100.json {'grid': 250, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14536291495925882, 'train_time_seconds': 5141.48, 'pred_time_seconds': 0.4, 'variant': 'strict', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il10_250_42.json {'grid': 250, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14536291495925882, 'train_time_seconds': 5169.97, 'pred_time_seconds': 0.38, 'variant': 'strict', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il8_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04303319568046325, 'train_time_seconds': 2313.88, 'pred_time_seconds': 0.14, 'variant': 'strict', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il8_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04303319568046325, 'train_time_seconds': 2308.79, 'pred_time_seconds': 0.14, 'variant': 'strict', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il8_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04303319568046325, 'train_time_seconds': 2298.67, 'pred_time_seconds': 0.15, 'variant': 'strict', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il8_250_1.json {'grid': 250, 'seed': 1, 'cytokine': 'il8', 'optuna_best_val_loss': 0.027668991552645423, 'train_time_seconds': 2637.83, 'pred_time_seconds': 0.28, 'variant': 'strict', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il8_250_100.json {'grid': 250, 'seed': 100, 'cytokine': 'il8', 'optuna_best_val_loss': 0.027668991552645423, 'train_time_seconds': 2623.88, 'pred_time_seconds': 0.29, 'variant': 'strict', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+results/rev_abm_pinn/strict/pinn/res_il8_250_42.json {'grid': 250, 'seed': 42, 'cytokine': 'il8', 'optuna_best_val_loss': 0.027668991552645423, 'train_time_seconds': 2634.42, 'pred_time_seconds': 0.28, 'variant': 'strict', 'run': 'E3_il10_from_m2_G250_s1', 'boundaryat': 25, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
+
+== HYPERPARAMETERS
+results/rev_abm/main_convlstm/direct/hp_il10_100.json {'best_params': {'learning_rate': 0.0008822233299725137, 'batch_size': 4, 'filters': 32, 'n_layers': 2}, 'best_val_loss': 0.012862120755016804, 'tuning_seconds': 168.0, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/direct/hp_il10_250.json {'best_params': {'learning_rate': 0.0009559686297067118, 'batch_size': 4, 'filters': 64, 'n_layers': 2}, 'best_val_loss': 0.008435463532805443, 'tuning_seconds': 492.3, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/direct/hp_il8_100.json {'best_params': {'learning_rate': 0.0008718805740328422, 'batch_size': 4, 'filters': 64, 'n_layers': 2}, 'best_val_loss': 0.0005220313323661685, 'tuning_seconds': 182.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/direct/hp_il8_250.json {'best_params': {'learning_rate': 0.0008071091684620412, 'batch_size': 4, 'filters': 64, 'n_layers': 2}, 'best_val_loss': 0.0005236457800492644, 'tuning_seconds': 492.5, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/increment/hp_il10_100.json {'best_params': {'learning_rate': 0.0008822233299725137, 'batch_size': 4, 'filters': 32, 'n_layers': 2}, 'best_val_loss': 0.0012074995320290327, 'tuning_seconds': 168.6, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/increment/hp_il10_250.json {'best_params': {'learning_rate': 0.000871880012179312, 'batch_size': 4, 'filters': 32, 'n_layers': 2}, 'best_val_loss': 0.006334471050649881, 'tuning_seconds': 390.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/increment/hp_il8_100.json {'best_params': {'learning_rate': 0.0003398025347770454, 'batch_size': 8, 'filters': 64, 'n_layers': 2}, 'best_val_loss': 3.5313865964781144e-07, 'tuning_seconds': 174.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_convlstm/increment/hp_il8_250.json {'best_params': {'learning_rate': 0.0002607024758370766, 'batch_size': 8, 'filters': 16, 'n_layers': 2}, 'best_val_loss': 1.113982420974935e-06, 'tuning_seconds': 384.1, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/direct/hp_il10_100.json {'best_params': {'learning_rate': 0.0009970682275036447, 'batch_size': 4, 'width': 32, 'modes': 12, 'depth': 4}, 'best_val_loss': 0.0024908571504056454, 'tuning_seconds': 170.3, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/direct/hp_il10_250.json {'best_params': {'learning_rate': 0.0009952357753007803, 'batch_size': 4, 'width': 64, 'modes': 12, 'depth': 4}, 'best_val_loss': 0.006497650407254696, 'tuning_seconds': 308.1, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/direct/hp_il8_100.json {'best_params': {'learning_rate': 0.0009970682275036447, 'batch_size': 4, 'width': 32, 'modes': 12, 'depth': 4}, 'best_val_loss': 0.00040881955646909773, 'tuning_seconds': 170.4, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/direct/hp_il8_250.json {'best_params': {'learning_rate': 0.0009970682275036447, 'batch_size': 4, 'width': 32, 'modes': 12, 'depth': 4}, 'best_val_loss': 0.00047887006076052785, 'tuning_seconds': 302.3, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/increment/hp_il10_100.json {'best_params': {'learning_rate': 0.0009747118320884906, 'batch_size': 4, 'width': 32, 'modes': 12, 'depth': 4}, 'best_val_loss': 0.0012062176829203963, 'tuning_seconds': 174.9, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/increment/hp_il10_250.json {'best_params': {'learning_rate': 0.0009970682275036447, 'batch_size': 4, 'width': 32, 'modes': 12, 'depth': 4}, 'best_val_loss': 0.006334905978292227, 'tuning_seconds': 312.7, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/increment/hp_il8_100.json {'best_params': {'learning_rate': 8.168455894760161e-05, 'batch_size': 4, 'width': 64, 'modes': 16, 'depth': 3}, 'best_val_loss': 1.4076786101213656e-06, 'tuning_seconds': 167.5, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_fno/increment/hp_il8_250.json {'best_params': {'learning_rate': 8.283522014064228e-05, 'batch_size': 4, 'width': 64, 'modes': 16, 'depth': 3}, 'best_val_loss': 1.4655021232101717e-06, 'tuning_seconds': 295.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/direct/hp_il10_100.json {'best_params': {'learning_rate': 0.000871880012179312, 'batch_size': 4, 'hidden': 256, 'p': 64}, 'best_val_loss': 0.001249998458661139, 'tuning_seconds': 140.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/direct/hp_il10_250.json {'best_params': {'learning_rate': 0.0008822233786057607, 'batch_size': 4, 'hidden': 256, 'p': 256}, 'best_val_loss': 0.006363340653479099, 'tuning_seconds': 463.6, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/direct/hp_il8_100.json {'best_params': {'learning_rate': 0.0008822233299725137, 'batch_size': 4, 'hidden': 256, 'p': 64}, 'best_val_loss': 2.190646409871988e-05, 'tuning_seconds': 140.5, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/direct/hp_il8_250.json {'best_params': {'learning_rate': 0.0008822233299725137, 'batch_size': 4, 'hidden': 256, 'p': 64}, 'best_val_loss': 3.359805850777775e-05, 'tuning_seconds': 446.6, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/increment/hp_il10_100.json {'best_params': {'learning_rate': 0.0004157748417113367, 'batch_size': 4, 'hidden': 256, 'p': 64}, 'best_val_loss': 0.0012063209433108568, 'tuning_seconds': 135.1, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/increment/hp_il10_250.json {'best_params': {'learning_rate': 0.00039495117669810243, 'batch_size': 4, 'hidden': 256, 'p': 256}, 'best_val_loss': 0.006335150450468063, 'tuning_seconds': 431.0, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/increment/hp_il8_100.json {'best_params': {'learning_rate': 0.0009637987355092952, 'batch_size': 16, 'hidden': 128, 'p': 64}, 'best_val_loss': 1.3968470966574387e-06, 'tuning_seconds': 109.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_pointwise/increment/hp_il8_250.json {'best_params': {'learning_rate': 0.0009517164170260446, 'batch_size': 16, 'hidden': 256, 'p': 64}, 'best_val_loss': 1.7737484085955657e-06, 'tuning_seconds': 345.8, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/direct/hp_il10_100.json {'best_params': {'learning_rate': 0.0008071091684620412, 'batch_size': 4, 'filters': 64, 'lstm_units': 256}, 'best_val_loss': 0.02231348678469658, 'tuning_seconds': 118.9, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/direct/hp_il10_250.json {'best_params': {'learning_rate': 0.0008822233786057607, 'batch_size': 4, 'filters': 64, 'lstm_units': 256}, 'best_val_loss': 0.10093977302312851, 'tuning_seconds': 169.6, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/direct/hp_il8_100.json {'best_params': {'learning_rate': 0.0005088535942051978, 'batch_size': 4, 'filters': 64, 'lstm_units': 256}, 'best_val_loss': 0.01404931116849184, 'tuning_seconds': 119.0, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/direct/hp_il8_250.json {'best_params': {'learning_rate': 0.0005374951616208438, 'batch_size': 4, 'filters': 64, 'lstm_units': 256}, 'best_val_loss': 0.0155018987134099, 'tuning_seconds': 165.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/increment/hp_il10_100.json {'best_params': {'learning_rate': 0.0009530215806931369, 'batch_size': 8, 'filters': 32, 'lstm_units': 64}, 'best_val_loss': 0.001209259033203125, 'tuning_seconds': 113.1, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/increment/hp_il10_250.json {'best_params': {'learning_rate': 0.0004518567752490587, 'batch_size': 8, 'filters': 32, 'lstm_units': 64}, 'best_val_loss': 0.006372340023517609, 'tuning_seconds': 146.5, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/increment/hp_il8_100.json {'best_params': {'learning_rate': 0.0008488996556564637, 'batch_size': 4, 'filters': 64, 'lstm_units': 256}, 'best_val_loss': 3.3375151815562276e-06, 'tuning_seconds': 109.2, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_stalstm/increment/hp_il8_250.json {'best_params': {'learning_rate': 0.0008423647918875736, 'batch_size': 16, 'filters': 64, 'lstm_units': 64}, 'best_val_loss': 4.629367140296381e-06, 'tuning_seconds': 143.9, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/direct/hp_il10_100.json {'best_params': {'learning_rate': 0.0005704541548749329, 'batch_size': 4, 'base_filters': 64, 'depth': 3, 'dropout': 0.23431159324108802}, 'best_val_loss': 0.018841663375496864, 'tuning_seconds': 259.9, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/direct/hp_il10_250.json {'best_params': {'learning_rate': 0.0009765937284100395, 'batch_size': 4, 'base_filters': 64, 'depth': 4, 'dropout': 0.1872501528371815}, 'best_val_loss': 0.020822525024414062, 'tuning_seconds': 429.6, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/direct/hp_il8_100.json {'best_params': {'learning_rate': 0.0009069412149704695, 'batch_size': 4, 'base_filters': 64, 'depth': 4, 'dropout': 0.19555996523345354}, 'best_val_loss': 0.011248928494751453, 'tuning_seconds': 286.1, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/direct/hp_il8_250.json {'best_params': {'learning_rate': 0.0007447343953845667, 'batch_size': 4, 'base_filters': 64, 'depth': 4, 'dropout': 0.19311382098714702}, 'best_val_loss': 0.00819646380841732, 'tuning_seconds': 400.7, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/increment/hp_il10_100.json {'best_params': {'learning_rate': 0.0009655373672236464, 'batch_size': 4, 'base_filters': 64, 'depth': 4, 'dropout': 0.20474051628053896}, 'best_val_loss': 0.0012085014022886753, 'tuning_seconds': 294.4, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/increment/hp_il10_250.json {'best_params': {'learning_rate': 0.00028230954059726103, 'batch_size': 4, 'base_filters': 16, 'depth': 3, 'dropout': 0.2676366966001481}, 'best_val_loss': 0.006344550754874945, 'tuning_seconds': 466.1, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/increment/hp_il8_100.json {'best_params': {'learning_rate': 0.0008692991511139548, 'batch_size': 8, 'base_filters': 32, 'depth': 3, 'dropout': 0.0975990992289793}, 'best_val_loss': 7.483951662834443e-07, 'tuning_seconds': 231.0, 'n_trials': 20, 'tune_epochs': 20}
+results/rev_abm/main_unet/increment/hp_il8_250.json {'best_params': {'learning_rate': 0.0009069412149704695, 'batch_size': 4, 'base_filters': 64, 'depth': 4, 'dropout': 0.19555996523345354}, 'best_val_loss': 1.1470691561044077e-06, 'tuning_seconds': 382.6, 'n_trials': 20, 'tune_epochs': 20}
+
+== ACTIVE FRACTION
+grid,cytokine,window,n_seeds,nonzero_pct,above_thr_pct,above_thr_pixels,cell_occupied_pct,source_cells_pct,source_cells_pixels
+100,il8,t2-20,5,99.005,6.847,685,3.706,1.9399,194.0
+100,il8,train,5,99.73,21.518,2152,2.715,1.9373,193.7
+100,il8,near,5,100.0,43.898,4390,2.623,1.934,193.4
+100,il8,far,5,100.0,46.666,4667,2.668,1.934,193.4
+100,il10,t2-20,5,45.013,1.176,118,3.706,0.2623,26.2
+100,il10,train,5,85.066,7.774,777,2.715,0.3048,30.5
+100,il10,near,5,100.0,22.282,2228,2.623,0.6684,66.8
+100,il10,far,5,100.0,26.641,2664,2.668,0.7138,71.4
+250,il8,t2-20,5,98.798,12.061,7538,1.561,0.7928,495.5
+250,il8,train,5,99.641,35.007,21880,1.156,0.792,495.0
+250,il8,near,5,99.939,60.513,37820,1.077,0.7909,494.3
+250,il8,far,5,99.993,62.059,38787,1.097,0.7904,494.0
+250,il10,t2-20,5,38.04,0.395,247,1.561,0.087,54.4
+250,il10,train,5,82.908,4.697,2936,1.156,0.1337,83.5
+250,il10,near,5,100.0,21.754,13596,1.077,0.2753,172.0
+250,il10,far,5,100.0,27.167,16979,1.097,0.2959,184.9
+
+
+== ABM VARIABILITY
+ABM RUN-TO-RUN VARIABILITY (mean over run pairs; metrics as for the surrogates)
+
+=== IL10 100x100 ===
+comparison                                     window pairs       R2    SSIM    Dice    Corr  RMSE/cmax
+same settings, different seed                 t82-100    10  -0.9544  0.0423  0.2521  0.0134     0.1508
+same settings, different seed                  t2-100    10  -0.8704  0.1635  0.1256  0.0067     0.1086
+baseline vs E2a_endothelial_x5_m2             t82-100     3  -1.0562  0.0320  0.2669  0.0486     0.1566
+baseline vs E2a_endothelial_x5_m2              t2-100     3  -0.9379  0.1631  0.1399  0.0283     0.1114
+baseline vs E2b_geometry_margin_G5_m2         t82-100     3  -0.9319  0.0429  0.2535  0.0163     0.1518
+baseline vs E2b_geometry_margin_G5_m2          t2-100     3  -0.8448  0.1589  0.1273  0.0077     0.1087
+
+=== IL8 100x100 ===
+comparison                                     window pairs       R2    SSIM    Dice    Corr  RMSE/cmax
+same settings, different seed                 t82-100    10  -0.3699  0.2729  0.7314  0.3179     0.1473
+same settings, different seed                  t2-100    10  -0.3814  0.3149  0.4639  0.2075     0.1151
+baseline vs E2a_endothelial_x5_m2             t82-100     3 -10.9813  0.2102  0.8156  0.5281     0.4422
+baseline vs E2a_endothelial_x5_m2              t2-100     3  -9.1420  0.2538  0.5850  0.4089     0.3157
+baseline vs E2b_geometry_margin_G5_m2         t82-100     3  -0.8552  0.2381  0.6611  0.2801     0.1740
+baseline vs E2b_geometry_margin_G5_m2          t2-100     3  -0.7459  0.3118  0.4352  0.1835     0.1311
+
+=== IL10 250x250 ===
+comparison                                     window pairs       R2    SSIM    Dice    Corr  RMSE/cmax
+same settings, different seed                 t82-100    10  -0.9525  0.0116  0.2767  0.0180     0.3041
+same settings, different seed                  t2-100    10  -0.9147  0.1732  0.1094  0.0078     0.2299
+baseline vs E2a_endothelial_x5_m2             t82-100     3  -0.9447  0.0145  0.3054  0.0349     0.3029
+baseline vs E2a_endothelial_x5_m2              t2-100     3  -0.9009  0.1916  0.1250  0.0172     0.2282
+baseline vs E2b_geometry_margin_G5_m2         t82-100     3  -0.9708  0.0108  0.2698  0.0146     0.3049
+baseline vs E2b_geometry_margin_G5_m2          t2-100     3  -0.9304  0.1697  0.1070  0.0072     0.2299
+
+=== IL8 250x250 ===
+comparison                                     window pairs       R2    SSIM    Dice    Corr  RMSE/cmax
+same settings, different seed                 t82-100    10  -0.0026  0.3794  0.9238  0.4935     0.1338
+same settings, different seed                  t2-100    10   0.0080  0.4135  0.6540  0.3474     0.1038
+baseline vs E2a_endothelial_x5_m2             t82-100     3 -16.0470  0.2636  0.9147  0.7122     0.5538
+baseline vs E2a_endothelial_x5_m2              t2-100     3 -13.8007  0.3089  0.7291  0.5826     0.4017
+baseline vs E2b_geometry_margin_G5_m2         t82-100     3  -0.7856  0.3034  0.7508  0.4326     0.1792
+baseline vs E2b_geometry_margin_G5_m2          t2-100     3  -0.5709  0.3759  0.5691  0.3181     0.1309
+
+Domain-mean concentration across baseline seeds: mean and coefficient of variation
+  il10   100  t =  25 h  n = 5  mean 1.081e-09  CV 4.42 %
+  il10   100  t =  50 h  n = 5  mean 1.753e-09  CV 4.64 %
+  il10   100  t =  75 h  n = 5  mean 2.927e-09  CV 0.78 %
+  il10   100  t = 100 h  n = 5  mean 4.777e-09  CV 0.49 %
+  il8    100  t =  25 h  n = 5  mean 4.702e-08  CV 0.95 %
+  il8    100  t =  50 h  n = 5  mean 8.848e-08  CV 0.92 %
+  il8    100  t =  75 h  n = 5  mean 1.266e-07  CV 0.92 %
+  il8    100  t = 100 h  n = 5  mean 1.617e-07  CV 0.92 %
+  il10   250  t =  25 h  n = 5  mean 5.999e-11  CV 4.59 %
+  il10   250  t =  50 h  n = 5  mean 1.252e-10  CV 1.90 %
+  il10   250  t =  75 h  n = 5  mean 1.973e-10  CV 0.98 %
+  il10   250  t = 100 h  n = 5  mean 3.095e-10  CV 1.01 %
+  il8    250  t =  25 h  n = 5  mean 3.075e-09  CV 0.35 %
+  il8    250  t =  50 h  n = 5  mean 5.788e-09  CV 0.36 %
+  il8    250  t =  75 h  n = 5  mean 8.282e-09  CV 0.36 %
+  il8    250  t = 100 h  n = 5  mean 1.057e-08  CV 0.35 %
+
+
+== PROVENANCE (one run per grid)
+/home/jkowalczuk/abm_revision/revision_cmpb/output/E3_il10_from_m2_G100_s1/run_provenance.json
+{
+ "run_id": "E3_il10_from_m2_G100_s1",
+ "addresses_reviewer_comments": [
+  "R1 C2",
+  "R1 C3"
+ ],
+ "model": {
+  "model": "burn-wound ABM combi_clean (Korkmaz et al. 2024), CompuCell3D 4.2.5 + FiPy",
+  "template_md5": {
+   "endothelial.py": "b8b7881be73230b658f5fcd214ec2cca",
+   "endothelialSteppables.py": "33857cb79a617c1fdcafc4cbdbffe122",
+   "test.py": "b6073a52a56a6dad09309f717525b9aa",
+   "variablevals.py": "3d9fa7699906233949c21c21fbdd5a59"
+  },
+  "grid": 100,
+  "hours": 100,
+  "steps": 1000001,
+  "boundaryat": 10,
+  "boundary_frac": 10,
+  "endocount": 200,
+  "endo_factor": 1.0,
+  "lattice_writer": "CompuCell3D lattice output (-f)",
+  "cell_count_scale": "max(1, round(k * 100 / 500))",
+  "seed": 1,
+  "il10_source": "m2",
+  "published_dataset_equivalent": false,
+  "cell_type_ids": {
+   "Medium": 0,
+   "endothelial": 1,
+   "neutrophil": 2,
+   "monocyte": 3,
+   "fibroblast": 4,
+   "neutrophila": 5,
+   "neutrophilndn": 6,
+   "monocyter": 7,
+   "macrophage1": 8,
+   "macrophage2": 9,
+   "myofibroblast": 10
+  }
+ },
+ "seed": 1,
+ "command": [
+  "/home/rbumbuc1/miniforge3/envs/cc3d_460/bin/python",
+  "-W",
+  "ignore",
+  "-m",
+  "cc3d.run_script",
+  "-i",
+  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G100_s1/endothelial.cc3d",
+  "-o",
+  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/output/E3_il10_from_m2_G100_s1",
+  "-f",
+  "10000",
+  "--current-dir",
+  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G100_s1"
+ ],
+ "model_file_md5": {
+  "Simulation/ParameterScanSpecs.json": "bd5bfbe62b12ef2afa6238cfc62b1c7b",
+  "Simulation/cellpresent.txt": "f7b4b026dda93f224656450261e0bda9",
+  "Simulation/cytokines.txt": "44e3ed79896eb1cece5951699d91614c",
+  "Simulation/endothelial.py": "b8b7881be73230b658f5fcd214ec2cca",
+  "Simulation/endothelial.xml": "cbe25742e92533fd3af9ca1399d9eb4b",
+  "Simulation/endothelialSteppables.py": "67a50e2e9725c1f3802ce75b2efe6c27",
+  "Simulation/mesh.txt": "19aaaddb667c7de459518f71c7e6e44e",
+  "Simulation/mesh_phi.txt": "d373e12b90de1d375458598dad3e6e49",
+  "Simulation/pixel_list.txt": "b5e4403138454522dc58571e5b9a6139",
+  "Simulation/test.py": "b483b14c7119ff13dd5e7fcf6cf77746",
+  "Simulation/variablevals.py": "fde10055846a65558b50ef2a248fc6e6",
+  "abm_provenance.json": "9df76d70ebade4b2acd106b6383608a7",
+  "endothelial.cc3d": "5ba5d5e2d84bed4b73fdf35f60f964de"
+ },
+ "software": {
+  "python": "3.10.14",
+  "cc3d": "4.6.0",
+  "numpy": "1.
+/home/jkowalczuk/abm_revision/revision_cmpb/output/E3_il10_from_m2_G250_s1/run_provenance.json
+{
+ "run_id": "E3_il10_from_m2_G250_s1",
+ "addresses_reviewer_comments": [
+  "R1 C2",
+  "R1 C3"
+ ],
+ "model": {
+  "model": "burn-wound ABM combi_clean (Korkmaz et al. 2024), CompuCell3D 4.2.5 + FiPy",
+  "template_md5": {
+   "endothelial.py": "b8b7881be73230b658f5fcd214ec2cca",
+   "endothelialSteppables.py": "33857cb79a617c1fdcafc4cbdbffe122",
+   "test.py": "b6073a52a56a6dad09309f717525b9aa",
+   "variablevals.py": "3d9fa7699906233949c21c21fbdd5a59"
+  },
+  "grid": 250,
+  "hours": 100,
+  "steps": 1000001,
+  "boundaryat": 25,
+  "boundary_frac": 10,
+  "endocount": 500,
+  "endo_factor": 1.0,
+  "lattice_writer": "CompuCell3D lattice output (-f)",
+  "cell_count_scale": "max(1, round(k * 250 / 500))",
+  "seed": 1,
+  "il10_source": "m2",
+  "published_dataset_equivalent": false,
+  "cell_type_ids": {
+   "Medium": 0,
+   "endothelial": 1,
+   "neutrophil": 2,
+   "monocyte": 3,
+   "fibroblast": 4,
+   "neutrophila": 5,
+   "neutrophilndn": 6,
+   "monocyter": 7,
+   "macrophage1": 8,
+   "macrophage2": 9,
+   "myofibroblast": 10
+  }
+ },
+ "seed": 1,
+ "command": [
+  "/home/rbumbuc1/miniforge3/envs/cc3d_460/bin/python",
+  "-W",
+  "ignore",
+  "-m",
+  "cc3d.run_script",
+  "-i",
+  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G250_s1/endothelial.cc3d",
+  "-o",
+  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/output/E3_il10_from_m2_G250_s1",
+  "-f",
+  "10000",
+  "--current-dir",
+  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G250_s1"
+ ],
+ "model_file_md5": {
+  "Simulation/ParameterScanSpecs.json": "bd5bfbe62b12ef2afa6238cfc62b1c7b",
+  "Simulation/cellpresent.txt": "f7b4b026dda93f224656450261e0bda9",
+  "Simulation/cytokines.txt": "44e3ed79896eb1cece5951699d91614c",
+  "Simulation/endothelial.py": "b8b7881be73230b658f5fcd214ec2cca",
+  "Simulation/endothelial.xml": "241af49e3b6bb9fc4cb642f4bc5f30e1",
+  "Simulation/endothelialSteppables.py": "f907ad277847385c13acbd394dea979c",
+  "Simulation/mesh.txt": "19aaaddb667c7de459518f71c7e6e44e",
+  "Simulation/mesh_phi.txt": "d373e12b90de1d375458598dad3e6e49",
+  "Simulation/pixel_list.txt": "b5e4403138454522dc58571e5b9a6139",
+  "Simulation/test.py": "b483b14c7119ff13dd5e7fcf6cf77746",
+  "Simulation/variablevals.py": "ebb85e6478f63afc5340731fca67f8fe",
+  "abm_provenance.json": "be78efae1c709dfa792177c3599ccb73",
+  "endothelial.cc3d": "5ba5d5e2d84bed4b73fdf35f60f964de"
+ },
+ "software": {
+  "python": "3.10.14",
+  "cc3d": "4.6.0",
+  "numpy": "1.

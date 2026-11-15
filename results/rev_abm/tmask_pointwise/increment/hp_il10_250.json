@@ -1,0 +1,12 @@
+{
+ "best_params": {
+  "learning_rate": 0.0004011954609860887,
+  "batch_size": 4,
+  "hidden": 256,
+  "p": 64
+ },
+ "best_val_loss": 0.005783235188573599,
+ "tuning_seconds": 416.2,
+ "n_trials": 20,
+ "tune_epochs": 20
+}
