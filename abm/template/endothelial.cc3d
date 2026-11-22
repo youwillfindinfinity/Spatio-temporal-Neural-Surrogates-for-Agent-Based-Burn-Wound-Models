@@ -1,0 +1,13 @@
+<Simulation version="4.2.5">
+   <XMLScript Type="XMLScript">Simulation/endothelial.xml</XMLScript>
+   <PythonScript Type="PythonScript">Simulation/endothelial.py</PythonScript>
+   <Resource Type="Python">Simulation/endothelialSteppables.py</Resource>
+   <Resource Type="Python">Simulation/test.py</Resource>
+   <Resource Type="Python">Simulation/variablevals.py</Resource>
+   <Resource Type="Text">Simulation/cellpresent.txt</Resource>
+   <Resource Type="Text">Simulation/cytokines.txt</Resource>
+   <Resource Type="Text">Simulation/mesh.txt</Resource>
+   <Resource Type="Text">Simulation/meshphi.txt</Resource>
+   <Resource Type="Text">Simulation/pixel_list.txt</Resource>
+   <ParameterScan Type="ParameterScan">Simulation/ParameterScanSpecs.json</ParameterScan>
+</Simulation>

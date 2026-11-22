@@ -1,0 +1,12 @@
+{
+    "version": "4.0.0",
+    "parameter_list": {
+        "endocount": {
+            "original_value": "1000",
+            "values": [
+                1000,
+                5000
+            ]
+        }
+    }
+}
