@@ -1,6 +1,7 @@
-REVISION EXPERIMENTS - SUMMARY (498 runs)
+SUMMARY (498 runs)
 skill = 1 - MSE_model / MSE_persistence (one step ahead); > 0 means better than copying the previous frame
 front = +/- band around the 0.05 c_max contour of the true field; values are RMSE / c_max
+roll19 / roll19fz = R2 after a 19 h roll-out with the other cytokines supplied by the ABM / frozen at t = 81 h (main setting)
 
 === IL10  100x100 ===
 model/variant                n   R2 near    SSIM    Dice  skill n  skill f    front   inter.  roll19 roll19fz  train s

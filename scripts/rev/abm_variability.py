@@ -1,14 +1,13 @@
-"""Run-to-run variability of the ABM itself: the surrogate metrics evaluated between pairs of
-independent ABM runs with identical settings and different random seeds (noise floor), and between
-the baseline and the modified-setting runs. Fields are clipped at the training run's c_max, as for
-the surrogates. Output: outputs/<REV_OUT>/abm_variability.csv and .txt"""
+"""Run-to-run variability of the ABM: surrogate metrics between pairs of ABM runs with the same settings
+and different seeds (noise floor), and between the baseline and modified-setting runs.
+Fields are clipped at the training run's c_max. Output: outputs/<REV_OUT>/abm_variability.csv and .txt"""
 import csv, itertools, json, sys, warnings
 import numpy as np
 import common as C
 warnings.filterwarnings("ignore")
 from paths import OUTPUTS
 
-DST = OUTPUTS / C.os.environ.get("REV_OUT", "rev"); DST.mkdir(parents=True, exist_ok=True)
+DST = OUTPUTS / (C.os.environ.get("REV_OUT") or "rev_abm"); DST.mkdir(parents=True, exist_ok=True)
 rows, stats = [], []
 import re
 grids = sorted({int(re.search(r"_G(\d+)_s\d+$", d.name).group(1)) for d in C.DATA_ROOT.iterdir() if d.is_dir() and re.search(r"_G(\d+)_s\d+$", d.name)})
@@ -27,7 +26,6 @@ for grid in grids:
                 m = C._paper(f[a][sl], f[b][sl], data[a]["M"][sl], cmax)
                 rows.append({"grid": grid, "cytokine": cyt, "comparison": label, "run_a": a, "run_b": b, "window": wname,
                              **{k: float(f"{v:.5g}") for k, v in m.items()}, "RMSE_rel_cmax": float(f"{np.sqrt(np.mean((f[a][sl] - f[b][sl]) ** 2)) / cmax:.5g}")})
-        # agreement of domain-averaged concentrations between seeds of the baseline
         for t in (25, 50, 75, 100):
             m = np.array([f[r][t - 2].mean() for r in base])
             stats.append((grid, cyt, t, len(base), float(m.mean()), float(m.std(ddof=1) / m.mean()) if len(base) > 1 and m.mean() > 0 else float("nan")))

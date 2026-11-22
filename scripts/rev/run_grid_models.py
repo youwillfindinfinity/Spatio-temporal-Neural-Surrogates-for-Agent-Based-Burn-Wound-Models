@@ -1,9 +1,9 @@
-"""U-Net, STA-LSTM, ConvLSTM and FNO runs for the revision.
+"""Train and evaluate U-Net, STA-LSTM, ConvLSTM and FNO on the ABM runs.
 
   --model unet      variants: base, weighted, residual, ntrain35, ntrain52
   --model stalstm   variants: base
-  --model convlstm  variants: base, residual          (new baseline, fixed hyperparameters)
-  --model fno       variants: base, residual          (new baseline, fixed hyperparameters)
+  --model convlstm  variants: base, residual          (fixed hyperparameters)
+  --model fno       variants: base, residual          (fixed hyperparameters)
 U-Net and STA-LSTM use the hyperparameters stored in results/models (seed-42 Optuna search).
 """
 import argparse, importlib.util
@@ -33,7 +33,6 @@ def zero_last_conv(model):
         convs[-1].set_weights([np.zeros_like(w) for w in convs[-1].get_weights()])
 
 
-# ------------------------------------------------------------------ models
 def build_unet(grid, hp):
     U = _load("unet_all", "unet/all.py")
     return U.build_unet(grid_size=grid, in_channels=22, base_filters=hp["base_filters"], depth=hp["depth"], dropout=hp["dropout"])
@@ -94,7 +93,6 @@ def build_stalstm(grid, hp):
     return S.STALSTM(grid_size=grid, filters=hp["filters"], lstm_units=hp["lstm_units"])
 
 
-# ------------------------------------------------------------------ one run
 def run(model_name, variant, grid, cytokine, seed):
     if C.result_path(model_name, variant, cytokine, grid, seed).exists():
         print("skip (done):", model_name, variant, cytokine, grid, seed, flush=True); return

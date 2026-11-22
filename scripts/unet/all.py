@@ -30,7 +30,6 @@ def set_seed(seed: int):
     tf.random.set_seed(seed)
 
 
-# model 
 def _conv_block(x, filters, kernel_size=3):
     x = tf.keras.layers.Conv2D(
         filters, kernel_size, padding="same", activation="relu"
@@ -66,7 +65,6 @@ def build_unet(grid_size: int, in_channels: int = 22,
 
     inputs = tf.keras.Input(shape=(grid_size, grid_size, in_channels))
 
-    # encoder
     skips = []
     x = inputs
     for i in range(depth):
@@ -74,12 +72,10 @@ def build_unet(grid_size: int, in_channels: int = 22,
         skip, x = _encoder_block(x, f)
         skips.append(skip)
 
-    # bottleneck
     x = _conv_block(x, base_filters * (2 ** depth))
     if dropout > 0:
         x = tf.keras.layers.Dropout(dropout)(x)
 
-    # decoder
     for i in reversed(range(depth)):
         f = base_filters * (2 ** i)
         x = _decoder_block(x, skips[i], f)
@@ -91,7 +87,6 @@ def build_unet(grid_size: int, in_channels: int = 22,
     return tf.keras.Model(inputs, outputs, name="unet")
 
 
-# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -107,15 +102,12 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     y_p   = np.maximum(y_pred[:min_t], 0.0)
     m_s   = np.max(masks[:min_t], axis=-1, keepdims=True)
 
-    # RMSE
     sq_diff = np.square(y_t - y_p)
     rmse    = float(np.sqrt(np.sum(sq_diff * m_s) / (np.sum(m_s) + 1e-12)))
     unmasked_rmse = float(np.sqrt(np.mean(sq_diff)))
 
-    # global R²
     r2 = float(r2_score(y_t.flatten(), y_p.flatten()))
 
-    # per-timestep R² 
     per_t_r2 = []
     for t in range(min_t):
         gt_f = y_t[t].flatten(); pr_f = y_p[t].flatten()
@@ -124,12 +116,9 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         else:
             per_t_r2.append(np.nan)
 
-    # dice with fixed threshold 
     dice_thr = 0.05 * clip_max if clip_max > 0 else 1e-9
     dices, n_empty = [], 0
-    # spatial correlation with Fisher z 
     z_corrs = []
-    # SSIM 
     ssims, n_ssim_skip = [], 0
     fixed_dr = float(clip_max) if clip_max > 0 else 1.0
 
@@ -137,7 +126,6 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         gt = y_t[t, :, :, 0]
         pr = y_p[t, :, :, 0]
 
-        # dice
         g_b = (gt > dice_thr).astype(float)
         p_b = (pr > dice_thr).astype(float)
         if np.sum(g_b) + np.sum(p_b) == 0:
@@ -147,13 +135,11 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
                 (2.0 * np.sum(g_b * p_b)) / (np.sum(g_b) + np.sum(p_b) + 1e-12)
             )
 
-        # spatial correlation
         if np.std(gt) > 1e-12 and np.std(pr) > 1e-12:
             r_val = float(pearsonr(gt.flatten(), pr.flatten())[0])
             if np.isfinite(r_val):
                 z_corrs.append(_fisher_z(r_val))
 
-        # SSIM
         dr = float(np.max(gt) - np.min(gt))
         if dr > 1e-12:
             ssims.append(float(ssim(gt, pr, data_range=fixed_dr)))
@@ -178,7 +164,6 @@ def denormalize(scaled: np.ndarray, clip_max: float) -> np.ndarray:
     return (np.asarray(scaled, dtype=np.float64) + 1.0) / 2.0 * clip_max
 
 
-# optuna
 def make_objective(X_train, Y_train, X_val, Y_val, grid_size, seed):
     def objective(trial):
         set_seed(seed)
@@ -213,7 +198,6 @@ def make_objective(X_train, Y_train, X_val, Y_val, grid_size, seed):
     return objective
 
 
-# pipeline 
 def run_pipeline(grid: int, seed: int, cytokine: str):
     set_seed(seed)
 
@@ -234,7 +218,7 @@ def run_pipeline(grid: int, seed: int, cytokine: str):
         meta = json.load(f)
     clip_max = float(meta["scaling"]["max"][idx])
 
-    in_channels = X.shape[-1] #22
+    in_channels = X.shape[-1]
 
     X_train, Y_train = X[:70],   Y[:70]
     X_val,   Y_val   = X[70:80], Y[70:80]
@@ -296,7 +280,6 @@ def run_pipeline(grid: int, seed: int, cytokine: str):
         ],
     )
 
-    # evaluation
     Y_p_scaled = model.predict(X, batch_size=2)
     Y_p_phys   = denormalize(Y_p_scaled, clip_max)
     Y_a_phys   = denormalize(Y,          clip_max)

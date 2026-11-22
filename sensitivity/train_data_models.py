@@ -25,7 +25,6 @@ def set_seed(seed: int):
     tf.random.set_seed(seed)
 
 
-# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -86,7 +85,6 @@ def denormalize(x, clip_max):
     return (np.asarray(x, np.float64) + 1.0) / 2.0 * clip_max
 
 
-# U-Net
 def _unet_conv_block(x, filters, kernel_size=3):
     x = tf.keras.layers.Conv2D(filters, kernel_size, padding="same", activation="relu")(x)
     x = tf.keras.layers.BatchNormalization()(x)
@@ -211,7 +209,6 @@ def train_unet(prep_dir, cytokine, seed, n_trials, tune_epochs, full_epochs, out
           f"({train_elapsed:.0f}s)")
 
 
-# STA-LSTM
 class SpatialAttention(tf.keras.layers.Layer):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -330,7 +327,6 @@ def train_stalstm(prep_dir, cytokine, seed, n_trials, tune_epochs, full_epochs, 
           f"({train_elapsed:.0f}s)")
 
 
-# DeepONet 
 class DeepONetBranch(tf.keras.layers.Layer):
     def __init__(self, hidden, p, **kw):
         super().__init__(**kw)
@@ -563,7 +559,6 @@ def train_deeponet(prep_dir, cytokine, seed, n_trials, tune_epochs, full_epochs,
 
 
 
-# main
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prep-dir", type=str, required=True,
@@ -576,7 +571,6 @@ def main():
     ap.add_argument("--cytokines", type=str, default="il8,il10")
     ap.add_argument("--models", type=str, default="unet,sta_lstm,deeponet",
                     help="Subset of models to run")
-    # Paper-matching defaults:
     ap.add_argument("--tune-epochs-fast", type=int, default=20)     # U-Net, STA-LSTM
     ap.add_argument("--tune-epochs-deeponet", type=int, default=30)
     ap.add_argument("--full-epochs-fast", type=int, default=200)

@@ -1,7 +1,12 @@
-"""Collect the values still missing in the revised manuscript into outputs/rev_abm/for_paper.txt."""
-import json, glob, os, csv, statistics as st
+"""Collect result summaries of the rev_abm runs into outputs/rev_abm/for_paper.txt."""
+import json, glob, os, csv, sys, statistics as st
 from pathlib import Path
-R = Path("results/rev_abm"); O = Path("outputs/rev_abm"); out = []
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paths import ROOT, RESULTS, OUTPUTS
+rel = lambda f: os.path.relpath(f, ROOT)                            # paths relative to the repository
+TAG = os.environ.get("REV_OUT") or "rev_abm"
+R = RESULTS / TAG; O = OUTPUTS / TAG; out = []
+RUNS = Path(os.path.expanduser(os.environ.get("REV_RUNS_ROOT") or next((str(p) for p in (ROOT / "burn_wound_abm_simulations/runs", Path("~/burn_wound_abm_simulations/runs").expanduser()) if p.is_dir()), "")))   # raw ABM runs
 P = lambda *a: out.append(" ".join(str(x) for x in a))
 ms = lambda v: f"{st.mean(v):.4g} +/- {st.stdev(v):.2g}" if len(v) > 1 else (f"{v[0]:.4g}" if v else "-")
 
@@ -27,15 +32,15 @@ for d in sorted(glob.glob(str(R / "*_*/*/"))):
             if tr: P("  transfer window skill: " + " | ".join(f"{k} {ms(v)}" for k, v in tr.items()))
 
 P("\n== PINN")
-for f in sorted(glob.glob("results/rev_abm_pinn/*/pinn/res_*.json")):
-    r = json.load(open(f)); P(f, {k: v for k, v in r.items() if isinstance(v, (int, float, str))})
+for f in sorted(glob.glob(str(RESULTS / f"{TAG}_pinn" / "*" / "pinn" / "res_*.json"))):
+    r = json.load(open(f)); P(rel(f), {k: v for k, v in r.items() if isinstance(v, (int, float, str))})
 
 P("\n== HYPERPARAMETERS")
-for f in sorted(glob.glob(str(R / "main_*/*/hp_*.json"))): P(f, json.load(open(f)))
+for f in sorted(glob.glob(str(R / "main_*/*/hp_*.json"))): P(rel(f), json.load(open(f)))
 
 P("\n== ACTIVE FRACTION"); P(open(O / "active_fraction.csv").read() if (O / "active_fraction.csv").exists() else "missing")
 P("\n== ABM VARIABILITY"); P(open(O / "abm_variability.txt").read() if (O / "abm_variability.txt").exists() else "missing")
 P("\n== PROVENANCE (one run per grid)")
-for f in sorted(glob.glob(os.path.expanduser("~/abm_revision/revision_cmpb/output/E3_*_s1/run_provenance.json"))):
-    j = json.load(open(f)); P(f); P(json.dumps(j, indent=1)[:2500])
+for f in sorted(glob.glob(str(RUNS / "E3_*_s1" / "run_provenance.json"))):
+    j = json.load(open(f)); P(f"runs/{Path(f).parent.name}/run_provenance.json"); P(json.dumps(j, indent=1)[:2500])
 (O / "for_paper.txt").write_text("\n".join(out) + "\n"); print("written", O / "for_paper.txt", len(out), "lines")

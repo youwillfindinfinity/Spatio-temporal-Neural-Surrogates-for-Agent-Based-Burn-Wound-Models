@@ -1,6 +1,4 @@
-"""
-U-Net look-back window sensitivity sweep.
-"""
+"""U-Net look-back window sensitivity sweep."""
 
 import sys
 import os, json, argparse, random, time, re
@@ -26,6 +24,8 @@ N_TIMESTEPS = 101
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
+# In endothelial.xml, types 3, 4 and 5 are monocytes, fibroblasts and activated neutrophils;
+# scripts/rev/preprocess_runs.py builds the masks from types 1, 2, 5, 8 and 9.
 CELL_TYPE_IDS   = {"EC": 1, "NN": 2, "NA": 3, "M1": 4, "M2": 5}
 
 BASE_LATTICE_DIR = LATTICE_DATA
@@ -37,7 +37,7 @@ def set_seed(seed: int):
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
 
-# Preprocessing (matches preprocessing.py exactly, with window as parameter)
+# same preprocessing as preprocessing100.py, with the window as a parameter
 def adaptive_clip_percentile(channel: np.ndarray) -> float:
     flat = channel.flatten().astype(np.float64)
     if len(flat) < 4 or flat.std() < 1e-30:
@@ -274,7 +274,7 @@ def run_one_window(grid: int, w: int, cytokine: str, seed: int = 42):
     N = X.shape[0]
     print(f"  Loaded: X={X.shape}, Y={Y.shape}, in_channels={in_channels}")
 
-    # Splits: first 70 train, next 10 val, 20 test 
+    # first 70 samples train, next 10 val, rest test
     n_train, n_val = 70, 10
     if N < n_train + n_val:
         raise RuntimeError(f"Not enough samples for w={w}: N={N} < {n_train + n_val}")
@@ -318,8 +318,7 @@ def run_one_window(grid: int, w: int, cytokine: str, seed: int = 42):
     Y_p_phys   = denormalize(Y_p_scaled, clip_max)
     Y_a_phys   = denormalize(Y, clip_max)
 
-    # Test windows: original biological frames t=82..91 (near), 92..100 (far).
-    # Sample i corresponds to original frame index t = w + i, so frame t -> sample i = t - w.
+    # near: frames t=82..91, far: t=92..100; sample i is frame t = w + i
     near_lo = max(0, 82 - w);     near_hi = min(N, 91 - w + 1)
     far_lo  = max(0, 92 - w);     far_hi  = min(N, 100 - w + 1)
     train_elapsed = time.time() - t_start

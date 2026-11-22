@@ -20,7 +20,7 @@ CYT_DIFFUSE  = {0: 2.09e-6, 3: 1.45e-8} # m²/s, scaled to normalised domain
 CYT_DECAY    = {0: 0.200,   3: 0.500}
 
 TRAIN_SL     = slice(0, 140)
-N_DOMAIN     = 3000 # reduced from 5000 for VRAM safety
+N_DOMAIN     = 3000 # reduced from 5000 to save memory
 N_BOUNDARY   = 500 # reduced from 1000
 N_OBS_PER_T  = 100
 WARMUP       = 5000
@@ -29,7 +29,7 @@ LBFGS_ITER   = 5000
 N_OPTUNA     = 20
 TUNE_ITERS   = 2000
 
-tf.config.set_visible_devices([], "GPU")  # CPU-only (rome partition)
+tf.config.set_visible_devices([], "GPU")  # CPU only
 
 def load_pinn_data(cyt_idx):
     md    = json.load(open(f"{DATA_DIR}/metadata.json"))
@@ -170,7 +170,6 @@ def run(cyt_name, seed):
     best = study.best_params
     print(f"Best params: {best}")
 
-    # Full training
     net   = build_pinn(best["n_layers"], best["hidden"])
     model = dde.Model(data, net)
 
@@ -191,7 +190,6 @@ def run(cyt_name, seed):
     model.train()
     train_elapsed = time.time() - t_train_start
 
-    # Eval on test set
     test_idx  = np.arange(160, 199)
     preds     = []
     t_pred_start = time.time()

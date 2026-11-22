@@ -14,6 +14,8 @@ BASE_OUT_DIR     = PREPROCESSED_NOCLIP
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
+# In endothelial.xml, types 3, 4 and 5 are monocytes, fibroblasts and activated neutrophils;
+# scripts/rev/preprocess_runs.py builds the masks from types 1, 2, 5, 8 and 9.
 CELL_TYPE_IDS   = {"EC": 1, "NN": 2, "NA": 3, "M1": 4, "M2": 5}
 
 N_TIMESTEPS  = 101
@@ -116,7 +118,7 @@ def process_grid(folder_name: str):
     np.save(out_path / "X_lstm.npy",   X_combined)
     np.save(out_path / "X_branch.npy", X_combined)
 
-    # X_unet: flatten look-back into channels (99, G, G, 22)
+    # X_unet: look-back frames flattened into channels, (99, G, G, 22)
     X_unet = X_combined.transpose(0, 2, 3, 1, 4).reshape(n, G, G, 22).astype(np.float32)
     np.save(out_path / "X_unet.npy", X_unet)
 

@@ -13,6 +13,11 @@ logs/
 *.npy
 *.npz
 *.h5
-revision_scripts*.zip
 results/*/*/_data
 results/*/*/_data
+abm/runs/
+*:Zone.Identifier
+*.tar
+*.tar.gz
+burn_wound_abm_simulations/
+outputs/figures/*.pdf

@@ -5,13 +5,11 @@ from skimage.metrics import structural_similarity as ssim
 
 
 def _fisher_z(r: float) -> float:
-    """Fisher r-to-z transformation."""
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
 
 
 def _inv_fisher_z(z: float) -> float:
-    """Inverse Fisher z-to-r transformation."""
     return float(np.tanh(z))
 
 
@@ -22,17 +20,14 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     yp = np.maximum(y_pred[:T], 0.0)
     ms = np.max(masks[:T], axis=-1, keepdims=True)  # (T,G,G,1) any-cell mask
 
-    # RMSE
     sq_diff = np.square(yt - yp)
     masked_rmse = float(np.sqrt(
         np.sum(sq_diff * ms) / (np.sum(ms) + 1e-12)
     ))
     unmasked_rmse = float(np.sqrt(np.mean(sq_diff)))
 
-    # global R² 
     global_r2 = float(r2_score(yt.flatten(), yp.flatten()))
 
-    # per-timestep R² 
     per_t_r2 = []
     for t in range(T):
         gt_flat = yt[t].flatten()
@@ -42,7 +37,6 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         else:
             per_t_r2.append(np.nan)
 
-    # fixed Dice 
     # 5% of clip_max as a fixed physical threshold across all timesteps
     dice_threshold = 0.05 * clip_max if clip_max > 0 else 1e-9
     dices = []
@@ -61,7 +55,7 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
             (2.0 * np.sum(gb * pb)) / (np.sum(gb) + np.sum(pb) + 1e-12)
         )
 
-    # Spatial Correlation with Fisher z-transform
+    # spatial correlation, averaged in Fisher z space
     z_corrs = []
     for t in range(T):
         gt = yt[t, :, :, 0]
@@ -77,7 +71,6 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     else:
         spatial_corr = 0.0
 
-    # SSIM 
     ssims_v = []
     n_ssim_skipped = 0
     fixed_data_range = float(clip_max) if clip_max > 0 else 1.0
@@ -103,5 +96,5 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     }
 
 def denormalize(scaled: np.ndarray, clip_max: float) -> np.ndarray:
-    """convert from [-1, 1] scaled domain back to physical units."""
+    """Map [-1, 1] scaled values back to physical units."""
     return (np.asarray(scaled, dtype=np.float64) + 1.0) / 2.0 * clip_max

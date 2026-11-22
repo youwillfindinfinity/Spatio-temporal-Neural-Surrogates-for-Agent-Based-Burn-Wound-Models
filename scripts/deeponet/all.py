@@ -24,7 +24,6 @@ def set_seed(seed):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
-# branch 
 class Branch(tf.keras.layers.Layer):
     def __init__(self, hidden, p, **kw):
         super().__init__(**kw)
@@ -35,7 +34,6 @@ class Branch(tf.keras.layers.Layer):
         return self.fc2(self.fc1(x))
 
 
-# trunk 
 class Trunk(tf.keras.layers.Layer):
     def __init__(self, hidden, p, **kw):
         super().__init__(**kw)
@@ -170,7 +168,6 @@ def train_model(model, opt, ds_tr, ds_vl,
     return best_val
 
 
-# eval
 def predict_full(model, Xbranch, Xtrunk, chunk=EVAL_CHUNK):
     N, n_pts, _ = Xtrunk.shape
     out = np.zeros((N, n_pts, 1), np.float32)
@@ -183,7 +180,6 @@ def predict_full(model, Xbranch, Xtrunk, chunk=EVAL_CHUNK):
     return out
 
 
-# metrics
 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
@@ -245,7 +241,6 @@ def calculate_metrics(y_true, y_pred, masks, clip_max):
 def denormalize(x, clip_max):
     return (np.asarray(x, np.float64)+1.0)/2.0*clip_max
 
-# optuna 
 def make_objective(Xbr_tr, Xtr_tr, Yf_tr,
                    Xbr_vl, Xtr_vl, Yf_vl, seed):
     def objective(trial):
@@ -295,7 +290,7 @@ def run_pipeline(grid, seed, cytokine):
     print(f"  Branch input: (N, 7) scalars  |  Trunk input: (N, {G2}, 24)")
     print(f"  Full grid per epoch: {G2} pts × {N} samples - no subsampling")
 
-    # 70/10/20
+    # 70/10/20 split
     Xbr_tr, Xtr_tr, Yf_tr = Xbranch[:70],   Xtrunk[:70],   Yf[:70]
     Xbr_vl, Xtr_vl, Yf_vl = Xbranch[70:80], Xtrunk[70:80], Yf[70:80]
 
@@ -336,13 +331,11 @@ def run_pipeline(grid, seed, cytokine):
     train_model(model, opt, ds_tr, ds_vl,
                 epochs=FULL_EPOCHS, patience=40, reduce_patience=15, verbose=True)
 
-    # eval 
     Yp_flat = predict_full(model, Xbranch, Xtrunk)
     Yp      = Yp_flat.reshape(N, G, G, 1)
     Y_phys  = denormalize(Y.reshape(N, G, G, 1), clip_max)
     Yp_phys = denormalize(Yp, clip_max)
 
-    # test windows 
     suffix  = f"{cytokine}_{grid}_{seed}"
     train_elapsed = time.time() - t_start
     print(f"  Training + prediction time: {train_elapsed:.1f}s")

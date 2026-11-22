@@ -26,9 +26,8 @@ CMAP_FIELD = "magma"; CMAP_DIFF = "magma"
 SC = {"Train":"green","Val":"orange","Near":"dodgerblue","Far":"red"}
 SEED = 42; GRIDS_100 = [100,250]; EVAL_CHUNK = 4096
 
-# Measured ABM (CompuCell3D / CPM) wall-clock runtimes for one 100h simulation
-# at each grid resolution. Used as the reference cost when computing
-# surrogate inference speed-ups. Values reported in seconds.
+# Measured ABM (CompuCell3D) wall-clock runtime in seconds for one 100h simulation per grid size;
+# reference for the inference speed-ups.
 ABM_RUNTIME_S = {
     50:  225.92,
     100: 541.27,
@@ -101,7 +100,6 @@ def gpt_mean(model, c, g, wdirs, seeds=SEEDS):
     return float(np.mean(vals)), len(vals)
 
 def gpt_mean_std(model, c, g, wdirs, seeds=SEEDS):
-    """Return (mean, std, n) of pred time across seeds."""
     vals = []
     for s in seeds:
         pt = _get_pred_time(model, c, g, s, wdirs)
@@ -110,7 +108,6 @@ def gpt_mean_std(model, c, g, wdirs, seeds=SEEDS):
     if len(vals) == 1: return float(vals[0]), 0.0, 1
     return float(np.mean(vals)), float(np.std(vals, ddof=0)), len(vals)
 
-# seed-aggregated metric helpers (for error bars on result plots)
 def metric_across_seeds(wd, cyt, grid, metric_key, horizon="near", seeds=SEEDS):
     getter = get_near if horizon == "near" else get_far
     vals = []
@@ -163,18 +160,14 @@ def per_timestep_r2_mean_std(wd, cyt, grid, seeds=SEEDS):
 
 
 def abm_time(grid):
-    """Returns None if no measured value is available for that grid."""
     return ABM_RUNTIME_S.get(grid)
 
 
-# FIG 1: Concentrations + sparsity
-#   Fig 1a: 100h trajectories (100^2 + 250^2) per cytokine panel
-#   Fig 1b: Sparsity heatmaps (IL-8, IL-10 at 250^2, t=80)
+# Fig 1a: 100h trajectories (100^2, 250^2) per cytokine; Fig 1b: sparsity heatmaps (IL-8, IL-10, 250^2, t=80)
 
 def fig1():
     sp_100h = {"Train":(0,72),"Val":(72,82),"Near":(82,91),"Far":(91,101)}
 
-    # 1a
     r100 = lr(100); r250 = lr(250)
     if r100 is not None or r250 is not None:
         fig,axes=plt.subplots(2,3,figsize=(7.2,4.2))
@@ -199,7 +192,6 @@ def fig1():
         fig.tight_layout(rect=[0,0.05,1,1])
         sf(fig,"Fig1a_concentrations_100h")
 
-    # 1b
     r250 = lr(250)
     if r250 is not None:
         fig,axes=plt.subplots(1,2,figsize=(7.2,3.0))
@@ -213,7 +205,7 @@ def fig1():
             fig.colorbar(im,ax=ax,fraction=0.046,format="%.1e")
         fig.tight_layout(); sf(fig,"Fig1b_sparsity_100h")
 
-# FIG 3
+# Fig 3
 def _fig3_panel(cyt, cl, out_name):
     mets=[("Global_R2",r"$R^2$"),("Spatial_Correlation","Corr"),("SSIM","SSIM"),("Avg_Dice","Dice")]
     hatches=["","//","..","xx"]
@@ -249,7 +241,7 @@ def _fig3_panel(cyt, cl, out_name):
     ax.axhline(1,color="gray",ls=":",alpha=.3)
     ax.set_title(f"{cl} - Metrics",fontsize=9)
 
-    # (b) scalability across grid resolutions - now with errorbars
+    # (b) scalability across grid resolutions
     ax=axes[1]
     for model in models:
         gs=[]; mus=[]; sds=[]
@@ -267,7 +259,7 @@ def _fig3_panel(cyt, cl, out_name):
     ax.set_ylabel(r"$R^2$"); ax.grid(True,alpha=0.12)
     ax.set_title(f"{cl} - Scalability",fontsize=9)
 
-    # (c) temporal - per-timestep R^2 with shaded std band across seeds
+    # (c) per-timestep R^2, shaded band = std across seeds
     ax=axes[2]
     nr_range = (82, 91)
     for model in models:
@@ -291,7 +283,6 @@ def _fig3_panel(cyt, cl, out_name):
     ax.set_xlabel("Time (h)"); ax.set_ylabel(r"$R^2$")
     ax.set_title(f"{cl} - Temporal",fontsize=9); ax.grid(True,alpha=0.12)
 
-    # Y-limits per panel
     for c in range(3):
         data = panel_data[c]
         has_neg = any(v < -0.001 for v in data) if data else False
@@ -304,7 +295,6 @@ def _fig3_panel(cyt, cl, out_name):
             ymax = 1.15
         axes[c].set_ylim(ymin, ymax)
 
-    # legend
     met_handles=[Patch(fc="lightgray",ec="black",hatch=hatches[j],label=mets[j][1]) for j in range(len(mets))]
     model_handles=[Line2D([0],[0],color=P[m],lw=1.5,ls=LS.get(m,"-"),
                    marker=MK.get(m,"o"),ms=5,mec="black",mew=.5,label=m) for m in models]
@@ -322,7 +312,7 @@ def fig3a(): _fig3_panel("il8",  "IL-8",  "Fig3a_rq3_il8_100h")
 def fig3b(): _fig3_panel("il10", "IL-10", "Fig3b_rq3_il10_100h")
 
 
-# FIG 4: Pareto + Speedup combined 
+# Fig 4: Pareto front and speed-up
 _PRED_TIME_CACHE = {}
 _PRED_TIMES_CSV = FIGURES / "pred_times.csv"
 
@@ -447,7 +437,6 @@ def fig4():
                        ha="center", va="bottom", fontsize=5.5, fontweight="bold")
         ax.set_title(f"{cl} - Inference speedup vs ABM ($250^2$)", fontsize=9)
 
-    # legend
     handles = [Line2D([0],[0], marker=MK[m], color=P[m], ls=LS[m], lw=1.2,
                markersize=6, mec="black", mew=.5, label=m) for m in MO_100]
     handles += [Line2D([0],[0], marker="o", color="gray", ls="", markersize=s, mec="black",
@@ -460,7 +449,7 @@ def fig4():
     sf(fig, "Fig4_pareto_speedup_100h")
 
 
-# FIG 5: Spatial maps
+# Fig 5: spatial maps
 def fig5(hour=88):
     import tensorflow as tf; import matplotlib.colors as mcolors
     os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"; warnings.filterwarnings("ignore")
@@ -475,7 +464,6 @@ def fig5(hour=88):
                 "U-Net":"unet","STA-LSTM":"sta_lstm","PINN":"pinn"}
     CYTS=[("il8","IL-8",0),("il10","IL-10",3)]; t_idx=hour-2
 
-    # architectures
     def _cb(x,f):
         x=tf.keras.layers.Conv2D(f,3,padding="same",activation="relu")(x)
         x=tf.keras.layers.BatchNormalization()(x)
@@ -600,11 +588,11 @@ def fig5(hour=88):
                 if p is not None: all_preds[cyt][mn][G]=p;print("OK")
                 else: print("SKIP")
 
-    # GLOBAL scales per cytokine
+    # colour scales shared per cytokine
     gt_norms = {}
     diff_vmax = {}
     for cyt, cl, ci in CYTS:
-        # GT vmax: from raw physical data
+        # ground-truth vmax from raw physical data
         all_gt_vals = []
         for G in GRIDS_100:
             g = gts[cyt][G]
@@ -612,7 +600,7 @@ def fig5(hour=88):
         vmax_gt = max(all_gt_vals) if all_gt_vals else 1e-15
         gt_norms[cyt] = mcolors.PowerNorm(gamma=0.5, vmin=0, vmax=vmax_gt)
 
-        # diff vmax: Y_target (clipped, same as model) for fair comparison
+        # diff vmax from Y_target (clipped, as seen by the model)
         all_diff_vals = []
         for mn in MODEL_ORDER:
             for G in GRIDS_100:
@@ -631,13 +619,13 @@ def fig5(hour=88):
             diff_vmax[cyt] = 1e-15
         if diff_vmax[cyt] <= 0: diff_vmax[cyt] = 1e-15
 
-    # Fig 5a: GT|Pred|Diff| for DeepONet, 250 
+    # Fig 5a: ground truth, prediction, difference for DeepONet, 250
     G=250; fig,axes=plt.subplots(2,3,figsize=(7.2,5.0))
     col_titles=["Ground Truth","Prediction",r"$\vert$Pred - GT$\vert$"]
     for row,(cyt,cl,ci) in enumerate(CYTS):
         pred=all_preds[cyt].get("DeepONet",{}).get(G)
         if pred is None: continue
-        # Y_target (clipped+normalized) denormalized with same clip_max as model
+        # Y_target (clipped, normalised) denormalised with the model's clip_max
         dp=PREPRO/f"{G}x{G}"
         with open(dp/"metadata.json") as fmeta: meta_loc=json.load(fmeta)
         cm=float(meta_loc["scaling"]["max"][ci])
@@ -692,9 +680,8 @@ def fig5(hour=88):
     fig.tight_layout(rect=[0,0,0.92,1]); sf(fig,f"Fig5b_diff_all_t{hour}")
 
 
-# measuring pred times
 def measure_pred_times():
-    """measures prediction times for all models/cytokines/grids where JSON lacks pred_time."""
+    # measures prediction time where the result JSON has no pred_time
     import tensorflow as tf; import time
     os.environ["TF_CPP_MIN_LOG_LEVEL"]="3"; warnings.filterwarnings("ignore")
     tf.config.optimizer.set_jit(False)
@@ -770,7 +757,6 @@ def measure_pred_times():
         for grid in [100, 250]:
             for seed in [42]:
                 for mname in MO_100:
-                    # skip if already have pred_time
                     r = lj(W100[mname], cyt, grid, seed)
                     if not r: continue
                     pt = gpt(r)
@@ -856,7 +842,6 @@ def measure_pred_times():
         _save_pred_time_cache()
     print(f"Measured {n_measured} new pred times")
 
-#  vis
 def clean_vis():
     import tensorflow as tf; import matplotlib.colors as mcolors
     os.environ["TF_CPP_MIN_LOG_LEVEL"]="3";warnings.filterwarnings("ignore")
@@ -918,12 +903,10 @@ def clean_vis():
         print("OK")
 
 
-# CSV export
 def export_csv():
     _load_pred_time_cache()
     mks=["Global_R2","SSIM","Avg_Dice","Spatial_Correlation","Masked_RMSE","Unmasked_RMSE"]
 
-    # per-seed metrics 
     rows=[]
     for cyt in ["il8","il10"]:
         for model in MO_100:
@@ -996,7 +979,6 @@ def export_csv():
         print(f"-> {outpath} ({len(budget_rows)} rows)")
 
 
-# LATEX 
 def _fv(v):
     if v is None or (isinstance(v,float) and v!=v): return "--"
     if v<0: return f"${v:.4f}$"
@@ -1142,7 +1124,6 @@ if __name__=="__main__":
         print("\nCSV export"); export_csv()
         print("\nLaTeX tables"); gen_tables()
 
-        # figs
         if args.fig:
             figs=[]
             for f in args.fig:

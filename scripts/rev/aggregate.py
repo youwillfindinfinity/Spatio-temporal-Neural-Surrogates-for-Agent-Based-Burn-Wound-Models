@@ -1,4 +1,4 @@
-"""Collect all results/rev/**/res_*.json into CSV tables and a readable summary (outputs/rev/)."""
+"""Collect results/<REV_OUT>/*/*/res_*.json into CSV tables and a text summary in outputs/<REV_OUT>/."""
 import json, csv, sys, warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 from pathlib import Path
@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT))
 from paths import RESULTS, OUTPUTS
 
 import os
-TAG = os.environ.get("REV_OUT", "rev")
+TAG = os.environ.get("REV_OUT") or "rev_abm"
 SRC, DST = RESULTS / TAG, OUTPUTS / TAG
 DST.mkdir(parents=True, exist_ok=True)
 runs = [json.load(open(p)) for p in sorted(SRC.glob("*/*/res_*.json"))]
@@ -59,8 +59,9 @@ for name, rows in (("summary_one_step.csv", one), ("summary_regions.csv", reg), 
         with open(DST / name, "w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
 
-lines = [f"REVISION EXPERIMENTS - SUMMARY ({len(runs)} runs)", "skill = 1 - MSE_model / MSE_persistence (one step ahead); > 0 means better than copying the previous frame",
-         "front = +/- band around the 0.05 c_max contour of the true field; values are RMSE / c_max", ""]
+lines = [f"SUMMARY ({len(runs)} runs)", "skill = 1 - MSE_model / MSE_persistence (one step ahead); > 0 means better than copying the previous frame",
+         "front = +/- band around the 0.05 c_max contour of the true field; values are RMSE / c_max",
+         "roll19 / roll19fz = R2 after a 19 h roll-out with the other cytokines supplied by the ABM / frozen at t = 81 h (main setting)", ""]
 rmap = {(r["cytokine"], r["grid"], r["model"], r["variant"]): r for r in reg if r["window"] == "near"}
 omap = {(r["cytokine"], r["grid"], r["model"], r["variant"]): r for r in roll}
 for cyt, grid in sorted({(r["cytokine"], r["grid"]) for r in one}):

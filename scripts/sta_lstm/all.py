@@ -49,7 +49,6 @@ class STALSTM(tf.keras.Model):
         self.lstm_units  = lstm_units
         self.latent_size = max(grid_size // 4, 8) 
 
-        # encoder 
         self.enc = tf.keras.layers.TimeDistributed(
             tf.keras.Sequential([
                 tf.keras.layers.Conv2D(
@@ -78,7 +77,6 @@ class STALSTM(tf.keras.Model):
             (self.latent_size, self.latent_size, filters)
         )
 
-        # decoder
         self.deconv1 = tf.keras.layers.Conv2DTranspose(
             filters // 2, 3, strides=2, padding="same", activation="relu"
         )
@@ -103,7 +101,6 @@ class STALSTM(tf.keras.Model):
         return self.out_resize(h)     
 
 
-# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -118,15 +115,12 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     y_p   = np.maximum(y_pred[:min_t], 0.0)
     m_s   = np.max(masks[:min_t], axis=-1, keepdims=True)
 
-    # RMSE
     sq_diff = np.square(y_t - y_p)
     rmse    = float(np.sqrt(np.sum(sq_diff * m_s) / (np.sum(m_s) + 1e-12)))
     unmasked_rmse = float(np.sqrt(np.mean(sq_diff)))
 
-    # global R²
     r2 = float(r2_score(y_t.flatten(), y_p.flatten()))
 
-    # per-timestep R² 
     per_t_r2 = []
     for t in range(min_t):
         gt_f = y_t[t].flatten(); pr_f = y_p[t].flatten()
@@ -135,12 +129,9 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         else:
             per_t_r2.append(np.nan)
 
-    # dice with fixed threshold + empty-field handling 
     dice_thr = 0.05 * clip_max if clip_max > 0 else 1e-9
     dices, n_empty = [], 0
-    # spatial correlation with Fisher z 
     z_corrs = []
-    # SSIM 
     ssims, n_ssim_skip = [], 0
     fixed_dr = float(clip_max) if clip_max > 0 else 1.0
 
@@ -148,7 +139,6 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
         gt = y_t[t, :, :, 0]
         pr = y_p[t, :, :, 0]
 
-        # Dice
         g_b = (gt > dice_thr).astype(float)
         p_b = (pr > dice_thr).astype(float)
         if np.sum(g_b) + np.sum(p_b) == 0:
@@ -158,13 +148,11 @@ def calculate_metrics(y_true: np.ndarray, y_pred: np.ndarray,
                 (2.0 * np.sum(g_b * p_b)) / (np.sum(g_b) + np.sum(p_b) + 1e-12)
             )
 
-        # spatial correlation
         if np.std(gt) > 1e-12 and np.std(pr) > 1e-12:
             r_val = float(pearsonr(gt.flatten(), pr.flatten())[0])
             if np.isfinite(r_val):
                 z_corrs.append(_fisher_z(r_val))
 
-        # SSIM
         dr = float(np.max(gt) - np.min(gt))
         if dr > 1e-12:
             ssims.append(float(ssim(gt, pr, data_range=fixed_dr)))

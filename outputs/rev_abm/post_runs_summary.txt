@@ -1,8 +1,8 @@
-results: /gpfs/home5/jkowalczuk/surrogates_2D/results/rev_abm
-output:  /gpfs/home5/jkowalczuk/surrogates_2D/outputs/rev_abm/figures
+results: results/rev_abm
+output:  outputs/figures, outputs/rev_abm
 grids:   [100, 250]
 
-T1 ACTIVE PIXEL FRACTION (baseline runs, mean over seeds; % of grid points)
+TABLE 2  ACTIVE PIXEL FRACTION (baseline runs, mean over seeds; % of grid points)
  grid cyt   window    non-zero  > 5% cmax  px > thr   cells  source  px src
   100 il8   t2-20        99.01       6.85       685    3.71   1.940   194.0
   100 il8   train        99.73      21.52      2152    2.71   1.937   193.7
@@ -20,9 +20,9 @@ T1 ACTIVE PIXEL FRACTION (baseline runs, mean over seeds; % of grid points)
   250 il10  train        82.91       4.70      2936    1.16   0.134    83.5
   250 il10  near        100.00      21.75     13596    1.08   0.275   172.0
   250 il10  far         100.00      27.17     16979    1.10   0.296   184.9
-  figure F1_data_overview
+  figure Fig1_data_overview
 
-F2 ONE-STEP SKILL (near horizon, mean +/- SD over training seeds)
+FIG. 3  ONE-STEP SKILL (near horizon, mean +/- SD over training seeds)
   IL-8 100 U-Net       increment skill    +0.876 +/- 0.023 (n=3)
   IL-8 100 ConvLSTM    increment skill    +0.869 +/- 0.020 (n=3)
   IL-8 100 FNO         increment skill    +0.748 +/- 0.037 (n=3)
@@ -63,9 +63,9 @@ F2 ONE-STEP SKILL (near horizon, mean +/- SD over training seeds)
   IL-10 250 FNO         direct    skill    -0.019 +/- 0.006 (n=3)
   IL-10 250 Point-wise  direct    skill    +0.004 +/- 0.000 (n=3)
   IL-10 250 STA-LSTM    direct    skill   -12.792 +/- 1.992 (n=3)
-  figure F2_skill
+  figure Fig3_skill
 
-F3 ROLL-OUT, R2 after 19 h (other cytokines frozen at t = 81 h | supplied by the ABM)
+FIG. 4  ROLL-OUT, R2 after 19 h (other cytokines frozen at t = 81 h | supplied by the ABM)
   IL-8 100 frozen persistence 0.972
   IL-8 100 U-Net       0.997 | 0.997
   IL-8 100 ConvLSTM    0.995 | 0.995
@@ -90,251 +90,112 @@ F3 ROLL-OUT, R2 after 19 h (other cytokines frozen at t = 81 h | supplied by the
   IL-10 250 FNO         0.399 | 0.438
   IL-10 250 Point-wise  0.399 | 0.453
   IL-10 250 STA-LSTM    0.346 | 0.346
-  figure F3_rollout
+  figure Fig4_rollout
 
-F4 FROZEN-WEIGHT TRANSFER, skill in the window t 82-100 h (increment models)
-  IL-8 100 U-Net       training run                         +0.866 (n=3)
-  IL-8 100 U-Net       E2a_endothelial_x5_m2-ownscale       +0.723 (n=9)
-  IL-8 100 U-Net       E2a_endothelial_x5_m2                +0.660 (n=9)
-  IL-8 100 U-Net       E2b_geometry_margin_G5_m2-ownscale   +0.854 (n=9)
-  IL-8 100 U-Net       E2b_geometry_margin_G5_m2            +0.881 (n=9)
-  IL-8 100 U-Net       E3_il10_from_m2                      +0.854 (n=12)
-  IL-8 100 ConvLSTM    training run                         +0.843 (n=3)
-  IL-8 100 ConvLSTM    E2a_endothelial_x5_m2-ownscale       +0.968 (n=9)
-  IL-8 100 ConvLSTM    E2a_endothelial_x5_m2                +0.773 (n=9)
-  IL-8 100 ConvLSTM    E2b_geometry_margin_G5_m2-ownscale   +0.816 (n=9)
-  IL-8 100 ConvLSTM    E2b_geometry_margin_G5_m2            +0.882 (n=9)
-  IL-8 100 ConvLSTM    E3_il10_from_m2                      +0.834 (n=12)
-  IL-8 100 FNO         training run                         +0.742 (n=3)
-  IL-8 100 FNO         E2a_endothelial_x5_m2-ownscale       +0.833 (n=9)
-  IL-8 100 FNO         E2a_endothelial_x5_m2                +0.568 (n=9)
-  IL-8 100 FNO         E2b_geometry_margin_G5_m2-ownscale   +0.654 (n=9)
-  IL-8 100 FNO         E2b_geometry_margin_G5_m2            +0.724 (n=9)
-  IL-8 100 FNO         E3_il10_from_m2                      +0.723 (n=12)
-  IL-8 100 Point-wise  training run                         +0.697 (n=3)
-  IL-8 100 Point-wise  E2a_endothelial_x5_m2-ownscale       +0.769 (n=9)
-  IL-8 100 Point-wise  E2a_endothelial_x5_m2                +0.530 (n=9)
-  IL-8 100 Point-wise  E2b_geometry_margin_G5_m2-ownscale   +0.588 (n=9)
-  IL-8 100 Point-wise  E2b_geometry_margin_G5_m2            +0.635 (n=9)
-  IL-8 100 Point-wise  E3_il10_from_m2                      +0.685 (n=12)
-  IL-8 100 STA-LSTM    training run                         +0.783 (n=3)
-  IL-8 100 STA-LSTM    E2a_endothelial_x5_m2-ownscale       +0.574 (n=9)
-  IL-8 100 STA-LSTM    E2a_endothelial_x5_m2                +0.339 (n=9)
-  IL-8 100 STA-LSTM    E2b_geometry_margin_G5_m2-ownscale   +0.121 (n=9)
-  IL-8 100 STA-LSTM    E2b_geometry_margin_G5_m2            +0.303 (n=9)
-  IL-8 100 STA-LSTM    E3_il10_from_m2                      +0.412 (n=12)
-  IL-8 250 U-Net       training run                         +0.933 (n=3)
-  IL-8 250 U-Net       E2a_endothelial_x5_m2-ownscale       +0.613 (n=9)
-  IL-8 250 U-Net       E2a_endothelial_x5_m2                -0.885 (n=9)
-  IL-8 250 U-Net       E2b_geometry_margin_G5_m2-ownscale   +0.927 (n=9)
-  IL-8 250 U-Net       E2b_geometry_margin_G5_m2            +0.956 (n=9)
-  IL-8 250 U-Net       E3_il10_from_m2                      +0.937 (n=12)
-  IL-8 250 ConvLSTM    training run                         +0.833 (n=3)
-  IL-8 250 ConvLSTM    E2a_endothelial_x5_m2-ownscale       +0.969 (n=9)
-  IL-8 250 ConvLSTM    E2a_endothelial_x5_m2                +0.488 (n=9)
-  IL-8 250 ConvLSTM    E2b_geometry_margin_G5_m2-ownscale   +0.809 (n=9)
-  IL-8 250 ConvLSTM    E2b_geometry_margin_G5_m2            +0.876 (n=9)
-  IL-8 250 ConvLSTM    E3_il10_from_m2                      +0.830 (n=12)
-  IL-8 250 FNO         training run                         +0.848 (n=3)
-  IL-8 250 FNO         E2a_endothelial_x5_m2-ownscale       +0.918 (n=9)
-  IL-8 250 FNO         E2a_endothelial_x5_m2                +0.389 (n=9)
-  IL-8 250 FNO         E2b_geometry_margin_G5_m2-ownscale   +0.812 (n=9)
-  IL-8 250 FNO         E2b_geometry_margin_G5_m2            +0.867 (n=9)
-  IL-8 250 FNO         E3_il10_from_m2                      +0.831 (n=12)
-  IL-8 250 Point-wise  training run                         +0.804 (n=3)
-  IL-8 250 Point-wise  E2a_endothelial_x5_m2-ownscale       +0.912 (n=9)
-  IL-8 250 Point-wise  E2a_endothelial_x5_m2                +0.404 (n=9)
-  IL-8 250 Point-wise  E2b_geometry_margin_G5_m2-ownscale   +0.768 (n=9)
-  IL-8 250 Point-wise  E2b_geometry_margin_G5_m2            +0.816 (n=9)
-  IL-8 250 Point-wise  E3_il10_from_m2                      +0.801 (n=12)
-  IL-8 250 STA-LSTM    training run                         +0.586 (n=3)
-  IL-8 250 STA-LSTM    E2a_endothelial_x5_m2-ownscale       +0.508 (n=9)
-  IL-8 250 STA-LSTM    E2a_endothelial_x5_m2                +0.267 (n=9)
-  IL-8 250 STA-LSTM    E2b_geometry_margin_G5_m2-ownscale   +0.306 (n=9)
-  IL-8 250 STA-LSTM    E2b_geometry_margin_G5_m2            +0.358 (n=9)
-  IL-8 250 STA-LSTM    E3_il10_from_m2                      +0.602 (n=12)
-  IL-10 100 U-Net       training run                         +0.002 (n=3)
-  IL-10 100 U-Net       E2a_endothelial_x5_m2-ownscale       +0.002 (n=9)
-  IL-10 100 U-Net       E2a_endothelial_x5_m2                +0.002 (n=9)
-  IL-10 100 U-Net       E2b_geometry_margin_G5_m2-ownscale   +0.003 (n=9)
-  IL-10 100 U-Net       E2b_geometry_margin_G5_m2            +0.003 (n=9)
-  IL-10 100 U-Net       E3_il10_from_m2                      +0.002 (n=12)
-  IL-10 100 ConvLSTM    training run                         +0.004 (n=3)
-  IL-10 100 ConvLSTM    E2a_endothelial_x5_m2-ownscale       +0.004 (n=9)
-  IL-10 100 ConvLSTM    E2a_endothelial_x5_m2                +0.004 (n=9)
-  IL-10 100 ConvLSTM    E2b_geometry_margin_G5_m2-ownscale   +0.004 (n=9)
-  IL-10 100 ConvLSTM    E2b_geometry_margin_G5_m2            +0.004 (n=9)
-  IL-10 100 ConvLSTM    E3_il10_from_m2                      +0.004 (n=12)
-  IL-10 100 FNO         training run                         +0.004 (n=3)
-  IL-10 100 FNO         E2a_endothelial_x5_m2-ownscale       +0.003 (n=9)
-  IL-10 100 FNO         E2a_endothelial_x5_m2                +0.004 (n=9)
-  IL-10 100 FNO         E2b_geometry_margin_G5_m2-ownscale   +0.004 (n=9)
-  IL-10 100 FNO         E2b_geometry_margin_G5_m2            +0.004 (n=9)
-  IL-10 100 FNO         E3_il10_from_m2                      +0.004 (n=12)
-  IL-10 100 Point-wise  training run                         +0.003 (n=3)
-  IL-10 100 Point-wise  E2a_endothelial_x5_m2-ownscale       +0.001 (n=9)
-  IL-10 100 Point-wise  E2a_endothelial_x5_m2                +0.002 (n=9)
-  IL-10 100 Point-wise  E2b_geometry_margin_G5_m2-ownscale   +0.004 (n=9)
-  IL-10 100 Point-wise  E2b_geometry_margin_G5_m2            +0.004 (n=9)
-  IL-10 100 Point-wise  E3_il10_from_m2                      +0.004 (n=12)
-  IL-10 100 STA-LSTM    training run                         +0.003 (n=3)
-  IL-10 100 STA-LSTM    E2a_endothelial_x5_m2-ownscale       +0.002 (n=9)
-  IL-10 100 STA-LSTM    E2a_endothelial_x5_m2                +0.003 (n=9)
-  IL-10 100 STA-LSTM    E2b_geometry_margin_G5_m2-ownscale   +0.003 (n=9)
-  IL-10 100 STA-LSTM    E2b_geometry_margin_G5_m2            +0.003 (n=9)
-  IL-10 100 STA-LSTM    E3_il10_from_m2                      +0.003 (n=12)
-  IL-10 250 U-Net       training run                         +0.005 (n=3)
-  IL-10 250 U-Net       E2a_endothelial_x5_m2-ownscale       +0.005 (n=9)
-  IL-10 250 U-Net       E2a_endothelial_x5_m2                +0.004 (n=9)
-  IL-10 250 U-Net       E2b_geometry_margin_G5_m2-ownscale   +0.005 (n=9)
-  IL-10 250 U-Net       E2b_geometry_margin_G5_m2            +0.005 (n=9)
-  IL-10 250 U-Net       E3_il10_from_m2                      +0.005 (n=12)
-  IL-10 250 ConvLSTM    training run                         +0.007 (n=3)
-  IL-10 250 ConvLSTM    E2a_endothelial_x5_m2-ownscale       +0.007 (n=9)
-  IL-10 250 ConvLSTM    E2a_endothelial_x5_m2                +0.006 (n=9)
-  IL-10 250 ConvLSTM    E2b_geometry_margin_G5_m2-ownscale   +0.007 (n=9)
-  IL-10 250 ConvLSTM    E2b_geometry_margin_G5_m2            +0.007 (n=9)
-  IL-10 250 ConvLSTM    E3_il10_from_m2                      +0.007 (n=12)
-  IL-10 250 FNO         training run                         +0.007 (n=3)
-  IL-10 250 FNO         E2a_endothelial_x5_m2-ownscale       +0.007 (n=9)
-  IL-10 250 FNO         E2a_endothelial_x5_m2                +0.007 (n=9)
-  IL-10 250 FNO         E2b_geometry_margin_G5_m2-ownscale   +0.007 (n=9)
-  IL-10 250 FNO         E2b_geometry_margin_G5_m2            +0.007 (n=9)
-  IL-10 250 FNO         E3_il10_from_m2                      +0.007 (n=12)
-  IL-10 250 Point-wise  training run                         +0.007 (n=3)
-  IL-10 250 Point-wise  E2a_endothelial_x5_m2-ownscale       +0.007 (n=9)
-  IL-10 250 Point-wise  E2a_endothelial_x5_m2                +0.007 (n=9)
-  IL-10 250 Point-wise  E2b_geometry_margin_G5_m2-ownscale   +0.007 (n=9)
-  IL-10 250 Point-wise  E2b_geometry_margin_G5_m2            +0.007 (n=9)
-  IL-10 250 Point-wise  E3_il10_from_m2                      +0.007 (n=12)
-  IL-10 250 STA-LSTM    training run                         +0.001 (n=3)
-  IL-10 250 STA-LSTM    E2a_endothelial_x5_m2-ownscale       +0.001 (n=9)
-  IL-10 250 STA-LSTM    E2a_endothelial_x5_m2                +0.001 (n=9)
-  IL-10 250 STA-LSTM    E2b_geometry_margin_G5_m2-ownscale   +0.001 (n=9)
-  IL-10 250 STA-LSTM    E2b_geometry_margin_G5_m2            +0.001 (n=9)
-  IL-10 250 STA-LSTM    E3_il10_from_m2                      +0.001 (n=12)
-  figure F4_transfer
+FIG. 5  FROZEN-WEIGHT TRANSFER, skill in the window t 82-100 h (increment models)
+  IL-8 100 U-Net       Training run                         +0.866 (n=3)
+  IL-8 100 U-Net       Unseen seeds                         +0.854 (n=12)
+  IL-8 100 U-Net       Five-fold endothelial                +0.660 (n=9)
+  IL-8 100 U-Net       Five-fold endothelial, own scaling   +0.723 (n=9)
+  IL-8 100 U-Net       Wider margin                         +0.881 (n=9)
+  IL-8 100 ConvLSTM    Training run                         +0.844 (n=3)
+  IL-8 100 ConvLSTM    Unseen seeds                         +0.834 (n=12)
+  IL-8 100 ConvLSTM    Five-fold endothelial                +0.773 (n=9)
+  IL-8 100 ConvLSTM    Five-fold endothelial, own scaling   +0.968 (n=9)
+  IL-8 100 ConvLSTM    Wider margin                         +0.882 (n=9)
+  IL-8 100 FNO         Training run                         +0.742 (n=3)
+  IL-8 100 FNO         Unseen seeds                         +0.723 (n=12)
+  IL-8 100 FNO         Five-fold endothelial                +0.568 (n=9)
+  IL-8 100 FNO         Five-fold endothelial, own scaling   +0.833 (n=9)
+  IL-8 100 FNO         Wider margin                         +0.724 (n=9)
+  IL-8 100 Point-wise  Training run                         +0.698 (n=3)
+  IL-8 100 Point-wise  Unseen seeds                         +0.685 (n=12)
+  IL-8 100 Point-wise  Five-fold endothelial                +0.530 (n=9)
+  IL-8 100 Point-wise  Five-fold endothelial, own scaling   +0.769 (n=9)
+  IL-8 100 Point-wise  Wider margin                         +0.635 (n=9)
+  IL-8 100 STA-LSTM    Training run                         +0.784 (n=3)
+  IL-8 100 STA-LSTM    Unseen seeds                         +0.412 (n=12)
+  IL-8 100 STA-LSTM    Five-fold endothelial                +0.339 (n=9)
+  IL-8 100 STA-LSTM    Five-fold endothelial, own scaling   +0.574 (n=9)
+  IL-8 100 STA-LSTM    Wider margin                         +0.303 (n=9)
+  IL-8 250 U-Net       Training run                         +0.933 (n=3)
+  IL-8 250 U-Net       Unseen seeds                         +0.937 (n=12)
+  IL-8 250 U-Net       Five-fold endothelial                -0.885 (n=9)
+  IL-8 250 U-Net       Five-fold endothelial, own scaling   +0.613 (n=9)
+  IL-8 250 U-Net       Wider margin                         +0.956 (n=9)
+  IL-8 250 ConvLSTM    Training run                         +0.834 (n=3)
+  IL-8 250 ConvLSTM    Unseen seeds                         +0.830 (n=12)
+  IL-8 250 ConvLSTM    Five-fold endothelial                +0.488 (n=9)
+  IL-8 250 ConvLSTM    Five-fold endothelial, own scaling   +0.969 (n=9)
+  IL-8 250 ConvLSTM    Wider margin                         +0.876 (n=9)
+  IL-8 250 FNO         Training run                         +0.848 (n=3)
+  IL-8 250 FNO         Unseen seeds                         +0.831 (n=12)
+  IL-8 250 FNO         Five-fold endothelial                +0.389 (n=9)
+  IL-8 250 FNO         Five-fold endothelial, own scaling   +0.918 (n=9)
+  IL-8 250 FNO         Wider margin                         +0.867 (n=9)
+  IL-8 250 Point-wise  Training run                         +0.804 (n=3)
+  IL-8 250 Point-wise  Unseen seeds                         +0.801 (n=12)
+  IL-8 250 Point-wise  Five-fold endothelial                +0.404 (n=9)
+  IL-8 250 Point-wise  Five-fold endothelial, own scaling   +0.912 (n=9)
+  IL-8 250 Point-wise  Wider margin                         +0.816 (n=9)
+  IL-8 250 STA-LSTM    Training run                         +0.586 (n=3)
+  IL-8 250 STA-LSTM    Unseen seeds                         +0.602 (n=12)
+  IL-8 250 STA-LSTM    Five-fold endothelial                +0.267 (n=9)
+  IL-8 250 STA-LSTM    Five-fold endothelial, own scaling   +0.508 (n=9)
+  IL-8 250 STA-LSTM    Wider margin                         +0.358 (n=9)
+  IL-10 100 U-Net       Training run                         +0.002 (n=3)
+  IL-10 100 U-Net       Unseen seeds                         +0.002 (n=12)
+  IL-10 100 U-Net       Five-fold endothelial                +0.002 (n=9)
+  IL-10 100 U-Net       Five-fold endothelial, own scaling   +0.002 (n=9)
+  IL-10 100 U-Net       Wider margin                         +0.003 (n=9)
+  IL-10 100 ConvLSTM    Training run                         +0.004 (n=3)
+  IL-10 100 ConvLSTM    Unseen seeds                         +0.004 (n=12)
+  IL-10 100 ConvLSTM    Five-fold endothelial                +0.004 (n=9)
+  IL-10 100 ConvLSTM    Five-fold endothelial, own scaling   +0.004 (n=9)
+  IL-10 100 ConvLSTM    Wider margin                         +0.004 (n=9)
+  IL-10 100 FNO         Training run                         +0.004 (n=3)
+  IL-10 100 FNO         Unseen seeds                         +0.004 (n=12)
+  IL-10 100 FNO         Five-fold endothelial                +0.004 (n=9)
+  IL-10 100 FNO         Five-fold endothelial, own scaling   +0.003 (n=9)
+  IL-10 100 FNO         Wider margin                         +0.004 (n=9)
+  IL-10 100 Point-wise  Training run                         +0.003 (n=3)
+  IL-10 100 Point-wise  Unseen seeds                         +0.004 (n=12)
+  IL-10 100 Point-wise  Five-fold endothelial                +0.002 (n=9)
+  IL-10 100 Point-wise  Five-fold endothelial, own scaling   +0.001 (n=9)
+  IL-10 100 Point-wise  Wider margin                         +0.004 (n=9)
+  IL-10 100 STA-LSTM    Training run                         +0.003 (n=3)
+  IL-10 100 STA-LSTM    Unseen seeds                         +0.003 (n=12)
+  IL-10 100 STA-LSTM    Five-fold endothelial                +0.003 (n=9)
+  IL-10 100 STA-LSTM    Five-fold endothelial, own scaling   +0.002 (n=9)
+  IL-10 100 STA-LSTM    Wider margin                         +0.003 (n=9)
+  IL-10 250 U-Net       Training run                         +0.005 (n=3)
+  IL-10 250 U-Net       Unseen seeds                         +0.005 (n=12)
+  IL-10 250 U-Net       Five-fold endothelial                +0.004 (n=9)
+  IL-10 250 U-Net       Five-fold endothelial, own scaling   +0.005 (n=9)
+  IL-10 250 U-Net       Wider margin                         +0.005 (n=9)
+  IL-10 250 ConvLSTM    Training run                         +0.007 (n=3)
+  IL-10 250 ConvLSTM    Unseen seeds                         +0.007 (n=12)
+  IL-10 250 ConvLSTM    Five-fold endothelial                +0.006 (n=9)
+  IL-10 250 ConvLSTM    Five-fold endothelial, own scaling   +0.007 (n=9)
+  IL-10 250 ConvLSTM    Wider margin                         +0.007 (n=9)
+  IL-10 250 FNO         Training run                         +0.007 (n=3)
+  IL-10 250 FNO         Unseen seeds                         +0.007 (n=12)
+  IL-10 250 FNO         Five-fold endothelial                +0.007 (n=9)
+  IL-10 250 FNO         Five-fold endothelial, own scaling   +0.007 (n=9)
+  IL-10 250 FNO         Wider margin                         +0.007 (n=9)
+  IL-10 250 Point-wise  Training run                         +0.007 (n=3)
+  IL-10 250 Point-wise  Unseen seeds                         +0.007 (n=12)
+  IL-10 250 Point-wise  Five-fold endothelial                +0.007 (n=9)
+  IL-10 250 Point-wise  Five-fold endothelial, own scaling   +0.007 (n=9)
+  IL-10 250 Point-wise  Wider margin                         +0.007 (n=9)
+  IL-10 250 STA-LSTM    Training run                         +0.001 (n=3)
+  IL-10 250 STA-LSTM    Unseen seeds                         +0.001 (n=12)
+  IL-10 250 STA-LSTM    Five-fold endothelial                +0.001 (n=9)
+  IL-10 250 STA-LSTM    Five-fold endothelial, own scaling   +0.001 (n=9)
+  IL-10 250 STA-LSTM    Wider margin                         +0.001 (n=9)
+  figure Fig5_transfer
 
-F5 OPERATOR-NETWORK ABLATION: near R2 | skill | roll-out R2 at 19 h (others frozen)
-  IL-8 100 full             0.9963 |   -38.730 | -2.600 (n=3)
-  IL-8 100 no branch        0.9999 |    +0.375 | +0.990 (n=3)
-  IL-8 100 plain trunk      0.9986 |   -13.707 | -7.649 (n=3)
-  IL-8 100 no local fields  0.9137 |  -915.806 | +0.912 (n=3)
-  IL-8 250 full             0.9978 |   -13.596 | +0.408 (n=3)
-  IL-8 250 no branch        0.9999 |    +0.620 | +0.991 (n=3)
-  IL-8 250 plain trunk      0.9984 |    -9.524 | +0.662 (n=3)
-  IL-8 250 no local fields  0.9248 |  -493.619 | +0.914 (n=3)
-  IL-10 100 full             0.9610 |    -0.072 | +0.310 (n=3)
-  IL-10 100 no branch        0.9637 |    +0.001 | +0.486 (n=3)
-  IL-10 100 plain trunk      0.9588 |    -0.133 | -0.970 (n=3)
-  IL-10 100 no local fields  0.0185 |   -26.005 | -0.258 (n=3)
-  IL-10 250 full             0.9487 |    -0.074 | +0.180 (n=3)
-  IL-10 250 no branch        0.9525 |    +0.006 | +0.386 (n=3)
-  IL-10 250 plain trunk      0.9485 |    -0.077 | +0.003 (n=3)
-  IL-10 250 no local fields  0.0122 |   -19.659 | -0.046 (n=3)
-  figure F5_ablation
-
-F6 TRAINING-SET SIZE (U-Net): skill on the training run | window skill on unseen baseline seeds
-  IL-8 100 increment 1 traj:    +0.873 |    +0.855
-  IL-8 100 increment 2 traj:    +0.940 |    +0.922
-  IL-8 100 increment 3 traj:    +0.958 |    +0.941
-  IL-8 100 direct    1 traj:  -162.199 |  -414.078
-  IL-8 100 direct    2 traj:   -44.145 |  -119.041
-  IL-8 100 direct    3 traj:   -26.586 |   -95.217
-  IL-8 250 increment 1 traj:    +0.948 |    +0.934
-  IL-8 250 increment 2 traj:    +0.965 |    +0.958
-  IL-8 250 increment 3 traj:    +0.977 |    +0.977
-  IL-8 250 direct    1 traj:   -28.954 |   -38.540
-  IL-8 250 direct    2 traj:   -16.580 |   -21.532
-  IL-8 250 direct    3 traj:   -10.754 |   -14.097
-  IL-10 100 increment 1 traj:    +0.002 |    +0.002
-  IL-10 100 increment 2 traj:    +0.003 |    +0.003
-  IL-10 100 increment 3 traj:    +0.003 |    +0.003
-  IL-10 100 direct    1 traj:    -3.471 |    -6.236
-  IL-10 100 direct    2 traj:    -1.312 |    -2.259
-  IL-10 100 direct    3 traj:    -0.611 |    -1.060
-  IL-10 250 increment 1 traj:    +0.005 |    +0.005
-  IL-10 250 increment 2 traj:    +0.005 |    +0.006
-  IL-10 250 increment 3 traj:    +0.006 |    +0.006
-  IL-10 250 direct    1 traj:    -0.087 |    -0.114
-  IL-10 250 direct    2 traj:    -0.054 |    -0.068
-  IL-10 250 direct    3 traj:    -0.023 |    -0.031
-  figure F6_data_size
-
-T2 ERROR RELATIVE TO THE FIELD FRONT (test window, RMSE / c_max; share of squared error)
-=== IL-8 100x100 ===
-model                 front   inside  outside  px front px inside err front err inside
-Persistence          0.0009   0.0019   0.0002     0.210     0.350     0.113      0.878
-U-Net incr.          0.0004   0.0005   0.0003     0.210     0.350     0.185      0.549
-ConvLSTM incr.       0.0003   0.0006   0.0004     0.210     0.350     0.114      0.546
-FNO incr.            0.0004   0.0007   0.0006     0.210     0.350     0.091      0.538
-Point-wise incr.     0.0003   0.0008   0.0006     0.210     0.350     0.069      0.514
-U-Net direct         0.0153   0.0221   0.0099     0.210     0.350     0.185      0.643
-DeepONet             0.0125   0.0104   0.0087     0.210     0.350     0.302      0.362
-  figure F7_error_maps_il8_100
-=== IL-10 100x100 ===
-model                 front   inside  outside  px front px inside err front err inside
-Persistence          0.0219   0.0015   0.0000     0.869     0.000     1.000      0.000
-U-Net incr.          0.0219   0.0019   0.0006     0.869     0.000     1.000      0.000
-ConvLSTM incr.       0.0218   0.0023   0.0005     0.869     0.000     1.000      0.000
-FNO incr.            0.0218   0.0008   0.0008     0.869     0.000     1.000      0.000
-Point-wise incr.     0.0218   0.0008   0.0007     0.869     0.000     1.000      0.000
-U-Net direct         0.0482   0.0767   0.0223     0.869     0.000     0.968      0.000
-DeepONet             0.0236   0.0198   0.0008     0.869     0.000     1.000      0.000
-  figure F7_error_maps_il10_100
-=== IL-8 250x250 ===
-model                 front   inside  outside  px front px inside err front err inside
-Persistence          0.0008   0.0020   0.0002     0.047     0.587     0.012      0.982
-U-Net incr.          0.0003   0.0005   0.0002     0.047     0.587     0.029      0.861
-ConvLSTM incr.       0.0004   0.0007   0.0005     0.047     0.587     0.022      0.718
-FNO incr.            0.0005   0.0007   0.0005     0.047     0.587     0.033      0.744
-Point-wise incr.     0.0005   0.0008   0.0006     0.047     0.587     0.024      0.693
-U-Net direct         0.0117   0.0109   0.0068     0.047     0.587     0.071      0.743
-DeepONet             0.0137   0.0087   0.0058     0.047     0.587     0.115      0.663
-  figure F7_error_maps_il8_250
-=== IL-10 250x250 ===
-model                 front   inside  outside  px front px inside err front err inside
-Persistence          0.0559   0.0446   0.0000     0.687     0.008     0.993      0.007
-U-Net incr.          0.0557   0.0445   0.0010     0.687     0.008     0.993      0.007
-ConvLSTM incr.       0.0557   0.0444   0.0013     0.687     0.008     0.993      0.007
-FNO incr.            0.0557   0.0444   0.0016     0.687     0.008     0.992      0.007
-Point-wise incr.     0.0557   0.0444   0.0017     0.687     0.008     0.992      0.007
-U-Net direct         0.0584   0.0582   0.0095     0.687     0.008     0.977      0.011
-DeepONet             0.0599   0.0531   0.0013     0.687     0.008     0.991      0.009
-  figure F7_error_maps_il10_250
-
-F8 PER-FRAME SPATIAL CORRELATION (19 test frames x seeds): min / median / max
-  IL-8 100 Persistence        1.0000 / 1.0000 / 1.0000
-  IL-8 100 U-Net incr.        1.0000 / 1.0000 / 1.0000
-  IL-8 100 ConvLSTM incr.     1.0000 / 1.0000 / 1.0000
-  IL-8 100 FNO incr.          1.0000 / 1.0000 / 1.0000
-  IL-8 100 Point-wise incr.   1.0000 / 1.0000 / 1.0000
-  IL-8 100 U-Net direct       0.9865 / 0.9925 / 0.9959
-  IL-8 100 DeepONet           0.9959 / 0.9994 / 0.9999
-  IL-8 250 Persistence        1.0000 / 1.0000 / 1.0000
-  IL-8 250 U-Net incr.        1.0000 / 1.0000 / 1.0000
-  IL-8 250 ConvLSTM incr.     1.0000 / 1.0000 / 1.0000
-  IL-8 250 FNO incr.          1.0000 / 1.0000 / 1.0000
-  IL-8 250 Point-wise incr.   1.0000 / 1.0000 / 1.0000
-  IL-8 250 U-Net direct       0.9964 / 0.9975 / 0.9980
-  IL-8 250 DeepONet           0.9938 / 0.9994 / 0.9999
-  IL-10 100 Persistence        0.9779 / 0.9820 / 0.9853
-  IL-10 100 U-Net incr.        0.9779 / 0.9820 / 0.9853
-  IL-10 100 ConvLSTM incr.     0.9779 / 0.9820 / 0.9853
-  IL-10 100 FNO incr.          0.9779 / 0.9820 / 0.9853
-  IL-10 100 Point-wise incr.   0.9779 / 0.9820 / 0.9853
-  IL-10 100 U-Net direct       0.8943 / 0.9128 / 0.9412
-  IL-10 100 DeepONet           0.9764 / 0.9812 / 0.9843
-  IL-10 250 Persistence        0.9726 / 0.9766 / 0.9811
-  IL-10 250 U-Net incr.        0.9726 / 0.9766 / 0.9811
-  IL-10 250 ConvLSTM incr.     0.9726 / 0.9766 / 0.9811
-  IL-10 250 FNO incr.          0.9726 / 0.9766 / 0.9811
-  IL-10 250 Point-wise incr.   0.9726 / 0.9766 / 0.9811
-  IL-10 250 U-Net direct       0.9686 / 0.9740 / 0.9797
-  IL-10 250 DeepONet           0.9700 / 0.9757 / 0.9802
-  figure F8_per_frame_correlation
-
-F9 CELL MASKS AT THE TARGET TIME: skill near | far | unseen baseline seeds (window) | roll-out R2 19 h (others frozen)
+FIG. 6  CELL MASKS AT THE TARGET TIME: skill near | far | unseen baseline seeds (window) | roll-out R2 19 h (others frozen)
   IL-8 100 U-Net       increment without   +0.876 |   +0.855 |   +0.854 | +0.997
   IL-8 100 U-Net       direct    without -145.068 | -245.414 | -381.744 | +0.902
   IL-8 100 U-Net       increment with      +0.899 |   +0.866 |   +0.866 | +0.998
@@ -407,4 +268,122 @@ F9 CELL MASKS AT THE TARGET TIME: skill near | far | unseen baseline seeds (wind
   IL-10 250 Point-wise  direct    with      +0.067 |   +0.073 |   +0.087 | +0.421
   IL-10 250 STA-LSTM    increment without   +0.001 |   +0.001 |   +0.001 | +0.346
   IL-10 250 STA-LSTM    direct    without  -12.792 |  -17.439 |  -30.069 | +0.137
-  figure F9_target_time_masks
+  figure Fig6_target_time_masks
+
+FIG. 7  OPERATOR-NETWORK ABLATION: near R2 | skill | roll-out R2 at 19 h (others frozen)
+  IL-8 100 Full DeepONet    0.9963 |   -38.730 | -2.600 (n=3)
+  IL-8 100 Without branch   0.9999 |    +0.375 | +0.990 (n=3)
+  IL-8 100 Plain trunk      0.9986 |   -13.707 | -7.649 (n=3)
+  IL-8 100 Trunk without fields 0.9137 |  -915.806 | +0.912 (n=3)
+  IL-8 250 Full DeepONet    0.9978 |   -13.596 | +0.408 (n=3)
+  IL-8 250 Without branch   0.9999 |    +0.620 | +0.991 (n=3)
+  IL-8 250 Plain trunk      0.9984 |    -9.524 | +0.662 (n=3)
+  IL-8 250 Trunk without fields 0.9248 |  -493.619 | +0.914 (n=3)
+  IL-10 100 Full DeepONet    0.9610 |    -0.072 | +0.310 (n=3)
+  IL-10 100 Without branch   0.9637 |    +0.001 | +0.486 (n=3)
+  IL-10 100 Plain trunk      0.9588 |    -0.133 | -0.970 (n=3)
+  IL-10 100 Trunk without fields 0.0185 |   -26.005 | -0.258 (n=3)
+  IL-10 250 Full DeepONet    0.9487 |    -0.074 | +0.180 (n=3)
+  IL-10 250 Without branch   0.9525 |    +0.006 | +0.386 (n=3)
+  IL-10 250 Plain trunk      0.9485 |    -0.077 | +0.003 (n=3)
+  IL-10 250 Trunk without fields 0.0122 |   -19.659 | -0.046 (n=3)
+  figure Fig7_ablation
+
+FIG. A.1  PER-FRAME SPATIAL CORRELATION (19 test frames x seeds): min / median / max
+  IL-8 100 Persistence        1.0000 / 1.0000 / 1.0000
+  IL-8 100 U-Net incr.        1.0000 / 1.0000 / 1.0000
+  IL-8 100 ConvLSTM incr.     1.0000 / 1.0000 / 1.0000
+  IL-8 100 FNO incr.          1.0000 / 1.0000 / 1.0000
+  IL-8 100 Point-wise incr.   1.0000 / 1.0000 / 1.0000
+  IL-8 100 U-Net direct       0.9865 / 0.9925 / 0.9959
+  IL-8 100 DeepONet           0.9959 / 0.9994 / 0.9999
+  IL-8 250 Persistence        1.0000 / 1.0000 / 1.0000
+  IL-8 250 U-Net incr.        1.0000 / 1.0000 / 1.0000
+  IL-8 250 ConvLSTM incr.     1.0000 / 1.0000 / 1.0000
+  IL-8 250 FNO incr.          1.0000 / 1.0000 / 1.0000
+  IL-8 250 Point-wise incr.   1.0000 / 1.0000 / 1.0000
+  IL-8 250 U-Net direct       0.9964 / 0.9975 / 0.9980
+  IL-8 250 DeepONet           0.9938 / 0.9994 / 0.9999
+  IL-10 100 Persistence        0.9779 / 0.9820 / 0.9853
+  IL-10 100 U-Net incr.        0.9779 / 0.9820 / 0.9853
+  IL-10 100 ConvLSTM incr.     0.9779 / 0.9820 / 0.9853
+  IL-10 100 FNO incr.          0.9779 / 0.9820 / 0.9853
+  IL-10 100 Point-wise incr.   0.9779 / 0.9820 / 0.9853
+  IL-10 100 U-Net direct       0.8943 / 0.9128 / 0.9412
+  IL-10 100 DeepONet           0.9764 / 0.9812 / 0.9843
+  IL-10 250 Persistence        0.9726 / 0.9766 / 0.9811
+  IL-10 250 U-Net incr.        0.9726 / 0.9766 / 0.9811
+  IL-10 250 ConvLSTM incr.     0.9726 / 0.9766 / 0.9811
+  IL-10 250 FNO incr.          0.9726 / 0.9766 / 0.9811
+  IL-10 250 Point-wise incr.   0.9726 / 0.9766 / 0.9811
+  IL-10 250 U-Net direct       0.9686 / 0.9740 / 0.9797
+  IL-10 250 DeepONet           0.9700 / 0.9757 / 0.9802
+  figure FigA1_per_frame_correlation
+
+FIG. A.2  TRAINING-SET SIZE (U-Net): skill on the training run | window skill on unseen baseline seeds
+  IL-8 100 increment 1 traj:    +0.873 |    +0.855
+  IL-8 100 increment 2 traj:    +0.940 |    +0.922
+  IL-8 100 increment 3 traj:    +0.958 |    +0.941
+  IL-8 100 direct    1 traj:  -162.199 |  -414.078
+  IL-8 100 direct    2 traj:   -44.145 |  -119.041
+  IL-8 100 direct    3 traj:   -26.586 |   -95.217
+  IL-8 250 increment 1 traj:    +0.948 |    +0.934
+  IL-8 250 increment 2 traj:    +0.965 |    +0.958
+  IL-8 250 increment 3 traj:    +0.977 |    +0.977
+  IL-8 250 direct    1 traj:   -28.954 |   -38.540
+  IL-8 250 direct    2 traj:   -16.580 |   -21.532
+  IL-8 250 direct    3 traj:   -10.754 |   -14.097
+  IL-10 100 increment 1 traj:    +0.002 |    +0.002
+  IL-10 100 increment 2 traj:    +0.003 |    +0.003
+  IL-10 100 increment 3 traj:    +0.003 |    +0.003
+  IL-10 100 direct    1 traj:    -3.471 |    -6.236
+  IL-10 100 direct    2 traj:    -1.312 |    -2.259
+  IL-10 100 direct    3 traj:    -0.611 |    -1.060
+  IL-10 250 increment 1 traj:    +0.005 |    +0.005
+  IL-10 250 increment 2 traj:    +0.005 |    +0.006
+  IL-10 250 increment 3 traj:    +0.006 |    +0.006
+  IL-10 250 direct    1 traj:    -0.087 |    -0.114
+  IL-10 250 direct    2 traj:    -0.054 |    -0.068
+  IL-10 250 direct    3 traj:    -0.023 |    -0.031
+  figure FigA2_data_size
+
+FIG. A.3  ERROR RELATIVE TO THE FIELD FRONT (test window, RMSE / c_max; share of squared error)
+  predictions of 48 trained models not found: front statistics as stored in outputs/rev_abm/front_analysis.csv; maps redrawn
+=== IL-8 100x100 ===
+model                 front   inside  outside  px front px inside err front err inside
+Persistence          0.0009   0.0019   0.0002     0.210     0.350     0.113      0.878
+U-Net incr.          0.0004   0.0005   0.0003     0.210     0.350     0.185      0.549
+ConvLSTM incr.       0.0003   0.0006   0.0004     0.210     0.350     0.114      0.546
+FNO incr.            0.0004   0.0007   0.0006     0.210     0.350     0.091      0.538
+Point-wise incr.     0.0003   0.0008   0.0006     0.210     0.350     0.069      0.514
+U-Net direct         0.0153   0.0221   0.0099     0.210     0.350     0.185      0.643
+DeepONet             0.0125   0.0104   0.0087     0.210     0.350     0.302      0.362
+=== IL-10 100x100 ===
+model                 front   inside  outside  px front px inside err front err inside
+Persistence          0.0219   0.0015   0.0000     0.869     0.000     1.000      0.000
+U-Net incr.          0.0219   0.0019   0.0006     0.869     0.000     1.000      0.000
+ConvLSTM incr.       0.0218   0.0023   0.0005     0.869     0.000     1.000      0.000
+FNO incr.            0.0218   0.0008   0.0008     0.869     0.000     1.000      0.000
+Point-wise incr.     0.0218   0.0008   0.0007     0.869     0.000     1.000      0.000
+U-Net direct         0.0482   0.0767   0.0223     0.869     0.000     0.968      0.000
+DeepONet             0.0236   0.0198   0.0008     0.869     0.000     1.000      0.000
+=== IL-8 250x250 ===
+model                 front   inside  outside  px front px inside err front err inside
+Persistence          0.0008   0.0020   0.0002     0.047     0.587     0.012      0.982
+U-Net incr.          0.0003   0.0005   0.0002     0.047     0.587     0.029      0.861
+ConvLSTM incr.       0.0004   0.0007   0.0005     0.047     0.587     0.022      0.718
+FNO incr.            0.0005   0.0007   0.0005     0.047     0.587     0.033      0.744
+Point-wise incr.     0.0005   0.0008   0.0006     0.047     0.587     0.024      0.693
+U-Net direct         0.0117   0.0109   0.0068     0.047     0.587     0.071      0.743
+DeepONet             0.0137   0.0087   0.0058     0.047     0.587     0.115      0.663
+=== IL-10 250x250 ===
+model                 front   inside  outside  px front px inside err front err inside
+Persistence          0.0559   0.0446   0.0000     0.687     0.008     0.993      0.007
+U-Net incr.          0.0557   0.0445   0.0010     0.687     0.008     0.993      0.007
+ConvLSTM incr.       0.0557   0.0444   0.0013     0.687     0.008     0.993      0.007
+FNO incr.            0.0557   0.0444   0.0016     0.687     0.008     0.992      0.007
+Point-wise incr.     0.0557   0.0444   0.0017     0.687     0.008     0.992      0.007
+U-Net direct         0.0584   0.0582   0.0095     0.687     0.008     0.977      0.011
+DeepONet             0.0599   0.0531   0.0013     0.687     0.008     0.991      0.009
+  error maps: one linear colour scale 0 - 9.84e-05 pg/mL (largest error in any panel)
+  figure FigA3_error_maps

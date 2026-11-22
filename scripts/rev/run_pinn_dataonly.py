@@ -20,11 +20,11 @@ if __name__ == "__main__":
     ap.add_argument("--cytokines", nargs="*", default=["il10", "il8"])
     ap.add_argument("--seeds", nargs="*", type=int, default=[42, 1, 100])
     a = ap.parse_args()
-    if C.DATA_ROOT is None: sys.exit("REV_DATA_ROOT must point to the preprocessed revision runs")
+    if C.DATA_ROOT is None: sys.exit("REV_DATA_ROOT must point to the preprocessed ABM runs")
     run = C.run_dir(a.grid)
     meta = json.load(open(run / "metadata.json"))
     b = (meta.get("abm_provenance") or {}).get("boundaryat", a.grid // 10)
-    out_root = R.RESULTS / (os.environ.get("REV_OUT", "rev") + "_pinn") / "dataonly"
+    out_root = R.RESULTS / ((os.environ.get("REV_OUT") or "rev_abm") + "_pinn") / "dataonly"
     links = out_root / "_data"; links.mkdir(parents=True, exist_ok=True)
     link = links / f"{a.grid}x{a.grid}"
     if not link.exists(): os.symlink(run, link)

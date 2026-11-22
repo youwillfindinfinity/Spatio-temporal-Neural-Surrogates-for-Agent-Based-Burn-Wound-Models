@@ -1,18 +1,14 @@
-"""Table: PINN with softened vs strict residual (results/rev_pinn) next to the stored manuscript runs."""
+"""Table: PINN with softened vs strict residual (results/<REV_OUT>_pinn)."""
 import json, sys
 from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from paths import RESULTS, RESULTS_MODELS, OUTPUTS
+from paths import RESULTS, OUTPUTS
 
 import os
-TAG = os.environ.get("REV_OUT")
-if TAG:      # revision ABM runs, residual consistent with the ABM
-    SRC = {"soft": RESULTS / f"{TAG}_pinn" / "soft" / "pinn", "strict": RESULTS / f"{TAG}_pinn" / "strict" / "pinn"}
-else:        # original data and code
-    SRC = {"manuscript (stored)": RESULTS_MODELS / "pinn", "soft (re-run)": RESULTS / "rev_pinn" / "soft" / "pinn",
-           "strict": RESULTS / "rev_pinn" / "strict" / "pinn"}
+TAG = os.environ.get("REV_OUT") or "rev_abm"
+SRC = {"soft": RESULTS / f"{TAG}_pinn" / "soft" / "pinn", "strict": RESULTS / f"{TAG}_pinn" / "strict" / "pinn"}
 KEYS = ["Global_R2", "SSIM", "Avg_Dice", "Spatial_Correlation", "Masked_RMSE"]
 lines = ["PINN: softened vs strict residual (mean +/- sample SD over available seeds)", ""]
 for cyt in ("il10", "il8"):

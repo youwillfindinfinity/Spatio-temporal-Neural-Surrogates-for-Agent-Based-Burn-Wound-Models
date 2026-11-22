@@ -14,6 +14,8 @@ BASE_OUT_DIR     = PREPROCESSED_P95
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
+# In endothelial.xml, types 3, 4 and 5 are monocytes, fibroblasts and activated neutrophils;
+# scripts/rev/preprocess_runs.py builds the masks from types 1, 2, 5, 8 and 9.
 CELL_TYPE_IDS   = {"EC": 1, "NN": 2, "NA": 3, "M1": 4, "M2": 5}
 
 N_TIMESTEPS  = 101
@@ -22,7 +24,6 @@ GPR_MAX_GRID = 100
 
 
 def fixed_p95_percentile(channel: np.ndarray) -> float:
-    """fixed 95th percentile for all cytokines."""
     return 95.0
 
 

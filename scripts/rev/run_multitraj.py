@@ -1,5 +1,5 @@
 """Effect of the amount of training data (several ABM trajectories instead of one).
-U-Net in increment and direct form (hyperparameters from the main search on seed 1), trained on
+U-Net in increment and direct form (hyperparameters from run_main.py), trained on
 the first 70 targets of E3 seeds {1}, {1,2} or {1,2,3}; validation on seed 1 (t = 72-81 h);
 frozen-weight evaluation on all other runs (seeds 4 and 5 are never used for training)."""
 import argparse, json
