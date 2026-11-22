@@ -1,5 +1,5 @@
-"""Check of the STA-LSTM increment model (IL-8): are the three seeds the same prediction, and is the
-learned correction spatially uniform (the STA-LSTM pools globally before the LSTM)?"""
+"""STA-LSTM increment model (IL-8): are the three seeds the same prediction, and is the learned
+correction spatially uniform (the STA-LSTM pools globally before the LSTM)?"""
 import sys, numpy as np
 import common as C
 grid = int(sys.argv[1]) if len(sys.argv) > 1 else 250

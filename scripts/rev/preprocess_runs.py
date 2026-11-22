@@ -1,19 +1,15 @@
-"""Preprocess the revision ABM runs (one folder per run with LatticeData/Step_*.vtk, 101 hourly frames).
+"""Preprocess ABM runs (one folder per run with LatticeData/Step_*.vtk, 101 hourly frames) into model inputs.
 
-For every grid, the training run (default E3_il10_from_m2_G<grid>_s1) defines the scaling:
-kurtosis-adaptive percentile clip per cytokine, then linear map to [-1, 1], exactly as in the
-original preprocessing. All other runs of that grid are scaled with the SAME constants, so models
-trained on the training run can be applied to them with frozen weights.
-
-Cell-type masks use the CompuCell3D type IDs of the model: endothelial = 1, resting neutrophil = 2,
+The training run of each grid (default E3_il10_from_m2_G<grid>_s1) sets the scaling: kurtosis-adaptive
+percentile clip per cytokine, then a linear map to [-1, 1]. The same constants are applied to all other
+runs of that grid, so models trained on the training run can be applied to them with frozen weights.
+Cell-type masks use the CompuCell3D type IDs: endothelial = 1, resting neutrophil = 2,
 activated neutrophil = 5, M1 macrophage = 8, M2 macrophage = 9.
-
 Runs of an experiment whose concentration scale differs from the training run by more than 25 %
-(e.g. a different number of secreting cells) are written a second time as
-<experiment>-ownscale_G<grid>_s<seed>, scaled with the constants of that experiment's first seed,
-so that transfer can be evaluated both in the training units and in the experiment's own units.
-Tiny negative solver round-off values in the raw fields are set to zero.
+are also written as <experiment>-ownscale_G<grid>_s<seed>, scaled with that experiment's first seed.
+Negative solver round-off values in the raw fields are set to zero.
 
+Usage: python scripts/rev/preprocess_runs.py --runs-root <runs> --out <dir>
 Output per run (<out>/<run_id>/): X_unet (99,G,G,22), Y_target (99,G,G,6), Y_masks_spatial (99,G,G,5),
 Y_raw_phys (101,G,G,6), X_trunk (99,G*G,3), metadata.json; for the training run also Y_masks_pinn, Y_ic.
 """
@@ -100,7 +96,7 @@ def main():
         if train not in runs: sys.exit(f"training run {train} not found in {root}")
         order = [train] + [r for r in runs if re.search(rf"_G{G}_s\d+$", r) and r != train]
         cmin = cmax = pcts = None
-        own = {}                                   # experiment -> its own scaling, if it differs from the training scale
+        own = {}                                   # experiment -> own scaling, if it differs from the training scale
         for r in order:
             exp = re.sub(rf"_G{G}_s\d+$", "", r)
             done = (out / r / "metadata.json").exists()

@@ -1,12 +1,12 @@
-"""DeepONet re-training and ablations for the revision (hyperparameters from results/models).
+"""DeepONet training and ablations on the ABM runs (hyperparameters from results/models).
 
 variants
-  base       architecture of the manuscript (7-scalar branch, gated trunk on x, y + 22 field values)
+  base       7-scalar branch, gated trunk on x, y and the 22 field values
   no_branch  branch replaced by a constant trainable vector (trunk-only model)
   no_gate    gated trunk replaced by a plain tanh MLP of the same width
   no_fields  trunk receives only (x, y); the 22 point-wise field values are removed
-When --grid 100 and variant base, the trained model is additionally evaluated without
-re-training on the 250^2 data (zero-shot resolution transfer).
+For --grid 100 and variant base, the trained model is also evaluated on the 250^2 data
+without retraining (zero-shot resolution transfer).
 """
 import argparse, importlib.util, os, time
 import numpy as np

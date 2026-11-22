@@ -1,19 +1,19 @@
-"""Reference: the cytokine update of the ABM itself, re-implemented.
+"""Re-implementation of the ABM cytokine update.
 
-In the ABM the cytokine fields are advanced once per hourly frame by a single implicit
-(backward-Euler, dt = 1) finite-volume step of
+The ABM advances the cytokine fields once per hourly frame by one implicit (backward-Euler, dt = 1)
+finite-volume step of
     du/dt = D lap(u) - mu u - theta * NA * u + sum_c k_c * cell_c ,
 with zero-value constraints on four boundary segments of length `boundaryat` and no-flux elsewhere
-(Simulation/test.py and variablevals.py of the model; cell-presence fields are built from the cell
-positions at the time of the update). Given the previous frame and the cell positions at the target
-time, the next frame is therefore a deterministic linear function. This script evaluates that update:
+(Simulation/test.py and variablevals.py of the ABM). The cell-presence fields come from the cell
+positions at the time of the update, so the next frame is a deterministic linear function of the
+previous frame and the new cell positions. This script evaluates that update:
 
   exact      previous ABM frame + cell masks at the target time t      (what the simulator does)
   lagged     previous ABM frame + cell masks at t-1                    (no knowledge of the new positions)
   closed     started from u = 0 and iterated with the ABM cell masks   (whole trajectory)
 
 against the stored ABM frames, with persistence as reference. NDN neutrophils (second IL-8 source)
-are not among the stored masks and are ignored; they occupy 0-4 lattice sites.
+are not among the stored masks and are ignored (0-4 lattice sites).
 Output: outputs/<REV_OUT>/physics_step.txt and .csv
 """
 import csv, json, sys, warnings

@@ -1,7 +1,7 @@
-"""PINN on the revision ABM runs with a residual that matches the cytokine equation of the ABM.
+"""PINN on the ABM runs with a residual that matches the cytokine equation of the ABM.
 
-Pipeline (network, observation sampling, loss-weight search, three-stage optimisation, metrics) is
-that of scripts/pinn/all.py. Changed relative to it:
+Network, observation sampling, loss-weight search, three-stage optimisation and metrics are
+those of scripts/pinn/all.py, except for:
 
   1. Residual written in the normalised coordinates of the network. With x, y in [-1, 1] over G
      lattice sites and t in [-1, 1] over 100 hourly frames,
@@ -11,7 +11,7 @@ that of scripts/pinn/all.py. Changed relative to it:
      softened residual.
   2. Source terms from the cell types that enter the ABM equations: endothelial cells (IL-8) and
      M2 macrophages (IL-10); uptake of IL-8 by activated neutrophils. The NDN-neutrophil source of
-     IL-8 is omitted (not among the stored masks; 0-4 lattice sites). As before, the source is the
+     IL-8 is omitted (not among the stored masks; 0-4 lattice sites). The source is the
      cell-presence field averaged over the training window.
   3. Boundary condition of the ABM solver: zero concentration (u = -1 in normalised units) on the
      four boundary segments of length `boundaryat`, zero normal derivative elsewhere.
@@ -60,7 +60,7 @@ _orig_sources = P.build_source_terms_1cyt
 
 
 def sources(masks_flat, sec, cyt_idx, G, clip_max):
-    """Mask channels of the revision data: 0 EC, 1 resting neutrophil, 2 activated neutrophil, 3 M1, 4 M2.
+    """Mask channels: 0 EC, 1 resting neutrophil, 2 activated neutrophil, 3 M1, 4 M2.
     Channel 1 is not a cytokine source, so the second source term is dropped."""
     s1, s2, e = _orig_sources(masks_flat, sec, cyt_idx, G, clip_max)
     return s1, tf.zeros_like(s2), e
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     ap.add_argument("--cytokines", nargs="*", default=["il10", "il8"])
     ap.add_argument("--seeds", nargs="*", type=int, default=[42, 1, 100])
     a = ap.parse_args()
-    if C.DATA_ROOT is None: sys.exit("REV_DATA_ROOT must point to the preprocessed revision runs")
+    if C.DATA_ROOT is None: sys.exit("REV_DATA_ROOT must point to the preprocessed ABM runs")
     run = C.run_dir(a.grid)
     meta = json.load(open(run / "metadata.json"))
     b = (meta.get("abm_provenance") or {}).get("boundaryat", a.grid // 10)

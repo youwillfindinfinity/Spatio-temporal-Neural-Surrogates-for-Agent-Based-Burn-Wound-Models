@@ -1,18 +1,15 @@
-"""Main experiments of the revised manuscript: every architecture in two forms,
+"""Main experiments: every architecture in two forms,
   direct     the network outputs the next frame
   increment  the network outputs a correction that is added to the previous frame
-each with its own hyperparameter search under the protocol of the original study
-(Optuna TPE, seed 42, 20 trials x 20 epochs, early-stopping patience 5, validation MSE),
-followed by final training (<= 200 epochs, patience 20) for seeds 42, 1 and 100.
+each with its own hyperparameter search (Optuna TPE, seed 42, 20 trials x 20 epochs, early-stopping
+patience 5, validation MSE), followed by final training (<= 200 epochs, patience 20) for seeds 42, 1, 100.
 
-Architectures: unet, convlstm, fno, stalstm, pointwise (gated MLP applied independently at
-every lattice point to the local field and mask values plus coordinates; this is the
-DeepONet trunk without the branch network).
-Results: results/rev/main_<model>/<form>/ ; selected hyperparameters: hp_<cytokine>_<grid>.json
+Architectures: unet, convlstm, fno, stalstm, pointwise (gated MLP applied independently at every
+lattice point to the local field and mask values plus coordinates; the DeepONet trunk without the branch).
+Results: results/<REV_OUT>/main_<model>/<form>/ ; selected hyperparameters: hp_<cytokine>_<grid>.json
 
-With --target-masks the five cell-type masks at the target time t are given as additional input
-channels (prediction conditional on the cell positions at the time being predicted). These runs are
-stored as tmask_<model>. Not available for the STA-LSTM.
+--target-masks adds the five cell-type masks at the target time t as input channels (not for the
+STA-LSTM). These runs are stored as tmask_<model>.
 """
 import argparse, gc, json, os, time
 import numpy as np
