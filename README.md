@@ -117,9 +117,10 @@ The benchmark uses 22 ABM simulations of 100 h each (101 hourly frames), all at 
 
 Baseline seed 1 is the only run used for training; baseline seeds 2-5 are the "unseen seeds". The runs were generated with the ABM in `abm/`, in which IL-10 is secreted by M2 macrophages (the suffix `_m2` of the identifiers). The boundary margin b sets the length of the zero-concentration boundary segments and where cells are placed (see `abm/README.md`).
 
-The runs are archived on Zenodo ([10.5281/zenodo.24355550](https://doi.org/10.5281/zenodo.24355550)) as the file `burn_wound_abm_simulations.tar.gz`. After extracting it, each run is a folder `runs/<experiment>_G<grid>_s<seed>/` with `LatticeData/Step_*.vtk`.
+The runs are archived on Zenodo ([10.5281/zenodo.24355550](https://doi.org/10.5281/zenodo.24355550)) as the file `burn_wound_abm_simulations.tar.gz`. Download it into the root of this repository and extract it there; each run is then a folder `burn_wound_abm_simulations/runs/<experiment>_G<grid>_s<seed>/` with `LatticeData/Step_*.vtk`.
 
 ```bash
+tar -xzf burn_wound_abm_simulations.tar.gz
 python scripts/rev/preprocess_runs.py --runs-root burn_wound_abm_simulations/runs --out preprocessed_abm
 ```
 
@@ -162,6 +163,8 @@ Every result JSON contains:
 
 Finished runs are skipped when a script is started again.
 
+The trained weights and the predictions of these runs are archived on Zenodo as `surrogate_weights.tar` (23 GB) and `surrogate_predictions.tar` (2 GB), in a separate record linked to this repository. To use them instead of retraining, extract both in the root of this repository; every file goes next to the result file of the same model. Weights and predictions were not kept for every run; the record's README lists which are included.
+
 ### 4. Tables and figures
 
 ```bash
@@ -179,8 +182,8 @@ python scripts/rev/collect_for_paper.py  # -> outputs/rev_abm/for_paper.txt
 | `abm/` | ABM model, run design and provenance tools | yes | |
 | `preprocessed_abm/<run>/` | model inputs of each ABM run (about 6 GB for the ten baseline runs) | no | `preprocess_runs.py`, from the Zenodo archive |
 | `results/rev_abm/<model>/<variant>/res_<cytokine>_<grid>_<seed>.json`, `hp_<cytokine>_<grid>.json` | metrics, roll-outs, frozen-weight results and hyperparameters of every trained model | yes | `scripts/rev/run_*.py` |
-| `results/rev_abm/<model>/<variant>/pred_<cytokine>_<grid>_<seed>.npz` | one-step predictions on the test window (2-13 MB each) | no | `scripts/rev/run_*.py` |
-| `results/rev_abm/<model>/<variant>/weights_<cytokine>_<grid>_<seed>.weights.h5` | trained weights | no | `scripts/rev/run_*.py` |
+| `results/rev_abm/<model>/<variant>/pred_<cytokine>_<grid>_<seed>.npz` | one-step predictions and roll-outs on the test window (2-13 MB each) | no | `scripts/rev/run_*.py`; also on Zenodo |
+| `results/rev_abm/<model>/<variant>/weights_<cytokine>_<grid>_<seed>.weights.h5` | trained weights | no | `scripts/rev/run_*.py`; also on Zenodo |
 | `outputs/rev_abm/` | aggregated tables (`summary.txt`, `for_paper.txt`, `post_runs_summary.txt`) | yes | step 4 |
 | `outputs/figures/` | generated figures | PNG: yes | step 4 |
 | `outputs/figures_edited/` | the figures as used in the paper, edited by hand from `outputs/figures/` (layout, panel letters) | PNG: yes | by hand |

@@ -7,7 +7,7 @@ import common as C
 warnings.filterwarnings("ignore")
 from paths import OUTPUTS
 
-DST = OUTPUTS / C.os.environ.get("REV_OUT", "rev"); DST.mkdir(parents=True, exist_ok=True)
+DST = OUTPUTS / (C.os.environ.get("REV_OUT") or "rev_abm"); DST.mkdir(parents=True, exist_ok=True)
 rows, stats = [], []
 import re
 grids = sorted({int(re.search(r"_G(\d+)_s\d+$", d.name).group(1)) for d in C.DATA_ROOT.iterdir() if d.is_dir() and re.search(r"_G(\d+)_s\d+$", d.name)})

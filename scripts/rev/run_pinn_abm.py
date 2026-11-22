@@ -104,7 +104,7 @@ if __name__ == "__main__":
     run = C.run_dir(a.grid)
     meta = json.load(open(run / "metadata.json"))
     b = (meta.get("abm_provenance") or {}).get("boundaryat", a.grid // 10)
-    out_root = RESULTS / (os.environ.get("REV_OUT", "rev") + "_pinn") / a.variant
+    out_root = RESULTS / ((os.environ.get("REV_OUT") or "rev_abm") + "_pinn") / a.variant
     links = out_root / "_data"; links.mkdir(parents=True, exist_ok=True)      # the pipeline expects <root>/<G>x<G>
     link = links / f"{a.grid}x{a.grid}"
     if not link.exists(): os.symlink(run, link)

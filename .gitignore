@@ -18,4 +18,6 @@ results/*/*/_data
 abm/runs/
 *:Zone.Identifier
 *.tar
+*.tar.gz
+burn_wound_abm_simulations/
 outputs/figures/*.pdf

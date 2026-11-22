@@ -94,7 +94,7 @@ def evaluate(grid, run, cyt):
 
 
 if __name__ == "__main__":
-    DST = OUTPUTS / C.os.environ.get("REV_OUT", "rev"); DST.mkdir(parents=True, exist_ok=True)
+    DST = OUTPUTS / (C.os.environ.get("REV_OUT") or "rev_abm"); DST.mkdir(parents=True, exist_ok=True)
     import re
     grids = sorted({int(re.search(r"_G(\d+)_s\d+$", d.name).group(1)) for d in C.DATA_ROOT.iterdir() if d.is_dir() and re.search(r"_G(\d+)_s\d+$", d.name)})
     rows, lines = [], ["ABM CYTOKINE UPDATE RE-IMPLEMENTED (one implicit step per frame); R2 against the stored ABM frames",

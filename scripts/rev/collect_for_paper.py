@@ -6,7 +6,7 @@ from paths import ROOT, RESULTS, OUTPUTS
 rel = lambda f: os.path.relpath(f, ROOT)                            # paths relative to the repository
 TAG = os.environ.get("REV_OUT") or "rev_abm"
 R = RESULTS / TAG; O = OUTPUTS / TAG; out = []
-RUNS = Path(os.path.expanduser(os.environ.get("REV_RUNS_ROOT", "~/burn_wound_abm_simulations/runs")))   # raw ABM runs
+RUNS = Path(os.path.expanduser(os.environ.get("REV_RUNS_ROOT") or next((str(p) for p in (ROOT / "burn_wound_abm_simulations/runs", Path("~/burn_wound_abm_simulations/runs").expanduser()) if p.is_dir()), "")))   # raw ABM runs
 P = lambda *a: out.append(" ".join(str(x) for x in a))
 ms = lambda v: f"{st.mean(v):.4g} +/- {st.stdev(v):.2g}" if len(v) > 1 else (f"{v[0]:.4g}" if v else "-")
 

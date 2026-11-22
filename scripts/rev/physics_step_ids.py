@@ -100,7 +100,7 @@ def evaluate(frames, G, b, cyt):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--runs-root", required=True); ap.add_argument("--runs", nargs="*")
     a = ap.parse_args(); root = Path(a.runs_root).expanduser()
-    DST = OUTPUTS / os.environ.get("REV_OUT", "rev"); DST.mkdir(parents=True, exist_ok=True)
+    DST = OUTPUTS / (os.environ.get("REV_OUT") or "rev_abm"); DST.mkdir(parents=True, exist_ok=True)
     runs = sorted(d.name for d in root.iterdir() if (d / "LatticeData").is_dir() and (not a.runs or d.name in a.runs))
     rows, lines = [], ["ABM CYTOKINE UPDATE FROM THE RAW LATTICE OUTPUT (R2 against the stored fields)",
                        "ids: source cells identified by CellId with their type before the transitions of the step; lattice: stored types of the same frame", ""]
