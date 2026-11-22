@@ -117,7 +117,7 @@ The benchmark uses 22 ABM simulations of 100 h each (101 hourly frames), all at 
 
 Baseline seed 1 is the only run used for training; baseline seeds 2-5 are the "unseen seeds". The runs were generated with the ABM in `abm/`, in which IL-10 is secreted by M2 macrophages (the suffix `_m2` of the identifiers). The boundary margin b sets the length of the zero-concentration boundary segments and where cells are placed (see `abm/README.md`).
 
-The runs are archived on Zenodo ([10.5281/zenodo.24355550](https://doi.org/10.5281/zenodo.24355550)) as the file `burn_wound_abm_simulations.tar.gz`. Download it into the root of this repository and extract it there; each run is then a folder `burn_wound_abm_simulations/runs/<experiment>_G<grid>_s<seed>/` with `LatticeData/Step_*.vtk`.
+The runs are archived on Zenodo as version v2.0.0 of this repository's record ([10.5281/zenodo.24355550](https://doi.org/10.5281/zenodo.24355550)), in the file `burn_wound_abm_simulations.tar.gz`. Download it into the root of this repository and extract it there; each run is then a folder `burn_wound_abm_simulations/runs/<experiment>_G<grid>_s<seed>/` with `LatticeData/Step_*.vtk`.
 
 ```bash
 tar -xzf burn_wound_abm_simulations.tar.gz
@@ -163,7 +163,7 @@ Every result JSON contains:
 
 Finished runs are skipped when a script is started again.
 
-The trained weights and the predictions of these runs are archived on Zenodo as `surrogate_weights.tar` (23 GB) and `surrogate_predictions.tar` (2 GB), in a separate record linked to this repository. To use them instead of retraining, extract both in the root of this repository; every file goes next to the result file of the same model. Weights and predictions were not kept for every run; the record's README lists which are included.
+The trained weights and the predictions of these runs are archived on Zenodo as version v3.0.0 ([10.5281/zenodo.24445651](https://doi.org/10.5281/zenodo.24445651)), in the files `surrogate_weights.tar` (23 GB) and `surrogate_predictions.tar` (2 GB). To use them instead of retraining, extract both in the root of this repository; every file goes next to the result file of the same model. Weights and predictions were not kept for every run; the record's README lists which are included.
 
 ### 4. Tables and figures
 
@@ -230,7 +230,7 @@ Paper:
 }
 ```
 
-Code (all releases): [10.5281/zenodo.20457662](https://doi.org/10.5281/zenodo.20457662). ABM simulations: [10.5281/zenodo.24355550](https://doi.org/10.5281/zenodo.24355550).
+Code (all releases): [10.5281/zenodo.20457662](https://doi.org/10.5281/zenodo.20457662). ABM simulations (v2.0.0): [10.5281/zenodo.24355550](https://doi.org/10.5281/zenodo.24355550). Trained models and predictions (v3.0.0): [10.5281/zenodo.24445651](https://doi.org/10.5281/zenodo.24445651).
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "title": "Neural Surrogates for Cytokine Fields in an Agent-Based Burn Wound Model: code and results",
   "upload_type": "software",
-  "description": "<p>Code and results of a benchmark of neural surrogates (U-Net, ConvLSTM, Fourier neural operator, STA-LSTM, point-wise network, DeepONet and PINN) for the IL-8 and IL-10 fields of a hybrid agent-based model of the post-burn immune response, evaluated against persistence. The repository also contains the agent-based model (CompuCell3D and FiPy) and the scripts that generated the simulations. The simulations are archived separately (doi:10.5281/zenodo.24355550).</p><p>Roland V. Bumbuc and Julia Kowalczuk contributed equally to this work and share first authorship.</p>",
+  "description": "<p>Code and results of a benchmark of neural surrogates (U-Net, ConvLSTM, Fourier neural operator, STA-LSTM, point-wise network, DeepONet and PINN) for the IL-8 and IL-10 fields of a hybrid agent-based model of the post-burn immune response, evaluated against persistence. The repository also contains the agent-based model (CompuCell3D and FiPy) and the scripts that generated the simulations. The simulations (v2.0.0, doi:10.5281/zenodo.24355550) and the trained models and predictions (v3.0.0, doi:10.5281/zenodo.24445651) are earlier versions of this record.</p><p>Roland V. Bumbuc and Julia Kowalczuk contributed equally to this work and share first authorship.</p>",
   "creators": [
     {
       "name": "Bumbuc, Roland V.",
@@ -46,6 +46,12 @@
   "related_identifiers": [
     {
       "identifier": "10.5281/zenodo.24355550",
+      "relation": "isSupplementedBy",
+      "resource_type": "dataset",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.24445651",
       "relation": "isSupplementedBy",
       "resource_type": "dataset",
       "scheme": "doi"
