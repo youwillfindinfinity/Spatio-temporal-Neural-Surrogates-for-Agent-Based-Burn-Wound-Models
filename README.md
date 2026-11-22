@@ -233,4 +233,4 @@ Code (all releases): [10.5281/zenodo.20457662](https://doi.org/10.5281/zenodo.20
 
 ## License
 
-This repository is released for research reproducibility. Please contact the corresponding author (v.s.muniraj@uva.nl) regarding any other use.
+The code is released under the MIT License (see `LICENSE`). The ABM simulations and the trained models on Zenodo are released under CC BY 4.0. Questions: the corresponding author (v.s.muniraj@uva.nl).
