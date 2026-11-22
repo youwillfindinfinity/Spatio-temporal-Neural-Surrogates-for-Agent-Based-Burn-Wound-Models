@@ -1,0 +1,54 @@
+{
+  "title": "Neural Surrogates for Cytokine Fields in an Agent-Based Burn Wound Model: code and results",
+  "upload_type": "software",
+  "description": "<p>Code and results of a benchmark of neural surrogates (U-Net, ConvLSTM, Fourier neural operator, STA-LSTM, point-wise network, DeepONet and PINN) for the IL-8 and IL-10 fields of a hybrid agent-based model of the post-burn immune response, evaluated against persistence. The repository also contains the agent-based model (CompuCell3D and FiPy) and the scripts that generated the simulations. The simulations are archived separately (doi:10.5281/zenodo.24355550).</p><p>Roland V. Bumbuc and Julia Kowalczuk contributed equally to this work and share first authorship.</p>",
+  "creators": [
+    {
+      "name": "Bumbuc, Roland V.",
+      "affiliation": "Amsterdam UMC location Vrije Universiteit Amsterdam; University of Amsterdam",
+      "orcid": "0009-0004-9173-9798"
+    },
+    {
+      "name": "Kowalczuk, Julia",
+      "affiliation": "University of Amsterdam",
+      "orcid": "0009-0001-1987-9604"
+    },
+    {
+      "name": "Getsadze, Rezo",
+      "affiliation": "University of Amsterdam",
+      "orcid": "0009-0008-1153-2455"
+    },
+    {
+      "name": "Papapanagiotou, Ioannis",
+      "affiliation": "National and Kapodistrian University of Athens",
+      "orcid": "0009-0002-7651-588X"
+    },
+    {
+      "name": "Korkmaz, H. Ibrahim",
+      "affiliation": "Amsterdam UMC location Vrije Universiteit Amsterdam; Red Cross Hospital Beverwijk"
+    },
+    {
+      "name": "Sheraton, Vivek M.",
+      "affiliation": "University of Amsterdam"
+    }
+  ],
+  "notes": "Roland V. Bumbuc and Julia Kowalczuk contributed equally to this work and share first authorship.",
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "keywords": [
+    "agent-based model",
+    "burn wound",
+    "cytokines",
+    "neural surrogates",
+    "CompuCell3D",
+    "persistence baseline"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.24355550",
+      "relation": "isSupplementedBy",
+      "resource_type": "dataset",
+      "scheme": "doi"
+    }
+  ]
+}
