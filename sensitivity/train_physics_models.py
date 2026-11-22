@@ -31,7 +31,6 @@ def set_seed(seed):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
-# PDE params
 def compute_pde_params(G, cyt_idx):
     areaconv   = TRUE_SIZE**2 / G**2
     volumeconv = TRUE_SIZE**2 / G**2
@@ -57,7 +56,7 @@ def build_source_arrays_np(masks_flat, sec, cyt_idx, G, clip_max):
     mm2 = masks_flat[:, MASK_M2]
     z = np.zeros(n, np.float64)
 
-    # IL-10 uses M2 (biologically correct, matches paper)
+    # IL-10 uses the M2 mask
     s1_map = [sec[0]*me, sec[3]*mna, sec[4]*mm1, sec[5]*mm2, sec[6]*mna, sec[8]*mm2]
     s2_map = [sec[1]*mnn, z, z, z, sec[7]*mm1, z]
     e_map  = [sec[2]*mna, z, z, z, z, z]
@@ -68,7 +67,6 @@ def build_source_arrays_np(masks_flat, sec, cyt_idx, G, clip_max):
     e  = e_map[cyt_idx].reshape(-1, 1)
     return s1, s2, e
 
-# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -126,7 +124,6 @@ def calculate_metrics(y_true, y_pred, masks, clip_max):
 def denormalize(x, clip_max):
     return (np.asarray(x, np.float64) + 1.0) / 2.0 * clip_max
 
-# PI-DeepONet 
 N_COLLOC_PIDON   = 2000
 N_BC_PIDON       = 200
 N_IC_PIDON       = 500
@@ -529,12 +526,10 @@ def train_pi_deeponet(prep_dir, cytokine, seed, n_trials,
           f"far R²={results['results']['Far_Horizon_t92_t100']['Global_R2']:.4f}  "
           f"({train_elapsed:.0f}s)")
 
-# PINN 
 def train_pinn(prep_dir, cytokine, seed, n_trials,
                 tune_iters, full_iters, warmup_iters, lbfgs_iters,
                 out_dir):
-    """Imports DeepXDE INSIDE this function so float64 is set only when
-    the PINN actually runs (after PI-DeepONet has finished in float32)."""
+    # deepxde is imported here so float64 is only set when the PINN runs
     import deepxde as dde
 
     dde.config.set_default_float("float64")
@@ -784,7 +779,6 @@ def train_pinn(prep_dir, cytokine, seed, n_trials,
           f"({train_elapsed:.0f}s)")
 
 
-# main
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prep-dir", type=str, required=True)
@@ -794,10 +788,10 @@ def main():
     ap.add_argument("--cytokines", type=str, default="il8,il10")
     ap.add_argument("--models", type=str, default="pi_deeponet,pinn",
                     help="Run both, or only pi_deeponet, or only pinn")
-    # PI-DeepONet schedule (paper)
+    # PI-DeepONet schedule
     ap.add_argument("--pidon-tune-epochs", type=int, default=30)
     ap.add_argument("--pidon-full-epochs", type=int, default=400)
-    # PINN schedule (paper)
+    # PINN schedule
     ap.add_argument("--pinn-tune-iters",   type=int, default=2000)
     ap.add_argument("--pinn-full-iters",   type=int, default=15000)
     ap.add_argument("--pinn-warmup-iters", type=int, default=5000)
@@ -826,7 +820,6 @@ def main():
     print(f"  Cytokines:  {cytokines}")
     print(f"{'='*70}")
 
-    # PI-DeepONet, then PINN 
     if "pi_deeponet" in models:
         out_dir = out_base / "pi_deeponet"
         for cyt in cytokines:

@@ -86,14 +86,7 @@ def build_source_terms_1cyt(masks_flat, sec, cyt_idx, G, clip_max):
     mm2 = masks_flat[:, MASK_M2]
     z   = np.zeros(n, np.float64)
 
-    # NOTE: The ABM tester() source code uses cellpresentm1 for IL-10 secretion,
-    # which is a known implementation error (IL-10 is an anti-inflammatory cytokine
-    # primarily secreted by M2 macrophages, not M1). We use mm2 here because:
-    #   1. It is biologically accurate (Fioranelli & Grazia, 2014)
-    #   2. It yields better PINN performance (R²≈0.16 vs 0.02 for IL-10)
-    #   3. The spatial overlap between M1 and M2 in circular wounds means
-    #      the practical impact on IL-8/TNF-α/other cytokines is negligible
-    
+    # IL-10 uses the M2 mask
     s1_map = [sec[0]*me, sec[3]*mna, sec[4]*mm1, sec[5]*mm2, sec[6]*mna, sec[8]*mm2]
     s2_map = [sec[1]*mnn, z, z, z, sec[7]*mm1, z]
     e_map  = [sec[2]*mna, z, z, z, z, z]
@@ -111,20 +104,7 @@ def build_source_terms_1cyt(masks_flat, sec, cyt_idx, G, clip_max):
 
 
 def make_pde_1cyt(D, k, s1_tf, s2_tf, e_tf, G):
-    """
-    PDE residual for a single cytokine.
-
-    Uses the simplified form: ∂u/∂t = D·Δu − k·u + s1 + s2 − e·u
-    rather than the full normalization-aware form with (u+1) offset.
-
-    Justification: with [-1,1] normalization and >60% zero-background pixels,
-    u ≈ -1 over most of the domain. The constant terms -k and -e from the
-    (u+1) formulation create a large systematic PDE residual that dominates
-    the physics loss and prevents the data loss from fitting the spatial
-    structure. The simplified form acts as a softer physics regulariser,
-    which is appropriate when the PDE is an approximation of discrete
-    agent-based dynamics rather than an exact governing equation.
-    """
+    """PDE residual du/dt = D*lap(u) - k*u + s1 + s2 - e*u, without the (u+1) offset of the [-1, 1] scaling."""
     G_tf = tf.constant(G, dtype=tf.float64)
     D_tf = tf.constant([[D]], dtype=tf.float64)
     k_tf = tf.constant([[k]], dtype=tf.float64)
@@ -152,7 +132,6 @@ def make_pde_1cyt(D, k, s1_tf, s2_tf, e_tf, G):
 
     return pde
 
-# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -214,7 +193,6 @@ def denormalize(x, clip_max):
     return (np.asarray(x, np.float64) + 1.0) / 2.0 * clip_max
 
 
-# model construction 
 def build_dde_model(G, hidden, n_layers, lr,
                     pde_fn, geomtime,
                     X_ic, Y_ic_obs,
@@ -222,15 +200,7 @@ def build_dde_model(G, hidden, n_layers, lr,
                     bc_fn,
                     lambda_pde=0.01, lambda_ic=1.0, lambda_bc=0.1,
                     num_domain=N_DOMAIN, num_boundary=N_BOUNDARY):
-    """
-    pure Neumann ∂u/∂n=0 on all boundaries rather than
-    the ABM's mixed Dirichlet/Neumann. The ABM applies u=0 Dirichlet
-    on corner sub-regions (boundaryat = nx/10), but for the circular
-    wound geometry the wound never reaches the corners, so the Dirichlet
-    condition is never active in practice. Using pure Neumann with 4 loss
-    terms (vs 5 with mixed BC) gives Optuna more capacity for the
-    data-fitting and PDE losses.
-    """
+    # Neumann du/dn = 0 on all boundaries; the ABM's Dirichlet corner regions are not reached by the wound
     ic_bc  = dde.PointSetBC(X_ic, Y_ic_obs, component=0)
     neu_bc = dde.NeumannBC(geomtime,
                            lambda x: np.zeros((len(x), 1), np.float64),
@@ -269,7 +239,6 @@ def t_to_norm(t_idx, n_total=101):
     return float(t_norm_all[t_idx])
 
 
-# optuna objective 
 def make_objective(G, cyt_idx, pde_fn, geomtime,
                    X_ic, Y_ic_obs, X_obs_tr, Y_obs_tr,
                    Y_tgt_scaled, val_indices, bc_fn, seed):
@@ -323,7 +292,6 @@ def make_objective(G, cyt_idx, pde_fn, geomtime,
     return objective
 
 
-# main pipeline 
 def run_pipeline(grid, seed, cytokine):
     set_seed(seed)
     cyt_idx = CYTOKINE_NAMES.index(cytokine.lower())
@@ -397,7 +365,6 @@ def run_pipeline(grid, seed, cytokine):
           f"{', subsampled' if subsample else ', full grid'})")
     print(f"  IC points: {X_ic.shape[0]}  |  Grid: {grid}x{grid}={G2}  |  clip_max: {clip_max:.6f}")
 
-    # Optuna HP search 
     if seed == 42:
         print(f"Optuna: {N_TRIALS} trials x {TUNE_ITERS} iters...")
         study = optuna.create_study(
@@ -427,7 +394,6 @@ def run_pipeline(grid, seed, cytokine):
         best = ref["best_params"]
         optuna_val = ref["optuna_best_val_loss"]
 
-    # full training 
     tf.keras.backend.clear_session(); set_seed(seed)
 
     t_start = time.time()
@@ -479,7 +445,6 @@ def run_pipeline(grid, seed, cytokine):
     else:
         print(f"WARNING: No checkpoint found for step {best_step}, using final weights.")
 
-    # predict & evaluate 
     print("Predicting full grid...")
     t_pred_start = time.time()
     Yp_all = np.zeros((N, grid, grid, 1), dtype=np.float64)

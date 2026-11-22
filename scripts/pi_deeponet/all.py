@@ -34,7 +34,6 @@ def set_seed(seed):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed); np.random.seed(seed); tf.random.set_seed(seed)
 
-# PDE params 
 def compute_pde_params(G, cyt_idx):
     areaconv   = TRUE_SIZE**2 / G**2
     volumeconv = TRUE_SIZE**2 / G**2
@@ -111,19 +110,14 @@ class PIDeepONet(tf.keras.Model):
         self._p = p
 
     def call_data(self, xb, xt, training=False):
-        """data forward: xb (batch, 7), xt (batch, n_pts, D_trunk) -> (batch, n_pts, 1)"""
         b = self.branch(xb, training=training)
         t = self.trunk(xt)
         r = tf.einsum("bp,bnp->bn", b, t) + self.bias
         return tf.expand_dims(r, -1)
 
     def call_physics_single(self, xb_single, xyt):
-        """
-        Physics forward for single branch input.
-        xb: (1, 7), xyt: (N_c, 3) - only (x,y,t) for autodiff.
-        Trunk expects 24D input (xy + 22 field values), so we pad with zeros.
-        Gradients flow only through the first 3 columns (x, y, t).
-        """
+        """Physics forward for one branch input. xb: (1, 7), xyt: (N_c, 3).
+        The trunk expects 24 inputs, so xyt is zero-padded; gradients flow through x, y, t only."""
         b = self.branch(xb_single, training=True)
         n = tf.shape(xyt)[0]
         padding = tf.zeros([n, 21], dtype=xyt.dtype)  # 3 + 21 = 24
@@ -136,7 +130,6 @@ class PIDeepONet(tf.keras.Model):
         return self.call_data(inputs[0], inputs[1], training=training)
 
 
-# data prep
 def build_branch_inputs(Xb, Xt, cyt_idx):
     N, _, G, _, _ = Xb.shape
     f0   = Xb[:, 0, :, :, cyt_idx]
@@ -196,13 +189,9 @@ def build_dataset(Xbranch, Xtrunk, Yf, batch_size, chunk_size, shuffle=True):
             .batch(batch_size).prefetch(tf.data.AUTOTUNE))
 
 
-# physics loss 
 def compute_pde_residual(model, xb_single, xyt, D, k, s1_tf, s2_tf, e_tf, G):
-    """
-    PDE residual: ∂u/∂t = D·Δu - k·u + s1 + s2 - e·u
-    Same simplified form as PINN (no +1 offset).
-    xyt: (N_c, 3) collocation points in [-1,1]² * [t_min, t_max]
-    """
+    """PDE residual du/dt = D*lap(u) - k*u + s1 + s2 - e*u (no +1 offset, as in the PINN).
+    xyt: (N_c, 3) collocation points in [-1,1]^2 x [t_min, t_max]."""
     G_f = tf.constant(float(G), dtype=tf.float32)
 
     with tf.GradientTape(persistent=True) as tape2:
@@ -234,7 +223,6 @@ def compute_pde_residual(model, xb_single, xyt, D, k, s1_tf, s2_tf, e_tf, G):
 
 
 def compute_bc_residual(model, xb_single, xyt_bc):
-    """Neumann BC: ∂u/∂n = 0 on all boundaries."""
     if xyt_bc.shape[0] == 0:
         return tf.zeros((0,), tf.float32)
     xyt_b = tf.constant(xyt_bc)
@@ -249,11 +237,7 @@ def compute_bc_residual(model, xb_single, xyt_bc):
 
 
 def compute_ic_residual(model, xb_single, xy_ic, y_ic_true, t_min):
-    """
-    IC loss: u(x, y, t_min) = u_0(x, y) at sampled spatial points.
-    xy_ic:(N_ic, 2) spatial coordinates
-    y_ic_true:(N_ic, 1) target IC values (scaled)
-    """
+    """IC loss u(x, y, t_min) = u_0(x, y). xy_ic: (N_ic, 2), y_ic_true: (N_ic, 1) scaled."""
     t_col = np.full((xy_ic.shape[0], 1), t_min, dtype=np.float32)
     xyt_ic = tf.constant(np.hstack([xy_ic, t_col]))
     u_pred = model.call_physics_single(xb_single, xyt_ic)  # (N_ic, 1)
@@ -278,7 +262,6 @@ def sample_boundary(N_bc, t_min, t_max):
     return np.array(pts, dtype=np.float32)[:N_bc]
 
 
-# training steps 
 def masked_mse(pred, y, sz):
     idx  = tf.range(tf.shape(pred)[1])[tf.newaxis, :, tf.newaxis]
     mask = tf.cast(idx < tf.cast(sz[:, tf.newaxis, :], tf.int32), tf.float32)
@@ -339,7 +322,6 @@ def train_model(model, opt, ds_tr, ds_vl,
     G2 = G * G
 
     for ep in range(1, epochs + 1):
-        # data loss
         data_losses = []
         for batch in ds_tr:
             (xb, xt, sz), y = batch
@@ -401,7 +383,6 @@ def train_model(model, opt, ds_tr, ds_vl,
     return best_val
 
 
-# eval 
 def predict_full(model, Xbranch, Xtrunk, chunk=EVAL_CHUNK):
     N, n_pts, _ = Xtrunk.shape
     out = np.zeros((N, n_pts, 1), np.float32)
@@ -414,7 +395,6 @@ def predict_full(model, Xbranch, Xtrunk, chunk=EVAL_CHUNK):
     return out
 
 
-# metrics 
 def _fisher_z(r):
     r = np.clip(r, -0.9999, 0.9999)
     return 0.5 * np.log((1.0 + r) / (1.0 - r))
@@ -471,7 +451,6 @@ def calculate_metrics(y_true, y_pred, masks, clip_max):
 def denormalize(x, clip_max):
     return (np.asarray(x, np.float64)+1.0)/2.0*clip_max
 
-# optuna 
 def make_objective(Xbr_tr, Xtr_tr, Yf_tr, Xbr_vl, Xtr_vl, Yf_vl,
                    t_min, t_max, G, D, k, s1_tf, s2_tf, e_tf,
                    xy_grid, Y_ic_flat, cyt_idx, seed):
@@ -505,7 +484,6 @@ def make_objective(Xbr_tr, Xtr_tr, Yf_tr, Xbr_vl, Xtr_vl, Yf_vl,
     return objective
 
 
-# main pipeline 
 def run_pipeline(grid, seed, cytokine):
     set_seed(seed)
     idx = CYTOKINE_NAMES.index(cytokine.lower())
@@ -533,7 +511,6 @@ def run_pipeline(grid, seed, cytokine):
 
     print(f"  Branch: (N, 7)  |  Trunk: (N, {G2}, {Xtrunk.shape[2]})  |  clip_max: {clip_max:.6f}")
 
-    # PDE 
     D, k, sec = compute_pde_params(grid, idx)
     masks_mean = M_pinn[:70].mean(axis=0)  #(G*G, 5)
     s1_tf, s2_tf, e_tf = build_source_arrays(masks_mean, sec, idx, grid, clip_max)
@@ -542,18 +519,15 @@ def run_pipeline(grid, seed, cytokine):
     t_min = float(t_norm_all[2])
     t_max = float(t_norm_all[-1])
 
-    # IC data
     xs = np.linspace(-1.0, 1.0, G, dtype=np.float32)
     ys = np.linspace(-1.0, 1.0, G, dtype=np.float32)
     xx, yy = np.meshgrid(xs, ys, indexing="ij")
     xy_grid_ic = np.stack([xx.ravel(), yy.ravel()], axis=1)# (G*G, 2)
     Y_ic_flat  = Y_ic_full[:, :, idx].reshape(G2, 1) #(G*G, 1) scaled
 
-    # 70/10/20
     Xbr_tr, Xtr_tr, Yf_tr = Xbranch[:70],   Xtrunk[:70],   Yf[:70]
     Xbr_vl, Xtr_vl, Yf_vl = Xbranch[70:80], Xtrunk[70:80], Yf[70:80]
 
-    # Optuna
     if seed == 42:
         print(f"Optuna: {N_TRIALS} trials × {TUNE_EPOCHS} epochs...")
         study = optuna.create_study(
@@ -578,7 +552,6 @@ def run_pipeline(grid, seed, cytokine):
         best = ref["best_params"]
         optuna_val = ref["optuna_best_val_loss"]
 
-    # final training
     tf.keras.backend.clear_session(); set_seed(seed)
     ds_tr = build_dataset(Xbr_tr, Xtr_tr, Yf_tr,
                           best["batch_size"], best["chunk_size"], shuffle=True)
@@ -604,7 +577,6 @@ def run_pipeline(grid, seed, cytokine):
     )
     train_elapsed = time.time() - t_start
 
-    # Evaluate
     t_pred = time.time()
     Yp_flat = predict_full(model, Xbranch, Xtrunk)
     pred_elapsed = time.time() - t_pred

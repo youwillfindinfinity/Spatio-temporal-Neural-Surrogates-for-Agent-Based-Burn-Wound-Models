@@ -14,10 +14,12 @@ BASE_OUT_DIR     = PREPROCESSED
 
 CYTOKINE_NAMES  = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 CELL_TYPE_NAMES = ["EC", "NN", "NA", "M1", "M2"]
+# In endothelial.xml, types 3, 4 and 5 are monocytes, fibroblasts and activated neutrophils;
+# scripts/rev/preprocess_runs.py builds the masks from types 1, 2, 5, 8 and 9.
 CELL_TYPE_IDS   = {"EC": 1, "NN": 2, "NA": 3, "M1": 4, "M2": 5}
 
 N_TIMESTEPS  = 101
-WINDOW       = 2 # look-back window for LSTM/branch inputs (consistent with prev work)
+WINDOW       = 2 # look-back window for LSTM/branch inputs
 GPR_MAX_GRID = 100     
 
 
@@ -66,7 +68,6 @@ def process_grid(folder_name: str):
     out_path = BASE_OUT_DIR / f"{G}x{G}"
     out_path.mkdir(parents=True, exist_ok=True)
 
-    # loading vtk files 
     vtk_files = sorted(
         [f for f in os.listdir(data_path) if f.endswith(".vtk")],
         key=lambda x: int("".join(filter(str.isdigit, x)) or 0)
@@ -88,7 +89,7 @@ def process_grid(folder_name: str):
             for j, (_, cid) in enumerate(CELL_TYPE_IDS.items()):
                 masks[i, :, :, j] = (ct == cid).astype(np.float32)
 
-    #raw physical data - PINN/PI-DeepONet -> shape: (101, G, G, 6)
+    # raw physical data for PINN/PI-DeepONet, (101, G, G, 6)
     np.save(out_path / "Y_raw_phys.npy", raw_cyt)
 
     # scaling each cytokine to [-1, 1]
@@ -107,12 +108,10 @@ def process_grid(folder_name: str):
 
     n = N_TIMESTEPS - WINDOW # 99 pred samples
 
-    # shared targets
     # Y_target[i] = scaled field at timestep i+2 -> shape: (99,G,G,6)
     Y_target = scaled[WINDOW:].astype(np.float32)
     np.save(out_path / "Y_target.npy", Y_target)
 
-    # cell-type masks
     Y_masks_spatial = masks[WINDOW:].astype(np.float32) # (99, G, G, 5)
     Y_masks_pinn    = Y_masks_spatial.reshape(n, G * G, 5) # (99, G*G, 5)
     np.save(out_path / "Y_masks_spatial.npy", Y_masks_spatial)
@@ -121,7 +120,7 @@ def process_grid(folder_name: str):
     #STA-LSTM input and DeepONet/PI-DeepONet branch input -> shape: (99, 2, G, G, 11)
     # cyto_seq[i] = scaled[i], scaled[i+1] (2 frames of 6 cytokines)
     # mask_seq[i] = masks[i],  masks[i+1] (2 frames of 5 cell types)
-    # combined[i] = concat([cyto_seq[i], mask_seq[i]], axis=-1)  1->1 channels
+    # combined[i] = concat([cyto_seq[i], mask_seq[i]], axis=-1)
     
     cyto_seq = np.stack(
         [scaled[i : i + WINDOW] for i in range(n)], axis=0
@@ -156,13 +155,11 @@ def process_grid(folder_name: str):
     np.save(out_path / "X_trunk.npy",  X_trunk) # DeepONet/PI-DeepONet trunk
     np.save(out_path / "X_colloc.npy", X_trunk) # PINN collocation (same array)
 
-    # PINN-specific
     # Y_ic: scaled cytokine field at t=0, used to enforce u(x,y,0) = u_0 -> shape: (G, G, 6)
     Y_ic = scaled[0].astype(np.float32)
     np.save(out_path / "Y_ic.npy", Y_ic)
 
-    # Y_bc_mask - used to enforce Neumann no-flux boundary conditions:
-    # ∂u/∂n = 0 on the boundary (matching ABM Neumann BCs)
+    # Y_bc_mask: boundary points for the Neumann no-flux condition du/dn = 0 (as in the ABM)
     bc_mask = np.zeros((G, G), dtype=np.float32)
     bc_mask[0, :]  = 1.0
     bc_mask[-1, :] = 1.0
@@ -180,7 +177,6 @@ def process_grid(folder_name: str):
     else:
         gpr_note = f"X_gpr skipped (G={G} > {GPR_MAX_GRID})"
 
-    # metadata
     meta = {
         "grid":        G,
         "n_timesteps": N_TIMESTEPS,
