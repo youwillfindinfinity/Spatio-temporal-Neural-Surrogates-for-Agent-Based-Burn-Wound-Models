@@ -13,6 +13,9 @@ logs/
 *.npy
 *.npz
 *.h5
-revision_scripts*.zip
 results/*/*/_data
 results/*/*/_data
+abm/runs/
+*:Zone.Identifier
+*.tar
+outputs/figures/*.pdf
