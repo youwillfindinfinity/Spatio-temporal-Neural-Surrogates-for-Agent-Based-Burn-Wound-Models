@@ -433,6 +433,18 @@ tmask_unet increment il10 250 (n=3)  train_s 39.2 +/- 1.3  infer_s 0.8397 +/- 0.
   transfer window skill: E2a_endothelial_x5_m2-ownscale 0.1419 +/- 0.0061 | E2a_endothelial_x5_m2 0.1147 +/- 0.014 | E2b_geometry_margin_G5_m2-ownscale 0.1562 +/- 0.004 | E2b_geometry_margin_G5_m2 0.1552 +/- 0.0042 | E3_il10_from_m2 0.1559 +/- 0.0032
 
 == PINN
+results/rev_abm_pinn/dataonly/pinn/res_il10_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03471464475379006, 'train_time_seconds': 3392.05, 'pred_time_seconds': 0.15, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G100_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il10_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03471464475379006, 'train_time_seconds': 3385.24, 'pred_time_seconds': 0.14, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G100_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il10_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03471464475379006, 'train_time_seconds': 3380.73, 'pred_time_seconds': 0.14, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G100_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il10_250_1.json {'grid': 250, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14532490152689695, 'train_time_seconds': 2636.51, 'pred_time_seconds': 0.3, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G250_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il10_250_100.json {'grid': 250, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14532490152689695, 'train_time_seconds': 2640.97, 'pred_time_seconds': 0.28, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G250_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il10_250_42.json {'grid': 250, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.14532490152689695, 'train_time_seconds': 2636.42, 'pred_time_seconds': 0.29, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G250_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il8_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04245328406918753, 'train_time_seconds': 1948.5, 'pred_time_seconds': 0.14, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G100_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il8_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04245328406918753, 'train_time_seconds': 1951.4, 'pred_time_seconds': 0.14, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G100_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il8_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il8', 'optuna_best_val_loss': 0.04245328406918753, 'train_time_seconds': 1958.81, 'pred_time_seconds': 0.14, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G100_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il8_250_1.json {'grid': 250, 'seed': 1, 'cytokine': 'il8', 'optuna_best_val_loss': 0.0345960424331192, 'train_time_seconds': 2194.42, 'pred_time_seconds': 0.26, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G250_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il8_250_100.json {'grid': 250, 'seed': 100, 'cytokine': 'il8', 'optuna_best_val_loss': 0.0345960424331192, 'train_time_seconds': 2175.16, 'pred_time_seconds': 0.26, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G250_s1', 'loss': 'observations and initial condition only'}
+results/rev_abm_pinn/dataonly/pinn/res_il8_250_42.json {'grid': 250, 'seed': 42, 'cytokine': 'il8', 'optuna_best_val_loss': 0.0345960424331192, 'train_time_seconds': 2203.51, 'pred_time_seconds': 0.28, 'variant': 'dataonly', 'run': 'E3_il10_from_m2_G250_s1', 'loss': 'observations and initial condition only'}
 results/rev_abm_pinn/soft/pinn/res_il10_100_1.json {'grid': 100, 'seed': 1, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03477615080750719, 'train_time_seconds': 3276.13, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
 results/rev_abm_pinn/soft/pinn/res_il10_100_100.json {'grid': 100, 'seed': 100, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03477615080750719, 'train_time_seconds': 3290.48, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
 results/rev_abm_pinn/soft/pinn/res_il10_100_42.json {'grid': 100, 'seed': 42, 'cytokine': 'il10', 'optuna_best_val_loss': 0.03477615080750719, 'train_time_seconds': 3280.57, 'pred_time_seconds': 0.14, 'variant': 'soft', 'run': 'E3_il10_from_m2_G100_s1', 'boundaryat': 10, 'residual': 'normalised coordinates; ABM sources and boundary segments'}
@@ -579,13 +591,9 @@ Domain-mean concentration across baseline seeds: mean and coefficient of variati
 
 
 == PROVENANCE (one run per grid)
-/home/jkowalczuk/abm_revision/revision_cmpb/output/E3_il10_from_m2_G100_s1/run_provenance.json
+runs/E3_il10_from_m2_G100_s1/run_provenance.json
 {
  "run_id": "E3_il10_from_m2_G100_s1",
- "addresses_reviewer_comments": [
-  "R1 C2",
-  "R1 C3"
- ],
  "model": {
   "model": "burn-wound ABM combi_clean (Korkmaz et al. 2024), CompuCell3D 4.2.5 + FiPy",
   "template_md5": {
@@ -622,19 +630,19 @@ Domain-mean concentration across baseline seeds: mean and coefficient of variati
  },
  "seed": 1,
  "command": [
-  "/home/rbumbuc1/miniforge3/envs/cc3d_460/bin/python",
+  "$HOME/miniforge3/envs/cc3d_460/bin/python",
   "-W",
   "ignore",
   "-m",
   "cc3d.run_script",
   "-i",
-  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G100_s1/endothelial.cc3d",
+  "<root>/runs/E3_il10_from_m2_G100_s1/endothelial.cc3d",
   "-o",
-  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/output/E3_il10_from_m2_G100_s1",
+  "<root>/output/E3_il10_from_m2_G100_s1",
   "-f",
   "10000",
   "--current-dir",
-  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G100_s1"
+  "<root>/runs/E3_il10_from_m2_G100_s1"
  ],
  "model_file_md5": {
   "Simulation/ParameterScanSpecs.json": "bd5bfbe62b12ef2afa6238cfc62b1c7b",
@@ -654,14 +662,19 @@ Domain-mean concentration across baseline seeds: mean and coefficient of variati
  "software": {
   "python": "3.10.14",
   "cc3d": "4.6.0",
-  "numpy": "1.
-/home/jkowalczuk/abm_revision/revision_cmpb/output/E3_il10_from_m2_G250_s1/run_provenance.json
+  "numpy": "1.24.4",
+  "scipy": "1.15.2",
+  "fipy": "4.0.3"
+ },
+ "hardware": {
+  "hostname": "tcn29.local.snellius.surf.nl",
+  "platform": "Linux-5.14.0-687.65.1.el9_8.x86_64-x86_64-with-glibc2.34",
+  "logical_cpus_on_node": 128,
+  "cpus_available_to_job": 16,
+  "M
+runs/E3_il10_from_m2_G250_s1/run_provenance.json
 {
  "run_id": "E3_il10_from_m2_G250_s1",
- "addresses_reviewer_comments": [
-  "R1 C2",
-  "R1 C3"
- ],
  "model": {
   "model": "burn-wound ABM combi_clean (Korkmaz et al. 2024), CompuCell3D 4.2.5 + FiPy",
   "template_md5": {
@@ -698,19 +711,19 @@ Domain-mean concentration across baseline seeds: mean and coefficient of variati
  },
  "seed": 1,
  "command": [
-  "/home/rbumbuc1/miniforge3/envs/cc3d_460/bin/python",
+  "$HOME/miniforge3/envs/cc3d_460/bin/python",
   "-W",
   "ignore",
   "-m",
   "cc3d.run_script",
   "-i",
-  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G250_s1/endothelial.cc3d",
+  "<root>/runs/E3_il10_from_m2_G250_s1/endothelial.cc3d",
   "-o",
-  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/output/E3_il10_from_m2_G250_s1",
+  "<root>/output/E3_il10_from_m2_G250_s1",
   "-f",
   "10000",
   "--current-dir",
-  "/gpfs/home3/rbumbuc1/codes/Priority/cmpb_revision_abm/revision_cmpb/runs/E3_il10_from_m2_G250_s1"
+  "<root>/runs/E3_il10_from_m2_G250_s1"
  ],
  "model_file_md5": {
   "Simulation/ParameterScanSpecs.json": "bd5bfbe62b12ef2afa6238cfc62b1c7b",
@@ -730,4 +743,13 @@ Domain-mean concentration across baseline seeds: mean and coefficient of variati
  "software": {
   "python": "3.10.14",
   "cc3d": "4.6.0",
-  "numpy": "1.
+  "numpy": "1.24.4",
+  "scipy": "1.15.2",
+  "fipy": "4.0.3"
+ },
+ "hardware": {
+  "hostname": "tcn44.local.snellius.surf.nl",
+  "platform": "Linux-5.14.0-687.65.1.el9_8.x86_64-x86_64-with-glibc2.34",
+  "logical_cpus_on_node": 128,
+  "cpus_available_to_job": 16,
+  "M
