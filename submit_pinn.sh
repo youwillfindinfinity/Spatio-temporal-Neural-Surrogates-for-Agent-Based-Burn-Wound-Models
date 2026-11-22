@@ -1,8 +1,8 @@
 #!/bin/bash
-# Sixth batch (new ABM data): PINN with a residual, sources and boundary condition that match the ABM,
-# strict and softened form, three seeds; and the re-implemented ABM cytokine update as a reference.
+# PINN with a residual, sources and boundary condition that match the ABM (strict and softened form,
+# three seeds), and the re-implemented ABM cytokine update as a reference.
 REPO=$HOME/surrogates_2D
-ACCOUNT=gisr115048
+ACCOUNT=your_account
 cd $REPO || { echo "missing $REPO"; exit 1; }
 [ -d "$REPO/preprocessed_abm" ] || { echo "missing preprocessed_abm"; exit 1; }
 python -c "import deepxde, tensorflow_probability" 2>/dev/null || { echo "DeepXDE not importable - run: pip install --user deepxde==1.15.0 tensorflow-probability==0.23.0"; exit 1; }

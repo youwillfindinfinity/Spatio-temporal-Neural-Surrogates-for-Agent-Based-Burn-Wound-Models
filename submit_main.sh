@@ -1,9 +1,10 @@
 #!/bin/bash
-# Fourth batch: everything re-run on the revision ABM runs (IL-10 from M2).
-# Training on E3 seed 1; frozen-weight tests on E3 seeds 2-5, E2a and E2b.
+# Preprocessing, the five architectures in direct and increment form, the auxiliary U-Net runs
+# and the DeepONet ablation. Training on E3 seed 1; frozen-weight tests on E3 seeds 2-5, E2a and E2b.
+# Set REPO, RUNS (the runs/ folder of the ABM simulations) and ACCOUNT first.
 REPO=$HOME/surrogates_2D
-RUNS=$HOME/abm_revision/revision_cmpb/output
-ACCOUNT=gisr115048
+RUNS=$HOME/burn_wound_abm_simulations/runs
+ACCOUNT=your_account
 cd $REPO || { echo "missing $REPO"; exit 1; }
 [ -d "$RUNS" ] || { echo "missing $RUNS"; exit 1; }
 mkdir -p logs

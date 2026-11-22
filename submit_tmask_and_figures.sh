@@ -1,10 +1,9 @@
 #!/bin/bash
-# Fifth batch (new ABM data):
 #   tmask_*   models that also receive the cell masks at the target time (4 architectures, both forms)
-#   stalstm   the one configuration that ran out of GPU memory (skipped automatically if already done)
-#   post      tables and manuscript figures; starts when all other jobs of this batch have ended
+#   stalstm   the one configuration that ran out of GPU memory in submit_main.sh (skipped if done)
+#   post      tables and figures; starts when all other jobs have ended
 REPO=$HOME/surrogates_2D
-ACCOUNT=gisr115048
+ACCOUNT=your_account
 cd $REPO || { echo "missing $REPO"; exit 1; }
 [ -d "$REPO/preprocessed_abm" ] || { echo "missing preprocessed_abm"; exit 1; }
 mkdir -p logs
