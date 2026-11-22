@@ -6,7 +6,7 @@ import numpy as np
 warnings.filterwarnings("ignore")
 ROOT = Path(__file__).resolve().parents[2]; sys.path.insert(0, str(ROOT))
 from paths import RESULTS, OUTPUTS
-TAG = os.environ.get("REV_OUT", "rev"); SRC, DST = RESULTS / TAG, OUTPUTS / TAG; DST.mkdir(parents=True, exist_ok=True)
+TAG = os.environ.get("REV_OUT") or "rev_abm"; SRC, DST = RESULTS / TAG, OUTPUTS / TAG; DST.mkdir(parents=True, exist_ok=True)
 
 groups = {}
 for p in sorted(SRC.glob("*/*/res_*.json")):

@@ -1,14 +1,11 @@
-"""Shared data loading and evaluation for the revision experiments.
+"""Shared data loading and evaluation for the scripts in scripts/rev.
 
 Every model is wrapped as  predict(Xu, idxs) -> scaled prediction (n, G, G)
 where Xu has the U-Net input layout (n, G, G, 22): channels 0-10 = frame t-2
 (6 cytokines + 5 cell masks), 11-21 = frame t-1, and idxs are the sample indices
-(sample i predicts t = i + 2 h). All models are then evaluated identically:
-  - the manuscript metrics (near / far window, one step ahead)
-  - a persistence baseline and skill = 1 - MSE_model / MSE_persistence
-  - region-resolved errors around the cytokine front
-  - per-frame spatial correlation and R2
-  - autoregressive roll-out from t = 81 h against frozen persistence
+(sample i predicts t = i + 2 h). Evaluation: paper metrics (near / far window), persistence
+and skill = 1 - MSE_model / MSE_persistence, errors around the cytokine front, per-frame
+correlation and R2, and roll-out from t = 81 h against frozen persistence.
 """
 import sys, json, time, traceback
 from pathlib import Path
@@ -17,7 +14,7 @@ from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT)); sys.path.insert(0, str(ROOT / "scripts"))
-from paths import PREPROCESSED, RESULTS, RESULTS_MODELS          # noqa: E402
+from paths import PREPROCESSED, PREPROCESSED_ABM, RESULTS, RESULTS_MODELS, RESULTS_REV   # noqa: E402
 import metrics as paper_metrics                                    # noqa: E402  (scripts/metrics.py)
 
 import os
@@ -25,11 +22,11 @@ CYTS = ["il8", "il1", "il6", "il10", "tnf", "tgf"]
 TRAIN, VAL = (0, 70), (70, 80)
 START, END = 80, 99
 WINDOWS = {"near": (80, 90), "far": (90, 99)}
-# REV_DATA_ROOT: folder with one sub-folder per ABM run (scripts/rev/preprocess_runs.py).
-# Unset = the original single-trajectory data in preprocessed/<G>x<G>.
-DATA_ROOT = Path(os.environ["REV_DATA_ROOT"]) if os.environ.get("REV_DATA_ROOT") else None
+# REV_DATA_ROOT: one folder per ABM run (scripts/rev/preprocess_runs.py), default preprocessed_abm/;
+# without either, the single-run data in preprocessed/<G>x<G>
+DATA_ROOT = Path(os.environ["REV_DATA_ROOT"]) if os.environ.get("REV_DATA_ROOT") else (PREPROCESSED_ABM if PREPROCESSED_ABM.is_dir() else None)
 TRAIN_EXP = os.environ.get("REV_TRAIN_EXP", "E3_il10_from_m2")
-OUT = RESULTS / os.environ.get("REV_OUT", "rev")
+OUT = RESULTS / os.environ["REV_OUT"] if os.environ.get("REV_OUT") else RESULTS_REV        # default results/rev_abm
 
 
 def train_run(grid, seed=1):
@@ -43,7 +40,7 @@ def run_dir(grid, run=None):
 
 
 def test_runs(grid):
-    """All preprocessed runs of this grid except the training run, as {run_id: experiment}."""
+    """Preprocessed runs of this grid except the training run, as {run_id: experiment}."""
     if DATA_ROOT is None:
         return {}
     out = {}
@@ -63,7 +60,7 @@ _CACHE = {}
 
 
 def load(grid, cytokine, run=None):
-    """Arrays of one run for one target cytokine. Files are read once per process and cached."""
+    """Arrays of one run for one cytokine."""
     idx = CYTS.index(cytokine)
     dp = run_dir(grid, run)
     if dp not in _CACHE:
@@ -87,8 +84,7 @@ def den(a, cmax):
 
 
 def stored_params(model_dir, cytokine, grid):
-    """Hyperparameters: those tuned on the current data (main_<model>/direct) if present,
-    otherwise the ones stored with the original study."""
+    """Hyperparameters tuned on the current data (main_<model>/direct) if present, else the stored ones."""
     new = OUT / f"main_{model_dir.replace('sta_lstm', 'stalstm')}" / "direct" / f"hp_{cytokine}_{grid}.json"
     if new.exists():
         return json.load(open(new))["best_params"]
@@ -100,7 +96,6 @@ def result_path(model, variant, cytokine, grid, seed):
     return d / f"res_{cytokine}_{grid}_{seed}.json"
 
 
-# ---------------------------------------------------------------- evaluation
 def _r2(yt, yp):
     ss_tot = float(np.sum((yt - yt.mean()) ** 2))
     return 1.0 - float(np.sum((yt - yp) ** 2)) / ss_tot if ss_tot > 0 else float("nan")
@@ -165,7 +160,7 @@ def rollout(predict, Xu, idx, mode, start=START, end=END, data=None):
 
 def evaluate_transfer(predict, grid, cytokine):
     """Frozen-weight evaluation on every other run of the same grid (other seeds, other ABM settings).
-    Inputs and targets of the test runs are scaled with the training run's c_max.
+    Test runs are scaled with the training run's c_max.
       window : t = 82-100 h, same metrics as for the training run
       full   : t = 2-100 h (whole trajectory, including the early phase)
       roll-outs from t = 81 h (19 steps) and from the first two frames (99 steps), vs frozen persistence"""
@@ -197,7 +192,7 @@ def evaluate_transfer(predict, grid, cytokine):
 
 
 def evaluate(model, variant, data, seed, predict, train_time=None, extra=None, do_rollout=True, save_pred=True, transfer=False):
-    """Full evaluation of one trained model; writes a JSON (and test predictions) and returns the dict."""
+    """Evaluate one trained model; writes a JSON (and test predictions) and returns the dict."""
     grid, cyt, idx, cmax = data["grid"], data["cytokine"], data["idx"], data["cmax"]
     Xu, Y, M = data["Xu"], data["Y"], data["M"]
     ids = list(range(START, END))
@@ -260,7 +255,7 @@ def evaluate(model, variant, data, seed, predict, train_time=None, extra=None, d
 
 
 def run_safely(fn, *a, **k):
-    """Run one configuration; on failure print the traceback and continue with the next."""
+    """Run fn; on failure print the traceback and return None."""
     try:
         return fn(*a, **k)
     except Exception:
